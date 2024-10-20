@@ -1,0 +1,111 @@
+@import '../../../styles/fonts';
+@import '../../../styles/variables';
+
+.button {
+  cursor: pointer;
+  border: none;
+
+  &--small {
+    font-size: 13px;
+    width: 70px;
+    height: 30px;
+  }
+
+  &--medium {
+    font-size: 15px;
+    width: 125px;
+    height: 30px;
+  }
+
+  &--large {
+    font-weight: bold;
+    font-size: 20px;
+    width: 265px;
+    height: 70px;
+  }
+
+  &--xlarge {
+    font-weight: bold;
+    font-size: 20px;
+    width: 400px;
+    height: 70px;
+  }
+
+  &--primary {
+    background-color: $main-text-color;
+    color: $main-theme-color;
+
+    &:hover {
+      background-color: #35486c;
+    }
+
+    &:active {
+      box-shadow:
+        inset 4px 4px 12px #1f2a3f,
+        inset -4px -4px 12px #4b6699;
+    }
+  }
+
+  &--danger {
+    background-color: $danger-color;
+    color: $white;
+
+    &:hover {
+      background-color: #d60303;
+    }
+
+    &:active {
+      box-shadow:
+        inset 4px 4px 12px #7c0202,
+        inset -4px -4px 12px #ff0404;
+    }
+  }
+
+  &--success {
+    background-color: $success-color;
+    color: $white;
+
+    &:hover {
+      background-color: #239b3e;
+    }
+
+    &:active {
+      box-shadow:
+        inset 4px 4px 12px #166328,
+        inset -4px -4px 12px #30d354;
+    }
+  }
+
+  &--other {
+    background-color: $main-theme-color;
+    color: $main-text-color;
+
+    &:hover {
+      background-color: #e3e3e3;
+    }
+
+    &:active {
+      box-shadow:
+        inset 4px 4px 12px #919191,
+        inset -4px -4px 12px #ffffff;
+    }
+  }
+
+  &--rounded {
+    border-radius: 10px;
+  }
+
+  &--pill {
+    border-radius: 20px;
+  }
+
+  &--oval {
+    border-radius: 50px;
+  }
+
+  &--shadow {
+    box-shadow:
+      6px 6px 12px #c5c5c5,
+      -6px -6px 12px #ffffff;
+  }
+}
