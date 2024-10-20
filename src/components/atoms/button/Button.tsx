@@ -8,6 +8,7 @@ interface ButtonProps {
   radius?: 'rounded' | 'pill' | 'oval';
   shadow?: boolean;
   type: 'button' | 'submit';
+  // TODO: disabled 추가
   onClick?: () => void;
 }
 
@@ -20,7 +21,7 @@ const Button = ({
   type,
   ...props
 }: ButtonProps) => {
-  const neumorphism = shadow ? 'button--shadow' : null;
+  const neumorphism = shadow ? 'button--shadow' : '';
   return (
     <button
       type={type === 'button' ? 'button' : 'submit'}
