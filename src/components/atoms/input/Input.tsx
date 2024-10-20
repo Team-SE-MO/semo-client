@@ -81,13 +81,13 @@ const Input = ({
     >
       <input
         type={type}
-        className={['input', `input-box--${shape}`, `input__${type}`].join(' ')}
+        className={['input', `input--${shape}`, `input__${type}`].join(' ')}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
         {...props}
       />
-      {type === 'checkbox' && <span>{value}</span>}
+      {type === 'checkbox' && <span className={`span__${type}`}>{value}</span>}
     </div>
   );
 };

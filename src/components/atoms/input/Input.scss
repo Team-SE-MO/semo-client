@@ -76,9 +76,11 @@
   }
 }
 
-span {
-  font-size: 20px;
-  font-family: 'Pretendard';
-  color: $main-text-color;
-  font-weight: 300;
+.span{
+  &__checkbox{
+    font-size: 20px;
+    font-family: 'Pretendard';
+    color: $main-text-color;
+    font-weight: 300;
+  }
 }
