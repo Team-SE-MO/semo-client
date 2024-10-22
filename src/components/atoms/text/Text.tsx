@@ -8,8 +8,8 @@ interface TextProps {
   underline?: boolean;
   remainingTime?: number;
   onClick?: () => void;
-  currentPage?: number;
-  itemsPerPage?: number;
+  startNumber?: number;
+  endNumber?: number;
   totalItems?: number;
 }
 
@@ -19,8 +19,8 @@ const Text = ({
   color = 'primary',
   remainingTime = 0,
   underline = false,
-  currentPage,
-  itemsPerPage,
+  startNumber,
+  endNumber,
   totalItems,
   ...props
 }: TextProps) => {
@@ -53,14 +53,12 @@ const Text = ({
   //   totalItems !== undefined &&
   //   itemsPerPage !== undefined &&
   //   currentPage !== undefined
-  //     ? `${(currentPage - 1) * itemsPerPage + 1}-${Math.min(currentPage * itemsPerPage, totalItems)} of ${totalItems} items`
+  //     ? `${(currentPage) * itemsPerPage + 1}-${Math.min(currentPage * itemsPerPage, totalItems)} of ${totalItems} items`
   //     : '';
 
   const listText =
-    totalItems !== undefined &&
-    itemsPerPage !== undefined &&
-    currentPage !== undefined
-      ? `${currentPage}-${itemsPerPage} of ${totalItems} items`
+    startNumber && endNumber && totalItems
+      ? `${startNumber}-${endNumber} of ${totalItems} items`
       : '';
 
   return (
