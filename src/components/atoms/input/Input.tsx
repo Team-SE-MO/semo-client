@@ -54,41 +54,45 @@ interface InputProps {
   shape?: 'line' | 'area' | 'none';
 
   // checkbox
-  value?: string;
+  value: string;
 
-  // text, email, password
+  // text, email, password, select
   placeholder?: string;
+
+  // select
+  selectItems?: string;
 
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Input = ({
   size = 'no-size',
-  type = 'text',
+  type,
   shape = 'none',
   value = '',
   placeholder = '',
+  selectItems,
   onChange,
   ...props
 }: InputProps) => {
+  const inputClass = [
+    'input',
+    `input--${size}`,
+    `input--${shape}`,
+    type && `input__${type}`,
+  ]
+    .filter(Boolean)
+    .join(' ');
   return (
-    <div
-      className={[
-        'input-box',
-        `input-box--${shape}`,
-        `input-box--${size}`,
-      ].join(' ')}
-    >
-      <input
-        type={type}
-        className={['input', `input--${shape}`, `input__${type}`].join(' ')}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        {...props}
-      />
-      {type === 'checkbox' && <span className={`span__${type}`}>{value}</span>}
-    </div>
+    <input
+      list={!type ? selectItems : undefined}
+      type={type || 'text'}
+      className={inputClass}
+      value={value}
+      onChange={onChange}
+      {...(placeholder ? { placeholder } : {})}
+      {...props}
+    />
   );
 };
 
