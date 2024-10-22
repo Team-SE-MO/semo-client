@@ -4,7 +4,7 @@ import './Text.scss';
 interface TextProps {
   text?: string;
   type: 'title' | 'subtitle' | 'info' | 'link';
-  color?: 'main' | 'success' | 'danger' | 'linkColor';
+  color?: 'primary' | 'success' | 'danger' | 'linkColor';
   underline?: boolean;
   remainingTime?: number;
   onClick?: () => void;
@@ -16,7 +16,7 @@ interface TextProps {
 const Text = ({
   text = '',
   type = 'subtitle',
-  color = 'main',
+  color = 'primary',
   remainingTime = 0,
   underline = false,
   currentPage,
