@@ -44,7 +44,7 @@ const Text = ({
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
-    return `${minutes}분 ${seconds}초`;
+    return `0${minutes} : ${seconds === 0 ? '00' : seconds}`;
   };
 
   // TODO : 부모에게서 해당 처리 함수 받을지 현재 요소에서 처리할지 생각
