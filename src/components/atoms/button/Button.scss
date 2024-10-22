@@ -5,6 +5,12 @@
   cursor: pointer;
   border: none;
 
+  &--xsmall {
+    font-family: 13px;
+    width: 30px;
+    height: 30px;
+  }
+
   &--small {
     font-size: 13px;
     width: 70px;
@@ -13,14 +19,14 @@
 
   &--medium {
     font-size: 15px;
-    width: 125px;
-    height: 30px;
+    width: 95px;
+    height: 40px;
   }
 
   &--large {
     font-weight: bold;
     font-size: 20px;
-    width: 265px;
+    width: 240px;
     height: 70px;
   }
 
@@ -76,6 +82,15 @@
     }
   }
 
+  &--disable {
+    background-color: $disabled-color;
+    color: $main-text-color;
+
+    &:hover {
+      background-color: #d8d8d8;
+    }
+  }
+
   &--other {
     background-color: $main-theme-color;
     color: $main-text-color;
@@ -107,5 +122,9 @@
     box-shadow:
       6px 6px 12px #c5c5c5,
       -6px -6px 12px #ffffff;
+  }
+
+  &__icon {
+    vertical-align: middle;
   }
 }
