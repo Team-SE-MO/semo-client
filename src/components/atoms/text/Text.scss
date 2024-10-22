@@ -1,0 +1,34 @@
+@import '../../../styles/fonts';
+@import '../../../styles/variables';
+
+.text {
+  &__title {
+    font-weight: bold;
+    font-size: 36px;
+  }
+  &__subtitle {
+    font-size: 20px;
+  }
+  &__info {
+    font-size: 15px;
+  }
+  &__link {
+    font-size: 15px;
+    cursor: pointer;
+  }
+  &--primary {
+    color: $main-text-color;
+  }
+  &--success {
+    color: $success-color;
+  }
+  &--danger {
+    color: $danger-color;
+  }
+  &--linkColor {
+    color: $secondary-theme-color;
+  }
+  &--underline {
+    text-decoration: underline;
+  }
+}
