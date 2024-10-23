@@ -1,7 +1,12 @@
 import React from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 
 const MainLayout = () => {
-  return <div />;
+  const location = useLocation();
+  return (
+    <div className="main__layout-body">
+      <Outlet />
+    </div>
+  );
 };
-
 export default MainLayout;
