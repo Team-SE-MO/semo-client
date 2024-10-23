@@ -1,24 +1,16 @@
 import React from 'react';
-import Company from 'types/Company';
-import Device from 'types/Device';
+import './DropdownItem.scss';
 
 interface DropdownItemProps {
-  selectItems: Array<Company> | Array<Device>;
+  label: string;
+  onClick?: () => void;
 }
 
-const DropdownItem = ({ selectItems, ...props }: DropdownItemProps) => {
+const DropdownItem = ({ label, onClick }: DropdownItemProps) => {
   return (
-    <datalist>
-      {selectItems &&
-        selectItems.map((item) => (
-          <option
-            value={item.target}
-            key={item.target}
-            aria-label="select"
-            {...props}
-          />
-        ))}
-    </datalist>
+    <button type="button" className="dropdown__item" onClick={onClick}>
+      {label}
+    </button>
   );
 };
 
