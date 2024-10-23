@@ -1,0 +1,11 @@
+@import '../../../styles/variables';
+
+.header__dropdown {
+  &-list {
+    background: $main-theme-color;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 0px;
+    width: 140px;
+  }
+}
