@@ -1,0 +1,12 @@
+@import '../styles/fonts';
+@import '../styles/variables';
+
+.main {
+  &__container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: $main-theme-color;
+  }
+}

@@ -3,8 +3,9 @@ import './Text.scss';
 
 interface TextProps {
   text?: string;
-  type: 'title' | 'subtitle' | 'info' | 'link';
-  color?: 'primary' | 'success' | 'danger' | 'linkColor';
+  type: 'main-title' | 'main-content' | 'title' | 'subtitle' | 'info' | 'link';
+  color?: 'primary' | 'success' | 'danger' | 'link-color';
+  bold?: boolean;
   underline?: boolean;
   remainingTime?: number;
   onClick?: () => void;
@@ -18,6 +19,7 @@ const Text = ({
   type = 'subtitle',
   color = 'primary',
   remainingTime = 0,
+  bold = false,
   underline = false,
   startNumber,
   endNumber,
@@ -67,6 +69,7 @@ const Text = ({
         'text',
         `text__${type}`,
         `text--${color}`,
+        bold ? 'text--bold' : '',
         underline ? 'text--underline' : '',
       ].join(' ')}
       {...props}
