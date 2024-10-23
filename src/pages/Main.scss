@@ -2,7 +2,7 @@
 @import '../styles/variables';
 
 .main {
-  &&__container {
+  &__container {
     display: flex;
     justify-content: center;
     align-items: center;

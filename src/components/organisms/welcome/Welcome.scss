@@ -2,7 +2,7 @@
 @import '../../../styles/variables';
 
 .welcome {
-  &&__content {
+  &__content {
     display: flex;
     justify-content: space-between;
     width: 1400px;
@@ -14,13 +14,13 @@
       10px 10px 20px $shadow-color,
       -10px -10px 20px $white;
   }
-  &&__text-group {
+  &__text-group {
     display: flex;
     flex-direction: column;
     text-align: left;
     justify-content: center;
   }
-  &&__button-group {
+  &__button-group {
     display: flex;
     justify-content: center;
     flex-direction: column;
