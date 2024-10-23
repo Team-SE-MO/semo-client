@@ -4,7 +4,7 @@ import './Main.scss';
 
 const Main = () => {
   return (
-    <div className="main-container">
+    <div className="main__container">
       <Welcome />
     </div>
   );

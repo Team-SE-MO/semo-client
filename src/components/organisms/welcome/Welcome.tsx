@@ -24,14 +24,14 @@ const Welcome = () => {
   };
 
   return (
-    <div className="welcome-content">
-      <div className="text-group">
+    <div className="welcome__content">
+      <div className="welcome__text-group">
         <Text text={title} type="main-title" />
         <Text text={content} type="main-content" />
         <Text text={title2} type="main-title" />
         <Text text={content2} type="main-content" />
       </div>
-      <div className="button-group">
+      <div className="welcome__button-group">
         <Button
           size="xlarge"
           label="서비스 등록 요청하기"

@@ -1,7 +1,7 @@
 @import '../../../styles/fonts';
 @import '../../../styles/variables';
 
-.welcome-content {
+.welcome__content {
   display: flex;
   justify-content: space-between;
   width: 1400px;
@@ -13,13 +13,13 @@
     10px 10px 20px $shadow-color,
     -10px -10px 20px $white;
 }
-.text-group {
+.welcome__text-group {
   display: flex;
   flex-direction: column;
   text-align: left;
   justify-content: center;
 }
-.button-group {
+.welcome__button-group {
   display: flex;
   justify-content: center;
   flex-direction: column;
