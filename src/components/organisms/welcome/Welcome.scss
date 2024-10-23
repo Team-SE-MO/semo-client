@@ -1,28 +1,30 @@
 @import '../../../styles/fonts';
 @import '../../../styles/variables';
 
-.welcome__content {
-  display: flex;
-  justify-content: space-between;
-  width: 1400px;
-  height: 600px;
-  padding: 40px;
-  background-color: $main-theme-color;
-  border-radius: 20px;
-  box-shadow:
-    10px 10px 20px $shadow-color,
-    -10px -10px 20px $white;
-}
-.welcome__text-group {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  justify-content: center;
-}
-.welcome__button-group {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  padding-right: 40px;
-  gap: 100px;
+.welcome {
+  &&__content {
+    display: flex;
+    justify-content: space-between;
+    width: 1400px;
+    height: 600px;
+    padding: 40px;
+    background-color: $main-theme-color;
+    border-radius: 20px;
+    box-shadow:
+      10px 10px 20px $shadow-color,
+      -10px -10px 20px $white;
+  }
+  &&__text-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    justify-content: center;
+  }
+  &&__button-group {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding-right: 40px;
+    gap: 100px;
+  }
 }
