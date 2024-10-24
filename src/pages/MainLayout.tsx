@@ -1,3 +1,4 @@
+import { Footer } from 'components/organisms/footer/Footer';
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
@@ -6,6 +7,7 @@ const MainLayout = () => {
   return (
     <div className="main__layout-body">
       <Outlet />
+      <Footer />
     </div>
   );
 };
