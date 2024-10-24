@@ -1,0 +1,55 @@
+@import '../styles/fonts';
+@import '../styles/variables';
+
+.signup {
+  &__container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: $main-theme-color;
+  }
+  &__image {
+    background-image: none;
+    width: 900px;
+    height: 600px;
+  }
+  &__content {
+    display: flex;
+    flex-direction: column;
+    width: 620px;
+    height: 725px;
+    text-align: left;
+    justify-content: flex-start;
+    border-radius: 50px;
+    box-shadow:
+      10px 10px 20px $shadow-color,
+      -10px -10px 20px $white;
+    margin: 20px;
+    padding-top: 60px;
+  }
+  &__text-group {
+    margin-bottom: 50px;
+    padding-left: 60px;
+  }
+  &__item-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  &__input-button-group {
+    position: relative;
+    margin-bottom: 10px;
+
+    button {
+      position: absolute;
+      right: 5px;
+      bottom: 0.3rem;
+    }
+  }
+  &__submit-button {
+    margin-top: 100px;
+  }
+}
