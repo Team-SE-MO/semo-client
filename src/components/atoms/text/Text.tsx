@@ -4,7 +4,7 @@ import './Text.scss';
 interface TextProps {
   text?: string;
   type: 'main-title' | 'main-content' | 'title' | 'subtitle' | 'info' | 'link';
-  color?: 'primary' | 'success' | 'danger' | 'link-color';
+  color?: 'primary' | 'success' | 'danger' | 'link-color' | 'neutral';
   bold?: boolean;
   underline?: boolean;
   remainingTime?: number;
