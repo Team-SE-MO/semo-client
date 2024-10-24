@@ -21,7 +21,7 @@ import { SvgIcon } from '@mui/material';
 interface ButtonProps {
   size: 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
   label?: string;
-  color: 'primary' | 'danger' | 'success' | 'disable' | 'other';
+  color?: 'primary' | 'danger' | 'success' | 'disable' | 'other';
   radius?: 'rounded' | 'pill' | 'oval';
   shadow?: boolean;
   type: 'button' | 'submit';
