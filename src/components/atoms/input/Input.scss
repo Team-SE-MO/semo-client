@@ -1,11 +1,45 @@
 @import '../../../styles/fonts';
 @import '../../../styles/variables';
 
-.input-box {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+.input {
+  color: $main-text-color;
+  font-family: 'Pretendard';
+  font-size: 15px;
+  margin: 0;
+  padding: 0 5px;
+  outline: none;
+
+  &--small {
+    width: 260px;
+    height: 40px;
+  }
+
+  &--medium {
+    width: 400px;
+    height: 40px;
+  }
+
+  &--large {
+    width: 500px;
+    height: 40px;
+  }
+
+  &--no-size {
+    width: auto;
+    height: 30px;
+  }
+
+  &__text,
+  &__email,
+  &__password {
+    border: none;
+  }
+
+  &__checkbox {
+    cursor: pointer;
+    width: 17px;
+    height: 17px;
+  }
 
   &--line {
     background-color: transparent;
@@ -18,66 +52,14 @@
     background-color: $white;
   }
 
-  &--small {
-    width: 260px;
-    height: 30px;
-  }
-
-  &--medium {
-    width: 400px;
-    height: 30px;
-  }
-
-  &--large {
-    width: 500px;
-    height: 30px;
-  }
-
-  &--no-size {
-    width: 100px;
-    height: 25px;
-  }
-}
-
-.input {
-  color: $main-text-color;
-  font-family: 'Pretendard';
-  font-size: 15px;
-  margin: 0;
-  padding: 0;
-  outline: none;
-
-  &__text,
-  &__email,
-  &__password {
-    border: none;
-    width: 95%;
-    height: 95%;
-  }
-
-  &__checkbox {
-    cursor: pointer;
-    width: 17px;
-    height: 17px;
-  }
-
-  &--line {
-    background-color: transparent;
-  }
-
-  &--area {
-    border-radius: 10px;
-    background-color: $white;
-  }
-
   &::placeholder {
     font-family: 'Pretendard';
     color: $placeholder-color;
   }
 }
 
-.span{
-  &__checkbox{
+.span {
+  &__checkbox {
     font-size: 20px;
     font-family: 'Pretendard';
     color: $main-text-color;

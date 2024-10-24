@@ -1,0 +1,17 @@
+@import 'styles/_variables';
+
+.dropdown__item {
+  padding: 7px 30px;
+  cursor: pointer;
+  width: 100%;
+  background: $main-theme-color;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  color: $main-text-color;
+  font-family: 'Pretendard';
+
+  &:hover {
+    background-color: #f2f2f2;
+  }
+}
