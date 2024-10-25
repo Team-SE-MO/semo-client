@@ -30,17 +30,12 @@ const SignUp = () => {
     setIsModalOpen(false);
   };
 
-  const handleCompleteRegistration = (data: any) => {
-    console.log('회사 등록 데이터:', data);
-    setIsModalOpen(false);
-  };
-
   return (
     <div className="signup__container">
       <div className="signup__image" />
       <div className="signup__content">
         <div className="signup__text-group">
-          <Text text={title} type="title" />
+          <Text text={title} type="title" bold />
           <Text text={subtitle} type="subtitle" />
           <Text type="info" text={content} />
         </div>
@@ -57,7 +52,7 @@ const SignUp = () => {
             <Button
               type="button"
               label="중복확인"
-              size="small"
+              size="medium"
               color="primary"
             />
           </div>
@@ -73,7 +68,7 @@ const SignUp = () => {
             <Button
               type="button"
               label="회사등록"
-              size="small"
+              size="medium"
               color="primary"
               onClick={handleCompanyRegistration}
             />
@@ -92,15 +87,12 @@ const SignUp = () => {
               label="SEND MESSAGE"
               size="xlarge"
               color="primary"
+              radius="oval"
             />
           </div>
         </div>
       </div>
-      <Modal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onComplete={handleCompleteRegistration}
-      />
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 };
