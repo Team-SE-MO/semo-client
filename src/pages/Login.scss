@@ -1,0 +1,55 @@
+@import '../styles/variables';
+
+.login {
+  &__container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: $main-theme-color;
+    gap: 100px;
+  }
+  &__img {
+    background-image: none;
+    width: 40%;
+    height: 70%;
+    border: 1px solid $main-text-color;
+  }
+  &__organism {
+    width: 27%;
+    height: 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 50px;
+    box-shadow:
+      10px 10px 20px $shadow-color,
+      -10px -10px 20px $white;
+    padding: 100px 55px;
+  }
+  &__explain {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 40px;
+  }
+  &__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 60%;
+    &__input {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 50%;
+      gap: 45px;
+    }
+  }
+  &__change-pwd {
+    width: 400px;
+    display: flex;
+    justify-content: end;
+  }
+}
