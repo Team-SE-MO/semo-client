@@ -41,7 +41,7 @@ const Login = () => {
               type="text"
               shape="line"
               value={loginId}
-              placeholder="id"
+              placeholder="ID"
               onChange={loginIdHandler}
             />
             <Input
@@ -49,7 +49,7 @@ const Login = () => {
               type="password"
               shape="line"
               value={password}
-              placeholder="password"
+              placeholder="PASSWORD"
               onChange={passwordHandler}
             />
           </div>
