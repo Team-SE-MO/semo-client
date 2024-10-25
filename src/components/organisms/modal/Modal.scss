@@ -1,0 +1,48 @@
+@import '../../../styles/variables';
+.modal {
+  display: flex;
+  flex-direction: column;
+
+  &__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  &__content {
+    background-color: $main-theme-color;
+    padding: 30px;
+    border-radius: 20px;
+    width: 620px;
+    height: 550px;
+  }
+
+  &__text-group {
+    align-items: center;
+    text-align: start;
+
+    margin: 30px 50px;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    margin-bottom: 60px;
+    gap: 20px;
+  }
+
+  &__button-group {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+  }
+}
