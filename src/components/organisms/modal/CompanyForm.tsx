@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent } from 'react';
-import './Modal.scss';
+import './CompanyForm.scss';
 import Text from 'components/atoms/text/Text';
 import Button from '../../atoms/button/Button';
 import Input from '../../atoms/input/Input';
@@ -36,6 +36,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = async () => {
     // TODO : axios 인터페이스 설정 시 해당 요청 api 연결
+    console.log('입력된 데이터:', formData);
     onClose();
   };
 

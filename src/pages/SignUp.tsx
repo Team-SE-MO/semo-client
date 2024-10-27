@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Modal from 'components/organisms/modal/Modal';
+import Modal from 'components/organisms/modal/CompanyForm';
 import Text from '../components/atoms/text/Text';
 import Input from '../components/atoms/input/Input';
 import Button from '../components/atoms/button/Button';
@@ -11,8 +11,7 @@ const SignUp = () => {
   const [managerName, setManagerName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     // TODO : 제출로직 추가
     console.log('제출된 데이터:', { email, companyName, managerName });
   };
@@ -88,6 +87,7 @@ const SignUp = () => {
               size="xlarge"
               color="primary"
               radius="oval"
+              onClick={handleSubmit}
             />
           </div>
         </div>
