@@ -23,7 +23,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const goToChangePassword = () => {
-    navigate('/forget-password');
+    navigate('/change-password');
   };
 
   return (

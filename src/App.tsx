@@ -8,7 +8,7 @@ import Login from 'pages/Login';
 import SignUp from 'pages/SignUp';
 import UserRequests from 'pages/UserRequests';
 import CompanyRequests from 'pages/CompanyRequests';
-import ForgetPassword from 'pages/ForgetPassword';
+import ChangePassword from 'pages/ChangePassword';
 import Devices from 'pages/Devices';
 import Users from 'pages/Users';
 import CompanyUsers from 'pages/CompanyUsers';
@@ -26,7 +26,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/user-req" element={<UserRequests />} />
             <Route path="/company-req" element={<CompanyRequests />} />
-            <Route path="/forget-password" element={<ForgetPassword />} />
+            <Route path="/change-password" element={<ChangePassword />} />
             <Route path="/devices" element={<Devices />} />
             <Route path="/users" element={<Users />} />
             <Route path="/users/:companyid" element={<CompanyUsers />} />
