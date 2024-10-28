@@ -48,4 +48,8 @@
     position: relative;
     cursor: pointer;
   }
+  &__auth {
+    display: flex;
+    gap: 40px;
+  }
 }
