@@ -16,7 +16,7 @@ const Profile = ({ userName, arrangement, onClick }: ProfileProps) => {
       role="presentation"
     >
       <ProfileIcon arrangement={arrangement} />
-      <Text text={userName} type="subtitle" />
+      <Text content={userName} type="subtitle" />
     </div>
   );
 };

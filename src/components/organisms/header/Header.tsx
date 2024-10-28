@@ -58,10 +58,10 @@ const Header = () => {
           style={{ cursor: 'pointer' }}
           role="presentation"
         >
-          <Text text="홈" type="subtitle" bold />
+          <Text content="홈" type="subtitle" bold />
         </div>
         <div className="header__menu-item">
-          <Text text="관리자 메뉴" type="subtitle" bold />
+          <Text content="관리자 메뉴" type="subtitle" bold />
           <div className="header__menu-dropdown">
             <Dropdown items={items} />
           </div>

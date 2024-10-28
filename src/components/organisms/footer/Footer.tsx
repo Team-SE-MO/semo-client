@@ -8,7 +8,7 @@ export const Footer = () => {
   return (
     <div className="footer__container">
       <div className="footer__logo" />
-      <Text text={content} type="info" color="neutral" />
+      <Text content={content} type="info" color="neutral" />
     </div>
   );
 };

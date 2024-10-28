@@ -32,10 +32,10 @@ const ChangePassword = () => {
 
   return (
     <div className="change-pwd__container">
-      <Text text={title} type="title" bold />
+      <Text content={title} type="title" bold />
       {step === 1 && (
         <div className="email-authentication__container">
-          <Text text={content1} type="subtitle" />
+          <Text content={content1} type="subtitle" />
           <div className="email-authentication__input">
             <div className="email-authentication__email">
               <Input
@@ -55,7 +55,7 @@ const ChangePassword = () => {
               {email && emailValid === false && (
                 <div className="email-authentication__warning">
                   <Text
-                    text="올바른 이메일 형식이 아닙니다."
+                    content="올바른 이메일 형식이 아닙니다."
                     type="info"
                     color="danger"
                   />
@@ -85,7 +85,7 @@ const ChangePassword = () => {
       )}
       {step === 2 && (
         <div className="set-password__container">
-          <Text text={content2} type="subtitle" />
+          <Text content={content2} type="subtitle" />
           <form className="set-password__form">
             <div>
               <Input
@@ -113,7 +113,7 @@ const ChangePassword = () => {
               {pwd && confirmPwd && pwd !== confirmPwd && (
                 <div className="set-password__warning">
                   <Text
-                    text="비밀번호가 일치하지 않습니다. 다시 입력해 주세요"
+                    content="비밀번호가 일치하지 않습니다. 다시 입력해 주세요"
                     type="info"
                     color="danger"
                   />

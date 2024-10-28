@@ -34,9 +34,9 @@ const SignUp = () => {
       <div className="signup__image" />
       <div className="signup__content">
         <div className="signup__text-group">
-          <Text text={title} type="title" bold />
-          <Text text={subtitle} type="subtitle" />
-          <Text type="info" text={content} />
+          <Text content={title} type="title" bold />
+          <Text content={subtitle} type="subtitle" />
+          <Text type="info" content={content} />
         </div>
         <div className="signup__item-group">
           <div className="signup__input-button-group">

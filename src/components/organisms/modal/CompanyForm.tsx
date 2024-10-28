@@ -44,8 +44,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     <div className="modal__overlay">
       <div className="modal__content">
         <div className="modal__text-group">
-          <Text text="Company Registration" type="title" />
-          <Text text="회사 등록" type="subtitle" />
+          <Text content="Company Registration" type="title" />
+          <Text content="회사 등록" type="subtitle" />
         </div>
         <div className="modal__form">
           <Input

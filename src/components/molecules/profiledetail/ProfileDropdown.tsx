@@ -54,7 +54,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
       <div className="profile-detail__header">
         <Profile arrangement="vertical" userName={userName} />
         <div className="profile-dropdown__info">
-          <Text text={userId} type="info" color="neutral" />
+          <Text content={userId} type="info" color="neutral" />
         </div>
       </div>
       <div className="profile-dropdown__buttons">

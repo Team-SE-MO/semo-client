@@ -26,10 +26,10 @@ const Welcome = () => {
   return (
     <div className="welcome__content">
       <div className="welcome__text-group">
-        <Text text={title} type="main-title" />
-        <Text text={content} type="main-content" />
-        <Text text={title2} type="main-title" />
-        <Text text={content2} type="main-content" />
+        <Text content={title} type="main-title" />
+        <Text content={content} type="main-content" />
+        <Text content={title2} type="main-title" />
+        <Text content={content2} type="main-content" />
       </div>
       <div className="welcome__button-group">
         <Button
