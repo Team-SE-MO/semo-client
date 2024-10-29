@@ -1,6 +1,6 @@
 import React from 'react';
 import Text from 'components/atoms/text/Text';
-import Button from 'components/atoms/button/Button';
+import CompanyReqRow from 'components/molecules/table/CompanyReqRow';
 import './CompanyRequests.scss';
 
 const CompanyRequests = () => {
@@ -22,7 +22,7 @@ const CompanyRequests = () => {
       ownerName: '홍길동',
       email: 'gogo7@ac.kr',
       formStatus: 'PENDING',
-      requestDate: '2024-10-23 22:06:36',
+      requestDate: '2024-10-23 22:06:36.000',
       approvedAt: null,
     },
     {
@@ -32,7 +32,7 @@ const CompanyRequests = () => {
       ownerName: '황석현',
       email: 'smu_hsh@naver.com',
       formStatus: 'PENDING',
-      requestDate: '2024-10-18 13:53:07',
+      requestDate: '2024-10-18 13:53:07.000',
       approvedAt: null,
     },
     {
@@ -42,8 +42,8 @@ const CompanyRequests = () => {
       ownerName: '홍길동',
       email: 'gogo3@ac.kr',
       formStatus: 'APPROVED',
-      requestDate: '2024-10-18 11:03:21',
-      approvedAt: '2024-10-23 22:07:46',
+      requestDate: '2024-10-18 11:03:21.000',
+      approvedAt: '2024-10-23 22:07:46.000',
     },
     {
       formId: 3,
@@ -52,8 +52,8 @@ const CompanyRequests = () => {
       ownerName: '홍길동',
       email: 'gogo1@ac.kr',
       formStatus: 'APPROVED',
-      requestDate: '2024-10-18 01:06:20',
-      approvedAt: '2024-10-22 13:37:49',
+      requestDate: '2024-10-18 01:06:20.000',
+      approvedAt: '2024-10-22 13:37:49.000',
     },
     {
       formId: 1,
@@ -62,18 +62,42 @@ const CompanyRequests = () => {
       ownerName: '김길동',
       email: 'gogo@ac.kr',
       formStatus: 'APPROVED',
-      requestDate: '2024-10-17 23:33:46',
-      approvedAt: '2024-10-22 01:17:45',
+      requestDate: '2024-10-17 23:33:46.000',
+      approvedAt: '2024-10-22 01:17:45.000',
     },
   ];
+
+  const changeDateFormat = (date: string) => {
+    return date.replace(' ', '\n').replace('.000', '');
+  };
+  formContent.forEach((form) => {
+    const newForm = form;
+    newForm.requestDate = changeDateFormat(form.requestDate);
+    if (form.approvedAt) {
+      newForm.approvedAt = changeDateFormat(form.approvedAt);
+    }
+  });
+
   return (
     <div className="company-req__container">
       <div className="company-req__title">
         <Text content="Service Registration Request List" type="title" />
         <Text content="서비스 등록 요청 정보" type="subtitle" />
       </div>
+      <div className="company-req__info">
+        <Text startNumber={1} endNumber={5} totalItems={5} type="info" />
+      </div>
       <div className="company-req__table">
         <table className="table">
+          <colgroup>
+            <col width="6%" />
+            <col width="15%" />
+            <col width="7%" />
+            <col width="20%" />
+            <col width="12%" />
+            <col width="20%" />
+            <col width="20%" />
+          </colgroup>
           <thead>
             <tr>
               {headerMeta.map((item) => (
@@ -82,37 +106,8 @@ const CompanyRequests = () => {
             </tr>
           </thead>
           <tbody>
-            {formContent.map((i, index) => (
-              <tr className="table__row">
-                <td className="table__row">{index + 1}</td>
-                <td className="table__row">{i.companyName}</td>
-                <td className="table__row">{i.ownerName}</td>
-                <td className="table__row">{i.email}</td>
-                <td className="table__row">{i.formStatus}</td>
-                <td className="table__row">{i.requestDate}</td>
-                {i.formStatus === 'PENDING' ? (
-                  <td className="table__row">
-                    <div className="table__btn">
-                      <Button
-                        size="small"
-                        label="승인"
-                        color="success"
-                        radius="oval"
-                        type="button"
-                      />
-                      <Button
-                        size="small"
-                        label="반려"
-                        color="danger"
-                        radius="oval"
-                        type="button"
-                      />
-                    </div>
-                  </td>
-                ) : (
-                  <td className="table__row">{i.approvedAt}</td>
-                )}
-              </tr>
+            {formContent.map((form, index) => (
+              <CompanyReqRow i={index} data={form} />
             ))}
           </tbody>
         </table>
