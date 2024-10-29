@@ -5,12 +5,18 @@ import './Profile.scss';
 
 interface ProfileProps {
   userName: string;
+  arrangement: 'vertical' | 'horizontal';
+  onClick?: () => void;
 }
-const Profile = ({ userName }: ProfileProps) => {
+const Profile = ({ userName, arrangement, onClick }: ProfileProps) => {
   return (
-    <div className="profile__container">
-      <ProfileIcon arrangement="horizontal" />
-      <Text text={userName} type="subtitle" />
+    <div
+      className={['profile', `profile--${arrangement}`].join(' ')}
+      onClick={onClick}
+      role="presentation"
+    >
+      <ProfileIcon arrangement={arrangement} />
+      <Text content={userName} type="subtitle" />
     </div>
   );
 };

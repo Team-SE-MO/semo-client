@@ -1,0 +1,55 @@
+@import '../../../styles/fonts';
+@import '../../../styles/variables';
+
+.header {
+  background-color: $white;
+
+  &__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 6vh;
+    padding: 0.7% 30px;
+  }
+
+  &__logo {
+    width: 150px;
+    height: 40px;
+    background-image: url('../../../assets/images/semo_logo_header.svg');
+    background-repeat: no-repeat;
+  }
+
+  &__menu {
+    display: flex;
+    align-items: center;
+    gap: 100px;
+    margin-right: 60%;
+
+    &-item {
+      position: relative;
+      cursor: pointer;
+
+      &:hover {
+        .header__menu-dropdown {
+          display: flex;
+        }
+      }
+    }
+    &-dropdown {
+      display: none;
+      position: relative;
+      &:hover {
+        display: flex;
+      }
+    }
+  }
+
+  &__profile {
+    position: relative;
+    cursor: pointer;
+  }
+  &__auth {
+    display: flex;
+    gap: 40px;
+  }
+}

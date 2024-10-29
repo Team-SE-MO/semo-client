@@ -31,8 +31,8 @@ const Login = () => {
       <div className="login__img" />
       <div className="login__organism">
         <div className="login__explain">
-          <Text text={title} type="title" />
-          <Text text={content} type="subtitle" />
+          <Text content={title} type="title" />
+          <Text content={content} type="subtitle" />
         </div>
         <form className="login__form">
           <div className="login__form__input">
@@ -55,7 +55,7 @@ const Login = () => {
           </div>
           <div className="login__change-pwd">
             <Text
-              text="비밀번호 재설정"
+              content="비밀번호 재설정"
               type="link"
               color="link-color"
               underline

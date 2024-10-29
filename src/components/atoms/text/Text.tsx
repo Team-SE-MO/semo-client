@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import './Text.scss';
 
 interface TextProps {
-  text?: string;
+  content?: string;
   type: 'main-title' | 'main-content' | 'title' | 'subtitle' | 'info' | 'link';
-  color?: 'primary' | 'success' | 'danger' | 'link-color';
+  color?: 'primary' | 'success' | 'danger' | 'link-color' | 'neutral';
   bold?: boolean;
   underline?: boolean;
   remainingTime?: number;
@@ -15,7 +15,7 @@ interface TextProps {
 }
 
 const Text = ({
-  text = '',
+  content = '',
   type = 'subtitle',
   color = 'primary',
   remainingTime = 0,
@@ -74,7 +74,7 @@ const Text = ({
       ].join(' ')}
       {...props}
     >
-      {text}
+      {content}
       {timeLeft > 0 && (
         <span className="text--red">{formatTime(timeLeft)}</span>
       )}
