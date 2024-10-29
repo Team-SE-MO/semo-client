@@ -6,7 +6,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 const MainLayout = () => {
   const location = useLocation();
   return (
-    <div className="main__layout-body">
+    <div className="main-layout__container">
       <Header />
       <Outlet />
       <Footer />
