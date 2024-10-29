@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Modal from 'components/organisms/modal/CompanyForm';
+import CompanyRegister from 'components/organisms/modal/CompanyRegister';
 import Text from '../components/atoms/text/Text';
 import Input from '../components/atoms/input/Input';
 import Button from '../components/atoms/button/Button';
@@ -92,7 +92,7 @@ const SignUp = () => {
           </div>
         </div>
       </div>
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <CompanyRegister isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 };

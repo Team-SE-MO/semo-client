@@ -1,10 +1,10 @@
 import React, { useState, ChangeEvent } from 'react';
-import './CompanyForm.scss';
+import './CompanyRegister.scss';
 import Text from 'components/atoms/text/Text';
 import Button from '../../atoms/button/Button';
 import Input from '../../atoms/input/Input';
 
-interface ModalProps {
+interface CompanyRegisterProps {
   isOpen: boolean;
   onClose: () => void;
 }
@@ -16,7 +16,7 @@ interface CompanyData {
   ownerName: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+const CompanyRegister = ({ isOpen, onClose }: CompanyRegisterProps) => {
   const [formData, setFormData] = useState<CompanyData>({
     email: '',
     companyName: '',
@@ -41,13 +41,13 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="modal__overlay">
-      <div className="modal__content">
-        <div className="modal__text-group">
+    <div className="company-register__container">
+      <div className="company-register__content">
+        <div className="company-register__text-group">
           <Text content="Company Registration" type="title" />
           <Text content="회사 등록" type="subtitle" />
         </div>
-        <div className="modal__form">
+        <div className="company-register__form">
           <Input
             type="email"
             placeholder="연락처(이메일)"
@@ -81,7 +81,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             shape="line"
           />
         </div>
-        <div className="modal__button-group">
+        <div className="company-register__button-group">
           <Button
             size="large"
             type="button"
@@ -106,4 +106,4 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default Modal;
+export default CompanyRegister;

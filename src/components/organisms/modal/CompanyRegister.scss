@@ -1,9 +1,9 @@
 @import '../../../styles/variables';
-.modal {
+.company-register {
   display: flex;
   flex-direction: column;
 
-  &__overlay {
+  &__container {
     display: flex;
     position: fixed;
     top: 0;

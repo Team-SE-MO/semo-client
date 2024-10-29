@@ -14,11 +14,11 @@ interface ProfileDropdownProps {
   onClose: () => void;
 }
 
-const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
+const ProfileDropdown = ({
   userName,
   userId,
   onClose,
-}) => {
+}: ProfileDropdownProps) => {
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
