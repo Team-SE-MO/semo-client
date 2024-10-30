@@ -1,7 +1,9 @@
 import React from 'react';
 import Text from 'components/atoms/text/Text';
+import Table from 'components/organisms/table/Table';
 import CompanyReqRow from 'components/molecules/table/CompanyReqRow';
 import './CompanyRequests.scss';
+import PageButton from 'components/molecules/button/PageButton';
 
 const CompanyRequests = () => {
   const headerMeta = [
@@ -13,6 +15,8 @@ const CompanyRequests = () => {
     '요청 일자',
     '승인 일자',
   ];
+
+  const colWidth = ['10%', '15%', '10%', '20%', '13%', '16%', '16%'];
 
   const formContent = [
     {
@@ -67,6 +71,9 @@ const CompanyRequests = () => {
     },
   ];
 
+  const pageNumber = 1;
+  const totalPages = 1;
+
   const changeDateFormat = (date: string) => {
     return date.replace(' ', '\n').replace('.000', '');
   };
@@ -88,29 +95,16 @@ const CompanyRequests = () => {
         <Text startNumber={1} endNumber={5} totalItems={5} type="info" />
       </div>
       <div className="company-req__table">
-        <table className="table">
-          <colgroup>
-            <col width="6%" />
-            <col width="15%" />
-            <col width="7%" />
-            <col width="20%" />
-            <col width="12%" />
-            <col width="20%" />
-            <col width="20%" />
-          </colgroup>
-          <thead>
-            <tr>
-              {headerMeta.map((item) => (
-                <th className="table__head">{item}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {formContent.map((form, index) => (
-              <CompanyReqRow i={index} data={form} />
-            ))}
-          </tbody>
-        </table>
+        <Table
+          colWidth={colWidth}
+          headerMeta={headerMeta}
+          content={formContent}
+          RowComponent={CompanyReqRow}
+        />
+      </div>
+      {/* TODO: 페이지 이동 기능 추가 */}
+      <div className="company-req__page-btn">
+        <PageButton pageNumber={pageNumber} totalPages={totalPages} />
       </div>
     </div>
   );
