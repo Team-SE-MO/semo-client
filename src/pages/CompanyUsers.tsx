@@ -9,21 +9,31 @@ import './CompanyUsers.scss';
 
 const CompanyUsers = () => {
   const headerMeta = ['No.', '권한', 'ID', 'EMAIL', '성명', '삭제'];
-  const colWidth = ['7%', '12%', '18%', '18%', '15%', '10%'];
+  const colWidth = ['10%', '15%', '22%', '22%', '18%', '13%'];
   const content = [
     {
-      role: 'ADMIN',
-      id: 'U123412341201',
-      email: 'gogo7@ac.kr',
-      ownerName: '정다빈',
+      loginId: 'A00000000022',
+      role: 'ROLE_ADMIN',
+      email: 'admin2@test.com',
+      ownerName: 'admin계정2',
       deletedAt: null,
+      company: {
+        id: 42,
+        companyName: 'test Company',
+        taxId: '000-00-00002',
+      },
     },
     {
-      role: 'ADMIN',
-      id: 'U123412341201',
-      email: 'gogo7@ac.kr',
-      ownerName: '정다빈',
+      loginId: 'A00000000022',
+      role: 'ROLE_ADMIN',
+      email: 'admin2@test.com',
+      ownerName: 'admin계정2',
       deletedAt: null,
+      company: {
+        id: 42,
+        companyName: 'test Company',
+        taxId: '000-00-00002',
+      },
     },
   ];
   const pageNumber = 1;
