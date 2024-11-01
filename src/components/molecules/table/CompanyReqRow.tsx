@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
 import Button from 'components/atoms/button/Button';
+import React, { useState } from 'react';
 
 interface CompanyReqRowProps {
   i: number;
   data: {
+    formId: number;
     companyName: string;
+    taxId: string;
     ownerName: string;
     email: string;
     formStatus: string;
@@ -19,6 +21,7 @@ const CompanyReqRow = ({ i, data }: CompanyReqRowProps) => {
     <tr>
       <td className="table__row">{i + 1}</td>
       <td className="table__row">{rowData.companyName}</td>
+      <td className="table__row">{rowData.taxId}</td>
       <td className="table__row">{rowData.ownerName}</td>
       <td className="table__row">{rowData.email}</td>
       <td className="table__row">{rowData.formStatus}</td>
