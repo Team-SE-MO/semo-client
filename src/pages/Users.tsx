@@ -67,7 +67,6 @@ const Users = () => {
   };
 
   const [keyword, setKeyword] = useState('');
-  const [companyId, setCompanyId] = useState(0);
   const [companyName, setCompanyName] = useState('');
   return (
     <div className="company-req__container">
@@ -122,16 +121,6 @@ const Users = () => {
           />
         </div>
         <div className="company-users__summary">
-          <div className="company-users__summary__btn">
-            <Button
-              size="medium"
-              label="+ 유저 등록"
-              radius="rounded"
-              shadow
-              type="button"
-              // TODO: onClick event 모달 띄우기 구현
-            />
-          </div>
           <Text
             startNumber={(pageNumber - 1) * pageSize + 1}
             endNumber={
