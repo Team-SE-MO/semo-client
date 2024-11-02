@@ -1,12 +1,15 @@
-import Button from 'components/atoms/button/Button';
 import React, { useState } from 'react';
+import Button from 'components/atoms/button/Button';
 
-interface CompanyReqRowProps {
+interface UserReqRowProps {
   i: number;
   data: {
     formId: number;
-    companyName: string;
-    taxId: string;
+    company: {
+      id: number;
+      companyName: string;
+      taxId: string;
+    };
     ownerName: string;
     email: string;
     formStatus: string;
@@ -15,13 +18,12 @@ interface CompanyReqRowProps {
   };
 }
 // TODO: 승인, 거절 누르면 rowData 상태 변경
-const CompanyReqRow = ({ i, data }: CompanyReqRowProps) => {
+const UserReqRow = ({ i, data }: UserReqRowProps) => {
   const [rowData, setRowData] = useState(data);
   return (
     <tr>
       <td className="table__row">{i + 1}</td>
-      <td className="table__row">{rowData.companyName}</td>
-      <td className="table__row">{rowData.taxId}</td>
+      <td className="table__row">{rowData.company.companyName}</td>
       <td className="table__row">{rowData.ownerName}</td>
       <td className="table__row">{rowData.email}</td>
       <td className="table__row">{rowData.formStatus}</td>
@@ -52,4 +54,4 @@ const CompanyReqRow = ({ i, data }: CompanyReqRowProps) => {
   );
 };
 
-export default CompanyReqRow;
+export default UserReqRow;

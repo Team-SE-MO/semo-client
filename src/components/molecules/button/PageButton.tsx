@@ -1,5 +1,5 @@
-import Button from 'components/atoms/button/Button';
 import React from 'react';
+import Button from 'components/atoms/button/Button';
 
 interface PageButtonProps {
   pageNumber: number;
@@ -17,10 +17,15 @@ const PageButton = ({ pageNumber, totalPages, ...props }: PageButtonProps) => {
           color="other"
           radius="rounded"
           type="button"
+          // TODO: 이전 페이지 보기 onClick 구현
         />
       );
     }
-    for (let i = 1; i < totalPages + 1; i += 1) {
+    for (
+      let i = pageNumber - 2 > 0 ? pageNumber - 2 : 1;
+      i < (pageNumber + 2 > totalPages ? totalPages + 1 : pageNumber + 2);
+      i += 1
+    ) {
       buttonList.push(
         <Button
           size="xsmall"
@@ -28,6 +33,7 @@ const PageButton = ({ pageNumber, totalPages, ...props }: PageButtonProps) => {
           color={pageNumber === i ? 'primary' : 'other'}
           radius="rounded"
           type="button"
+          // TODO: 해당 페이지 보기 onClick 구현
         />
       );
     }
@@ -35,10 +41,11 @@ const PageButton = ({ pageNumber, totalPages, ...props }: PageButtonProps) => {
       buttonList.push(
         <Button
           size="xsmall"
-          label="<"
+          label=">"
           color="other"
           radius="rounded"
           type="button"
+          // TODO: 다음 페이지 보기 onClick 구현
         />
       );
     }

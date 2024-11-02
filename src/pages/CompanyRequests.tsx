@@ -2,13 +2,14 @@ import React from 'react';
 import Text from 'components/atoms/text/Text';
 import Table from 'components/organisms/table/Table';
 import CompanyReqRow from 'components/molecules/table/CompanyReqRow';
-import './CompanyRequests.scss';
 import PageButton from 'components/molecules/button/PageButton';
+import './CompanyRequests.scss';
 
 const CompanyRequests = () => {
   const headerMeta = [
     'No.',
     '회사명',
+    '사업자 등록번호',
     '성명',
     'EMAIL',
     '상태',
@@ -16,7 +17,7 @@ const CompanyRequests = () => {
     '승인 일자',
   ];
 
-  const colWidth = ['10%', '15%', '10%', '20%', '13%', '16%', '16%'];
+  const colWidth = ['7%', '15%', '10%', '7%', '16%', '13%', '16%', '16%'];
 
   const formContent = [
     {
@@ -85,7 +86,7 @@ const CompanyRequests = () => {
       taxId: '000-00-00003',
       ownerName: '황석현',
       email: 'smu_hsh@naver.com',
-      formStatus: 'PENDING',
+      formStatus: 'DENIED',
       requestDate: '2024-10-18 13:53:07.000',
       approvedAt: null,
     },
@@ -122,7 +123,9 @@ const CompanyRequests = () => {
   ];
 
   const pageNumber = 1;
+  const pageSize = 10;
   const totalPages = 1;
+  const totalElement = 10;
 
   const changeDateFormat = (date: string) => {
     return date.replace(' ', '\n').replace('.000', '');
@@ -142,7 +145,16 @@ const CompanyRequests = () => {
         <Text content="서비스 등록 요청 정보" type="subtitle" />
       </div>
       <div className="company-req__info">
-        <Text startNumber={1} endNumber={5} totalItems={5} type="info" />
+        <Text
+          startNumber={(pageNumber - 1) * pageSize + 1}
+          endNumber={
+            totalElement < pageNumber * pageSize
+              ? totalElement
+              : pageNumber * pageSize
+          }
+          totalItems={totalElement}
+          type="info"
+        />
       </div>
       <div className="company-req__table">
         <Table
