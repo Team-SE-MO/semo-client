@@ -41,7 +41,7 @@ const CompanyUsers = () => {
   const totalPages = 1;
   const totalElement = 2;
 
-  const roles = ['ADMIN', 'USER'];
+  const roles = ['ROLE_ADMIN', 'ROLE_USER'];
   const [checkedRoles, setCheckedRoles] = useState<Set<string>>(new Set());
   const checkedRoleHandler = (value: string, isChecked: boolean) => {
     const newCheckedItems = new Set(checkedRoles);
@@ -70,7 +70,7 @@ const CompanyUsers = () => {
                   value={item}
                   onChange={(e) => checkedRoleHandler(item, e.target.checked)}
                 />
-                <Text content={item} type="info" />
+                <Text content={item.replace('ROLE_', '')} type="info" />
               </div>
             ))}
           </div>
