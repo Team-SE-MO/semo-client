@@ -8,8 +8,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 6vh;
-    padding: 0.7% 30px;
+    height: 4vh;
+    padding: 15px 30px;
   }
 
   &__logo {
@@ -22,8 +22,8 @@
   &__menu {
     display: flex;
     align-items: center;
+    width: 70%;
     gap: 100px;
-    margin-right: 60%;
 
     &-item {
       position: relative;
@@ -36,11 +36,12 @@
       }
     }
     &-dropdown {
-      display: none;
+      display: flex;
+      // display: none;
       position: relative;
-      &:hover {
-        display: flex;
-      }
+      // &:hover {
+      //   display: flex;
+      // }
     }
   }
 
