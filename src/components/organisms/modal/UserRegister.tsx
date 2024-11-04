@@ -34,7 +34,6 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
         ...prev,
         [field]: event.target.value,
       }));
-
       if (emailRegEx.test(formData.email)) {
         setEmailValid(true);
       } else {

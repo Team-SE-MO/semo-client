@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import CompanyRegister from 'components/organisms/modal/CompanyRegister';
+import UserRegister from 'components/organisms/modal/UserRegister';
 import Text from '../components/atoms/text/Text';
 import Input from '../components/atoms/input/Input';
 import Button from '../components/atoms/button/Button';
@@ -92,7 +93,8 @@ const SignUp = () => {
           </div>
         </div>
       </div>
-      <CompanyRegister isOpen={isModalOpen} onClose={handleCloseModal} />
+      {/* <CompanyRegister isOpen={isModalOpen} onClose={handleCloseModal} /> */}
+      <UserRegister isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 };
