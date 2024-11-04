@@ -21,6 +21,11 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
     email: '',
   });
 
+  const emailRegEx =
+    /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/i;
+
+  const [emailValid, setEmailValid] = useState(false);
+
   if (!isOpen) return null;
 
   const handleInputChange =
@@ -29,10 +34,16 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
         ...prev,
         [field]: event.target.value,
       }));
+
+      if (emailRegEx.test(formData.email)) {
+        setEmailValid(true);
+      } else {
+        setEmailValid(false);
+      }
     };
 
   const handleSubmit = async () => {
-    // TODO: axios 인터페이스 설정 시 해당 요청 api 연결
+    // TODO: axios 인터페이스 설정 시 해당 요청 api 연결(companyId 필요)
     console.log('입력된 데이터:', formData);
     onClose();
   };
@@ -48,14 +59,14 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
   return (
     <div className="user-register__container">
       <div className="user-register__content">
-        <div className="user-register__text-group">
+        <div className="user-register__text">
           <Text content={title} type="title" bold />
           <Text content={subtitle} type="subtitle" />
           <Text type="info" content={content} />
         </div>
 
         <div className="user-register__form">
-          <div className="user-register__input-button-group">
+          <div className="user-register__input">
             <Input
               type="text"
               placeholder="성명"
@@ -65,7 +76,7 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
               shape="line"
             />
           </div>
-          <div className="user-register__input-button-group">
+          <div className="user-register__input">
             <Input
               type="email"
               placeholder="이메일"
@@ -74,16 +85,27 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
               size="large"
               shape="line"
             />
+            {/* // TODO: 중복확인 API 연결 */}
             <Button
               type="button"
               label="중복확인"
               size="medium"
               color="primary"
             />
+
+            {formData.email && emailValid === false && (
+              <div className="user-register__warning">
+                <Text
+                  content="올바른 이메일 형식이 아닙니다."
+                  type="info"
+                  color="danger"
+                />
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="user-register__button-group">
+        <div className="user-register__button">
           <Button
             size="large"
             type="button"
