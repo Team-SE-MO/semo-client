@@ -54,13 +54,17 @@
       justify-content: center;
       width: 250px;
     }
-    &__most-used {
-      width: 25%;
-      border-right: 1px solid $main-text-color;
+  }
+  &__card {
+    width: 25%;
+    // border-right: 1px solid $main-text-color;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    &__db {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: start;
       gap: 10px;
     }
   }
