@@ -2,7 +2,14 @@ import React from 'react';
 import Text from 'components/atoms/text/Text';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
-import type Device from '../types/Device';
+import { SvgIconComponent } from '@mui/icons-material';
+import { SvgIcon } from '@mui/material';
+import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
+import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined';
+import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import './Summary.scss';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -165,7 +172,7 @@ const Summary = () => {
           )}
         </div>
       </div>
-      <div>
+      <div className="all-devices">
         <Text content="전체 DB" type="subtitle" bold />
         <div className="device-list">
           {allDevices.map((item) => (
@@ -175,10 +182,51 @@ const Summary = () => {
                 ' '
               )}
             >
-              <Text content={item.deviceAlias} type="info" />
-              <Text content={item.sid} type="link" />
-              <Text content={item.ip} type="link" />
-              <Text content={`${item.port}`} type="link" />
+              <div className="device-card__title">
+                <Text content={item.deviceAlias} type="subtitle" />
+                {item.status === 'ACTIVE' && (
+                  <div className="status--active status">
+                    <SvgIcon
+                      className="status__icon"
+                      component={CheckCircleOutlineOutlinedIcon}
+                      inheritViewBox
+                    />
+                    <Text content={item.status} type="info" />
+                  </div>
+                )}
+              </div>
+              <div className="device-card__body">
+                <div className="device-card__status-value">
+                  <Text content={`${item.statusValue}`} type="subtitle" />
+                  <Text content="활성화된 세션" type="link" />
+                </div>
+                <div className="device-card__all-info">
+                  <div className="device-card__info">
+                    <SvgIcon
+                      className="button__icon"
+                      component={BadgeOutlinedIcon}
+                      inheritViewBox
+                    />
+                    <Text content={`SID: ${item.sid}`} type="info" />
+                  </div>
+                  <div className="device-card__info">
+                    <SvgIcon
+                      className="button__icon"
+                      component={LanguageOutlinedIcon}
+                      inheritViewBox
+                    />
+                    <Text content={`IP: ${item.ip}`} type="info" />
+                  </div>
+                  <div className="device-card__info">
+                    <SvgIcon
+                      className="button__icon"
+                      component={AccountTreeOutlinedIcon}
+                      inheritViewBox
+                    />
+                    <Text content={`PORT: ${item.port}`} type="info" />
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
         </div>

@@ -69,3 +69,83 @@
     }
   }
 }
+.all-devices {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  .text {
+    text-align: start;
+  }
+}
+.device-list {
+  display: flex;
+  gap: 40px;
+}
+.device-card {
+  width: 22%;
+  height: 250px;
+  box-shadow:
+    10px 10px 20px $shadow-color,
+    -10px -10px 20px $white;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: 20%;
+  padding: 20px 0 0 20px;
+  &__all-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+  }
+  &__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  &__body {
+    display: flex;
+    justify-content: space-evenly;
+    padding-right: 20px;
+  }
+  &__status-value {
+    border: 5px solid $success-color;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    .button__icon {
+      color: #a6acb8;
+    }
+  }
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45%;
+  height: 50px;
+  gap: 10px;
+  border-radius: 10px 0 0 10px;
+  &--active {
+    background-color: $success-color;
+    .text {
+      color: white;
+    }
+  }
+  &__icon {
+    color: white;
+  }
+}
