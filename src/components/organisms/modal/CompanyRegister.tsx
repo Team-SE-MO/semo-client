@@ -17,12 +17,17 @@ interface CompanyData {
 }
 
 const CompanyRegister = ({ isOpen, onClose }: CompanyRegisterProps) => {
+  const emailRegEx =
+    /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/i;
+
   const [formData, setFormData] = useState<CompanyData>({
     email: '',
     companyName: '',
     taxId: '',
     ownerName: '',
   });
+
+  const [emailValid, setEmailValid] = useState(false);
 
   if (!isOpen) return null;
 
@@ -34,9 +39,21 @@ const CompanyRegister = ({ isOpen, onClose }: CompanyRegisterProps) => {
       }));
     };
 
+  const emailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const emailValue = e.target.value; // 입력값을 변수에 저장
+    setFormData((prev) => ({ ...prev, email: emailValue })); // formData 업데이트
+    setEmailValid(emailRegEx.test(emailValue)); // 정규식 검사
+  };
+
   const handleSubmit = async () => {
     // TODO : axios 인터페이스 설정 시 해당 요청 api 연결
     console.log('입력된 데이터:', formData);
+    setFormData({
+      email: '',
+      companyName: '',
+      taxId: '',
+      ownerName: '',
+    });
     onClose();
   };
 
@@ -48,14 +65,26 @@ const CompanyRegister = ({ isOpen, onClose }: CompanyRegisterProps) => {
           <Text content="회사 등록" type="subtitle" />
         </div>
         <div className="company-register__form">
-          <Input
-            type="email"
-            placeholder="연락처(이메일)"
-            value={formData.email}
-            onChange={handleInputChange('email')}
-            size="large"
-            shape="line"
-          />
+          <div className="test">
+            <Input
+              type="email"
+              placeholder="연락처(이메일)"
+              value={formData.email}
+              onChange={emailHandler} // 이메일 입력 시 정규식 검사
+              size="large"
+              shape="line"
+            />
+            {formData.email &&
+              !emailValid && ( // emailValid가 false일 때 경고 메시지 출력
+                <div className="company-register__email-auth__warning">
+                  <Text
+                    content="올바른 이메일 형식이 아닙니다."
+                    type="info"
+                    color="danger"
+                  />
+                </div>
+              )}
+          </div>
           <Input
             type="text"
             placeholder="회사명"
@@ -93,12 +122,13 @@ const CompanyRegister = ({ isOpen, onClose }: CompanyRegisterProps) => {
           />
           <Button
             size="large"
-            type="button"
+            type="submit"
             label="COMPLETE"
             color="primary"
             radius="oval"
             shadow
             onClick={handleSubmit}
+            disabled={!emailValid}
           />
         </div>
       </div>

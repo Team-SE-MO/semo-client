@@ -9,7 +9,8 @@
     justify-content: space-between;
     align-items: center;
     height: 4vh;
-    padding: 15px 30px;
+    // padding: 15px 30px;
+    padding: 0.8% 1.6%;
   }
 
   &__logo {
@@ -36,12 +37,12 @@
       }
     }
     &-dropdown {
-      display: flex;
-      // display: none;
+      // display: flex;
+      display: none;
       position: relative;
-      // &:hover {
-      //   display: flex;
-      // }
+      &:hover {
+        display: flex;
+      }
     }
   }
 
