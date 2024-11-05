@@ -33,15 +33,14 @@
       display: flex;
       justify-content: space-between;
       width: 100%;
-      align-items: center; // 수직 정렬
+      align-items: end;
     }
     &__search {
       display: flex;
       gap: 15px;
-      flex-grow: 1; // 가능한 공간을 차지하도록 설정
     }
     &__text {
-      white-space: nowrap; // 텍스트가 줄바꿈되지 않도록 설정
+      padding-right: 10px;
     }
     &--success {
       color: $success-color;
