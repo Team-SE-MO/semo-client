@@ -30,8 +30,8 @@ const App = () => {
             <Route path="/devices" element={<Devices />} />
             <Route path="/users" element={<Users />} />
             <Route path="/users/:companyid" element={<CompanyUsers />} />
-            <Route path="/summary" element={<Summary />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Summary />} />
+            <Route path="/dashboard/:deviceAlias" element={<Dashboard />} />
           </Route>
         </Routes>
       </BrowserRouter>
