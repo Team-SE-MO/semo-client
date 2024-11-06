@@ -6,32 +6,35 @@
 
   &__container {
     display: flex;
-    width: 100%;
-    justify-content: space-between;
+    justify-content: space-around;
+    height: 8vh;
     align-items: center;
   }
 
   &__logo {
-    padding: 20px 35px;
+    // padding: 20px 0;
   }
 
   &__menu {
     display: flex;
     align-items: center;
-    width: 70%;
+    width: 65%;
     gap: 110px;
 
-    &-item {
+    &__item {
       position: relative;
       cursor: pointer;
-
+      width: 180px;
+      .text {
+        padding: 20px 0;
+      }
       &:hover {
-        .header__menu-dropdown {
+        .header__menu__dropdown {
           display: flex;
         }
       }
     }
-    &-dropdown {
+    &__dropdown {
       display: none;
       position: relative;
       &:hover {
@@ -43,7 +46,6 @@
   &__profile {
     position: relative;
     display: flex;
-    width: 8%;
     cursor: pointer;
   }
 }

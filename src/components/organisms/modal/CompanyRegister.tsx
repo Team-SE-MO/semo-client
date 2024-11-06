@@ -65,26 +65,24 @@ const CompanyRegister = ({ isOpen, onClose }: CompanyRegisterProps) => {
           <Text content="회사 등록" type="subtitle" />
         </div>
         <div className="company-register__form">
-          <div className="test">
-            <Input
-              type="email"
-              placeholder="연락처(이메일)"
-              value={formData.email}
-              onChange={emailHandler} // 이메일 입력 시 정규식 검사
-              size="large"
-              shape="line"
-            />
-            {formData.email &&
-              !emailValid && ( // emailValid가 false일 때 경고 메시지 출력
-                <div className="company-register__email-auth__warning">
-                  <Text
-                    content="올바른 이메일 형식이 아닙니다."
-                    type="info"
-                    color="danger"
-                  />
-                </div>
-              )}
-          </div>
+          <Input
+            type="email"
+            placeholder="연락처(이메일)"
+            value={formData.email}
+            onChange={emailHandler} // 이메일 입력 시 정규식 검사
+            size="large"
+            shape="line"
+          />
+          {formData.email &&
+            !emailValid && ( // emailValid가 false일 때 경고 메시지 출력
+              <div className="company-register__email-auth__warning">
+                <Text
+                  content="올바른 이메일 형식이 아닙니다."
+                  type="info"
+                  color="danger"
+                />
+              </div>
+            )}
           <Input
             type="text"
             placeholder="회사명"

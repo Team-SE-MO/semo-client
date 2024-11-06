@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Dropdown from 'components/molecules/dropdown/Dropdown';
 import './Header.scss';
@@ -6,7 +6,7 @@ import Profile from 'components/molecules/profile/Profile';
 import ProfileDetail from 'components/molecules/profiledetail/ProfileDropdown';
 import Text from 'components/atoms/text/Text';
 import Button from 'components/atoms/button/Button';
-import logo from '../../../assets/images/semo_logo_header.svg';
+import logo from 'assets/images/semo_logo_header.svg';
 
 const Header = () => {
   // const token = localStorage.getItem('token');
@@ -79,9 +79,9 @@ const Header = () => {
               <Text content="홈" type="subtitle" bold />
             </div>
             {(userRole === 'ROLE_SUPER' || userRole === 'ROLE_ADMIN') && (
-              <div className="header__menu-item">
+              <div className="header__menu__item">
                 <Text content="관리자 메뉴" type="subtitle" bold />
-                <div className="header__menu-dropdown">
+                <div className="header__menu__dropdown">
                   <Dropdown items={items} />
                 </div>
               </div>

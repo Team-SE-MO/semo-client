@@ -2,14 +2,10 @@
 
 .header__dropdown {
   &-list {
-    position: absolute;
     display: flex;
-    padding-top: 20px;
-    top: 130%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 180px;
+    position: absolute;
     flex-direction: column;
+    width: 180px;
     background-color: rgba($white, 0.7);
     border-radius: 0 0 10px 10px;
   }
