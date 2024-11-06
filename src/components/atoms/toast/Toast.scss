@@ -5,7 +5,6 @@
   font-size: 15px;
   color: white;
   position: relative;
-  z-index: 1;
   display: flex;
   align-items: center;
   border-radius: 10px;
@@ -17,7 +16,7 @@
     content: '';
     position: absolute;
     bottom: -7px;
-    left: 30px; // 꼬리 위치 조절
+    left: 30px;
     width: 18px;
     height: 18px;
     background-color: $main-text-color;

@@ -19,12 +19,6 @@ const DatabaseDelete = ({ isOpen, onClose }: DatabaseDeleteProps) => {
 
   const title = 'Delete the Database';
   const subtitle = '데이터베이스 삭제';
-  // const content = [
-  //   '⚠️ 데이터베이스 삭제 확인',
-  //   '\u00a0 • 데이터베이스 삭제 시, 모든 정보가 영구적으로 사라집니다.',
-  //   '\u00a0 • 이 작업은 되돌릴 수 없으며 삭제된 데이터는 복구할 수 없습니다.',
-  //   '\u00a0\u00a0\u00a0\u00a0   그래도 삭제하시겠습니까?',
-  // ].join('\n');
 
   return (
     <div className="database-delete__container">

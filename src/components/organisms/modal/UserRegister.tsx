@@ -3,7 +3,6 @@ import './UserRegister.scss';
 import Text from 'components/atoms/text/Text';
 import Button from '../../atoms/button/Button';
 import Input from '../../atoms/input/Input';
-// rafc
 
 interface UserRegisterProps {
   isOpen: boolean;
