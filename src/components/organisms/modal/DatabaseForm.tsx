@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Autocomplete from '@mui/material/Autocomplete';
 import './DatabaseForm.scss';
 import Text from 'components/atoms/text/Text';
 import { TextField } from '@mui/material';
@@ -76,10 +77,9 @@ const DatabaseForm = ({
   const handleTestConnection = () => {
     if (!validateInputs()) return;
 
-    // api 연결
-    console.log('입력된 데이터:', { type, ip, port, sid, username, password });
-    // 응답에 따라 Toast 상태 변경
-    setToastStatus(false ? 'success' : 'failed');
+    // TODO: api 연결
+    // 응답코드에 따라 Toast 상태 변경
+    // setToastStatus( ? 'success' : 'failed');
     setToastVisible(true);
   };
 
