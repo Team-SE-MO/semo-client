@@ -1,0 +1,42 @@
+@import '../../../styles/fonts';
+@import '../../../styles/variables';
+.toast {
+  font-family: 'Pretendard';
+  font-size: 15px;
+  color: white;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  background-color: $main-text-color;
+  padding: 10px 15px;
+  gap: 10px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 30px; // 꼬리 위치 조절
+    width: 18px;
+    height: 18px;
+    background-color: $main-text-color;
+    transform: rotate(45deg);
+  }
+
+  &--success {
+    .toast__icon {
+      color: $success-color;
+    }
+  }
+
+  &--failed {
+    .toast__icon {
+      color: $danger-color;
+    }
+  }
+
+  &__message {
+    font-size: 14px;
+  }
+}
