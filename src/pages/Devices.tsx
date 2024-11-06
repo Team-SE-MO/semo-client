@@ -10,7 +10,7 @@ import Button from 'components/atoms/button/Button';
 import './Devices.scss';
 
 type UserRole = 'ROLE_SUPER' | 'ROLE_ADMIN' | 'ROLE_USER';
-type DeviceBase = {
+interface DeviceBase {
   deviceId: number;
   deviceAlias: string;
   type: string;
@@ -20,12 +20,11 @@ type DeviceBase = {
   status: boolean;
   createdAt: string;
   updatedAt: string;
-};
-type DeviceWithCompany = DeviceBase & {
+}
+interface DeviceWithCompany extends DeviceBase {
   companyName: string;
   taxId: string;
-};
-
+}
 const Devices = () => {
   const userRole: UserRole = 'ROLE_SUPER' as UserRole;
 
