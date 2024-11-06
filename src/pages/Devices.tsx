@@ -154,7 +154,7 @@ const Devices = () => {
     } else {
       setFilteredContent(formContent);
     }
-  }, [companyName, userRole]);
+  }, [companyName]);
 
   return (
     <div className="devices__container">
