@@ -1,0 +1,64 @@
+@import '../../../styles/variables';
+
+.database-form {
+  &__container {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__content {
+    position: relative;
+    background-color: $main-theme-color;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    padding: 3rem 2rem;
+  }
+
+  &__title {
+    justify-content: center;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__type {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  &__input {
+    position: relative;
+  }
+
+  &__connection {
+    position: relative;
+    text-align: left;
+  }
+
+  &__toast {
+    position: absolute;
+    bottom: 140%;
+    left: 20%;
+    transform: translateX(-50%);
+  }
+
+  &__button {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+  }
+}
