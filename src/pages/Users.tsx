@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from 'components/atoms/button/Button';
 import Input from 'components/atoms/input/Input';
-import SelectCompany from 'components/atoms/input/SelectCompany';
-import SelectInput from 'components/molecules/select/SelectInput';
 import Text from 'components/atoms/text/Text';
 import PageButton from 'components/molecules/button/PageButton';
 import UserRow from 'components/molecules/table/UserRow';
 import Table from 'components/organisms/table/Table';
+import { Autocomplete, TextField } from '@mui/material';
 
 const Users = () => {
   const headerMeta = ['No.', '회사명', '권한', 'ID', 'EMAIL', '성명', '삭제'];
@@ -64,11 +63,40 @@ const Users = () => {
       newCheckedItems.delete(value);
     }
     setCheckedRoles(newCheckedItems);
-    console.log(checkedRoles);
   };
 
   const [keyword, setKeyword] = useState('');
   const [companyName, setCompanyName] = useState('');
+  const [filteredContent, setFilteredContent] = useState(content);
+
+  const companies =
+    companyList && companyList.length > 0
+      ? companyList.map((item) => {
+          const temp = {
+            label: `${item.companyName} (${item.taxId})`,
+            ...item,
+          };
+          return temp;
+        })
+      : [];
+
+  useEffect(() => {
+    const filtered = content.filter((item) => {
+      const normalizedCompanyName = item.company.companyName
+        .replace(/[^\w\s]/g, '')
+        .toLowerCase();
+      const normalizedTaxId = item.company.taxId.replace(/[^0-9]/g, '');
+      const normalizedInput = companyName.replace(/[^\w\s]/g, '').toLowerCase();
+      const normalizedInputTaxId = companyName.replace(/[^0-9]/g, '');
+
+      return (
+        normalizedCompanyName.includes(normalizedInput) ||
+        normalizedTaxId.includes(normalizedInputTaxId)
+      );
+    });
+    setFilteredContent(filtered);
+  }, [companyName]);
+
   return (
     <div className="company-req__container">
       <div className="company-req__title">
@@ -77,20 +105,42 @@ const Users = () => {
       </div>
       <div className="company-users__content">
         <div className="company-users__search">
-          <Input
+          <Autocomplete
+            disablePortal
+            options={companies}
             size="small"
-            shape="area"
-            selectItems="companyList"
-            value={companyName}
-            placeholder="회사명"
-            onChange={(e) => {
-              setCompanyName(e.target.value);
+            sx={{
+              width: 300,
+              backgroundColor: 'white',
+              borderRadius: 3,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  border: 'none',
+                },
+              },
             }}
-          />
-          <SelectInput
-            listName="companyList"
-            selectList={companyList}
-            SelectComponent={SelectCompany}
+            filterOptions={(options, state) => {
+              if (state.inputValue) {
+                return options.filter((option) =>
+                  option.label
+                    .toLowerCase()
+                    .includes(state.inputValue.toLowerCase())
+                );
+              }
+              return options;
+            }}
+            onInputChange={(event, newInputValue) => {
+              setCompanyName(newInputValue);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="회사명"
+                onChange={(e) => {
+                  setCompanyName(e.target.value);
+                }}
+              />
+            )}
           />
           <div className="company-users__checkbox">
             {roles.map((item) => (
@@ -138,7 +188,7 @@ const Users = () => {
         <Table
           colWidth={colWidth}
           headerMeta={headerMeta}
-          content={content}
+          content={filteredContent}
           RowComponent={UserRow}
         />
       </div>
