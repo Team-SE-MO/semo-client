@@ -1,8 +1,7 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState } from 'react';
 import './DatabaseForm.scss';
 import Text from 'components/atoms/text/Text';
-import SelectInput from 'components/molecules/select/SelectInput';
-import SelectDatabaseType from 'components/atoms/input/SelectDatabaseType';
+import { TextField } from '@mui/material';
 import Button from '../../atoms/button/Button';
 import Input from '../../atoms/input/Input';
 import Toast from '../../atoms/toast/Toast';
@@ -114,18 +113,43 @@ const DatabaseForm = ({
           <Text content={subtitle} type="subtitle" />
         </div>
         <div className="database-form__type">
-          <Input
+          <Autocomplete
+            disablePortal
+            options={databaseTypeList}
             size="small"
-            shape="area"
-            selectItems="databaseType"
-            value={type}
-            placeholder="DATABASE TYPE"
-            onChange={(e) => setType(e.target.value)}
-          />
-          <SelectInput
-            listName="databaseType"
-            selectList={databaseTypeList}
-            SelectComponent={SelectDatabaseType}
+            getOptionLabel={(option) => option.type}
+            sx={{
+              width: 300,
+              backgroundColor: 'white',
+              borderRadius: 3,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  border: 'none',
+                },
+              },
+            }}
+            filterOptions={(options, state) => {
+              if (state.inputValue) {
+                return options.filter((option) =>
+                  option.type
+                    .toLowerCase()
+                    .includes(state.inputValue.toLowerCase())
+                );
+              }
+              return options;
+            }}
+            onInputChange={(event, newInputValue) => {
+              setType(newInputValue);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="DATABASE TYPE"
+                onChange={(e) => {
+                  setType(e.target.value);
+                }}
+              />
+            )}
           />
         </div>
         <div className="database-form__form">
