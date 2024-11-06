@@ -3,9 +3,8 @@ import Text from 'components/atoms/text/Text';
 import Table from 'components/organisms/table/Table';
 import DevicesRow from 'components/molecules/table/DevicesRow';
 import PageButton from 'components/molecules/button/PageButton';
-import Input from 'components/atoms/input/Input';
-import SelectCompany from 'components/atoms/input/SelectCompany';
-import SelectInput from 'components/molecules/select/SelectInput';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import Button from 'components/atoms/button/Button';
 import './Devices.scss';
 
@@ -116,6 +115,17 @@ const Devices = () => {
     },
   ];
 
+  const companies =
+    companyList && companyList.length > 0
+      ? companyList.map((item) => {
+          const temp = {
+            label: `${item.companyName} (${item.taxId})`,
+            ...item,
+          };
+          return temp;
+        })
+      : [];
+
   const pageNumber = 1;
   const pageSize = 10;
   const totalPages = 1;
@@ -177,22 +187,45 @@ const Devices = () => {
         <div className="devices__info__row">
           {userRole === 'ROLE_SUPER' ? (
             <div className="devices__info__search">
-              <Input
-                size="small"
-                shape="area"
-                selectItems="companyList"
-                value={companyName}
-                placeholder="회사명"
-                onChange={(e) => {
-                  setCompanyName(e.target.value);
-                }}
-              />
-
-              <SelectInput
-                listName="companyList"
-                selectList={companyList}
-                SelectComponent={SelectCompany}
-              />
+              {companies && (
+                <Autocomplete
+                  disablePortal
+                  options={companies}
+                  size="small"
+                  sx={{
+                    width: 300,
+                    backgroundColor: 'white',
+                    borderRadius: 3,
+                    '& .MuiOutlinedInput-root': {
+                      '& fieldset': {
+                        border: 'none',
+                      },
+                    },
+                  }}
+                  filterOptions={(options, state) => {
+                    if (state.inputValue) {
+                      return options.filter((option) =>
+                        option.label
+                          .toLowerCase()
+                          .includes(state.inputValue.toLowerCase())
+                      );
+                    }
+                    return options;
+                  }}
+                  onInputChange={(event, newInputValue) => {
+                    setCompanyName(newInputValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="회사명"
+                      onChange={(e) => {
+                        setCompanyName(e.target.value);
+                      }}
+                    />
+                  )}
+                />
+              )}
             </div>
           ) : (
             <div className="devices__info__spacer" />
