@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Text from 'components/atoms/text/Text';
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import { SvgIcon } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
 import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined';
@@ -40,36 +42,18 @@ const Summary = () => {
     },
     allDevices: [
       {
-        deviceAlias: 'LOCALHOST12',
-        type: 'ORACLE',
-        status: 'ACTIVE',
-        sid: 'XE',
-        ip: '127.0.0.1',
-        port: 1521,
-        statusValue: 30,
-      },
-      {
-        deviceAlias: 'LOCALHOST77',
-        type: 'ORACLE',
-        status: 'ACTIVE',
-        sid: 'XE',
-        ip: '127.0.0.1',
-        port: 1521,
-        statusValue: 30,
-      },
-      {
-        deviceAlias: 'LOCALHOST14',
-        type: 'ORACLE',
-        status: 'INACTIVE',
-        sid: 'XE',
-        ip: '127.0.0.1',
-        port: 1521,
-        statusValue: 30,
-      },
-      {
         deviceAlias: 'LOCALHOST1',
         type: 'ORACLE',
-        status: 'INACTIVE',
+        status: 'ACTIVE',
+        sid: 'XE',
+        ip: '127.0.0.1',
+        port: 1521,
+        statusValue: 30,
+      },
+      {
+        deviceAlias: 'LOCALHOST2',
+        type: 'ORACLE',
+        status: 'ACTIVE',
         sid: 'XE',
         ip: '127.0.0.1',
         port: 1521,
@@ -78,7 +62,70 @@ const Summary = () => {
       {
         deviceAlias: 'LOCALHOST3',
         type: 'ORACLE',
+        status: 'INACTIVE',
+        sid: 'XE',
+        ip: '127.0.0.1',
+        port: 1521,
+        statusValue: 30,
+      },
+      {
+        deviceAlias: 'LOCALHOST4',
+        type: 'ORACLE',
+        status: 'INACTIVE',
+        sid: 'XE',
+        ip: '127.0.0.1',
+        port: 1521,
+        statusValue: 30,
+      },
+      {
+        deviceAlias: 'LOCALHOST5',
+        type: 'ORACLE',
         status: 'BLOCKED',
+        sid: 'XE',
+        ip: '127.0.0.1',
+        port: 1521,
+        statusValue: 30,
+      },
+      {
+        deviceAlias: 'LOCALHOST6',
+        type: 'ORACLE',
+        status: 'INACTIVE',
+        sid: 'XE',
+        ip: '127.0.0.1',
+        port: 1521,
+        statusValue: 30,
+      },
+      {
+        deviceAlias: 'LOCALHOST7',
+        type: 'ORACLE',
+        status: 'INACTIVE',
+        sid: 'XE',
+        ip: '127.0.0.1',
+        port: 1521,
+        statusValue: 30,
+      },
+      {
+        deviceAlias: 'LOCALHOST8',
+        type: 'ORACLE',
+        status: 'BLOCKED',
+        sid: 'XE',
+        ip: '127.0.0.1',
+        port: 1521,
+        statusValue: 30,
+      },
+      {
+        deviceAlias: 'LOCALHOST9',
+        type: 'ORACLE',
+        status: 'INACTIVE',
+        sid: 'XE',
+        ip: '127.0.0.1',
+        port: 1521,
+        statusValue: 30,
+      },
+      {
+        deviceAlias: 'LOCALHOST10',
+        type: 'ORACLE',
+        status: 'INACTIVE',
         sid: 'XE',
         ip: '127.0.0.1',
         port: 1521,
@@ -93,7 +140,7 @@ const Summary = () => {
   const inactiveCnt = data.totalProcessInfo.inActiveDeviceCnt;
   const blockedCnt = data.totalProcessInfo.blockedDeviceCnt;
 
-  const dougnutData = {
+  const doughnutData = {
     labels: ['ACTIVE', 'INACTIVE', 'BLOCKED'],
     datasets: [
       {
@@ -102,7 +149,7 @@ const Summary = () => {
       },
     ],
   };
-  const dougnutOpt = {
+  const doughnutOpt = {
     responsive: false,
     plugins: {
       legend: {
@@ -126,10 +173,44 @@ const Summary = () => {
     },
   };
 
+  interface Device {
+    deviceAlias: string;
+    type: string;
+    status: string;
+    sid: string;
+    ip: string;
+    port: number;
+    statusValue: number;
+  }
+
   const { topUsedDevices } = data.totalProcessInfo;
   const { warnDevice } = data.totalProcessInfo;
   const { unusedDevice } = data.totalProcessInfo;
-  const { allDevices } = data;
+  const deviceList =
+    data.allDevices.length > 0
+      ? data.allDevices.map((item: Device) => {
+          const temp = {
+            label: item.deviceAlias,
+            ...item,
+          };
+
+          return temp;
+        })
+      : [];
+
+  const [keyword, setKeyword] = useState('');
+  const [filteredDevice, setFilteredDevice] = useState(deviceList);
+
+  useEffect(() => {
+    if (keyword) {
+      const filtered = deviceList.filter((item) => {
+        return item.deviceAlias.toLowerCase().includes(keyword.toLowerCase());
+      });
+      setFilteredDevice(filtered);
+    } else {
+      setFilteredDevice(deviceList);
+    }
+  }, [keyword]);
 
   return (
     <div className="summary__container">
@@ -151,7 +232,7 @@ const Summary = () => {
           </div>
           <Text content="Total DB" type="info" bold />
           <div className="summary__overview__dougnut-chart">
-            <Doughnut data={dougnutData} options={dougnutOpt} />
+            <Doughnut data={doughnutData} options={doughnutOpt} />
           </div>
         </div>
         <div className="summary__card summary--line">
@@ -221,9 +302,62 @@ const Summary = () => {
         </div>
       </div>
       <div className="all-devices">
-        <Text content="전체 DB" type="subtitle" bold />
+        <div className="all-devices__title">
+          <Text content="전체 DB" type="subtitle" bold />
+          <Autocomplete
+            disablePortal
+            options={deviceList}
+            size="small"
+            sx={{
+              width: 300,
+              backgroundColor: 'white',
+              borderRadius: 3,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  border: 'none',
+                },
+              },
+            }}
+            filterOptions={(options, state) => {
+              if (state.inputValue) {
+                return options.filter((option) =>
+                  option.label
+                    .toLowerCase()
+                    .includes(state.inputValue.toLowerCase())
+                );
+              }
+              return options;
+            }}
+            onInputChange={(event, newInputValue) => {
+              setKeyword(newInputValue);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="DATABASE ALIAS"
+                onChange={(e) => {
+                  setKeyword(e.target.value);
+                }}
+              />
+            )}
+          />
+        </div>
         <div className="device-list">
-          {allDevices.map((item) => (
+          {deviceList.length === 0 && (
+            <Text
+              content="등록된 데이터베이스가 없습니다."
+              type="subtitle"
+              color="neutral"
+            />
+          )}
+          {deviceList.length > 0 && filteredDevice.length === 0 && (
+            <Text
+              content="해당 데이터베이스를 찾을 수 없습니다."
+              type="subtitle"
+              color="neutral"
+            />
+          )}
+          {filteredDevice.map((item) => (
             // TODO: onClick 이벤트 추가(대시보드 페이지로 이동)
             <div
               key={item.deviceAlias}

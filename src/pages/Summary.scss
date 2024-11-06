@@ -57,7 +57,7 @@
       top: 42%;
       left: 25%;
     }
-    &__dougnut-chart {
+    &__doughnut-chart {
       display: flex;
       justify-content: center;
       width: 250px;
@@ -102,6 +102,11 @@
   gap: 40px;
   .text {
     text-align: start;
+  }
+  &__title {
+    display: flex;
+    gap: 30px;
+    align-items: center;
   }
 }
 .device-list {
