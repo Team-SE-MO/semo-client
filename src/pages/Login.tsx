@@ -1,13 +1,13 @@
 import React, { FormEvent, useState } from 'react';
 import Text from 'components/atoms/text/Text';
 import Input from 'components/atoms/input/Input';
-import './Login.scss';
 import Button from 'components/atoms/button/Button';
 import { useNavigate } from 'react-router-dom';
 import getLogin from 'services/user';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import useAuthStore from 'store/useAuthStore';
 import Role from 'types/Role';
+import './Login.scss';
 
 interface CustomJwtPayload extends JwtPayload {
   role: Role;
@@ -30,6 +30,10 @@ const Login = () => {
 
   const handleLogin = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
+
+    const { login, setRole, setLoginId, setCompanyId } =
+      useAuthStore.getState();
+
     if (!username || !password) {
       return;
     }
@@ -40,12 +44,10 @@ const Login = () => {
         const token = headers.authorization;
         localStorage.setItem('accessToken', token);
         const decode: CustomJwtPayload = jwtDecode(token);
-        useAuthStore.setState({
-          isLoggedIn: true,
-          role: decode.role,
-          loginId: decode.loginId,
-          companyId: decode.companyId,
-        });
+        login();
+        setRole(decode.role);
+        setLoginId(decode.loginId);
+        setCompanyId(decode.companyId);
 
         const userInfoStorage = localStorage.getItem('userInfoStorage');
         const userInfo = JSON.parse(userInfoStorage || '');
@@ -60,7 +62,7 @@ const Login = () => {
         navigate(homePage[role as keyof typeof homePage]);
       },
       (error) => {
-        // TODO: 알림창?으로 변경
+        // TODO: 알림 추가
         console.log('에러', error);
       }
     );
