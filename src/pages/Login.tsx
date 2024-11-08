@@ -1,29 +1,71 @@
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import Text from 'components/atoms/text/Text';
 import Input from 'components/atoms/input/Input';
-import './Login.scss';
 import Button from 'components/atoms/button/Button';
 import { useNavigate } from 'react-router-dom';
+import getLogin from 'services/user';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
+import useAuthStore from 'store/useAuthStore';
+import Role from 'types/Role';
+import './Login.scss';
+
+interface CustomJwtPayload extends JwtPayload {
+  role: Role;
+  loginId: string;
+  companyId: number;
+}
 
 const Login = () => {
   const title = 'Login';
   const content = '로그인하기';
 
-  const [loginId, setLoginId] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
-  const loginIdHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLoginId(e.target.value);
-  };
-
-  const passwordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
 
   const navigate = useNavigate();
 
   const goToChangePassword = () => {
     navigate('/change-password');
+  };
+
+  const handleLogin = (e: FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+
+    const { login, setRole, setLoginId, setCompanyId } =
+      useAuthStore.getState();
+
+    if (!username || !password) {
+      return;
+    }
+    getLogin(
+      username,
+      password,
+      ({ data, headers }) => {
+        const token = headers.authorization;
+        localStorage.setItem('accessToken', token);
+        const decode: CustomJwtPayload = jwtDecode(token);
+        login();
+        setRole(decode.role);
+        setLoginId(decode.loginId);
+        setCompanyId(decode.companyId);
+
+        const userInfoStorage = localStorage.getItem('userInfoStorage');
+        const userInfo = JSON.parse(userInfoStorage || '');
+        const { role } = userInfo.state;
+
+        // TODO: flag로 분기처리
+        const homePage = {
+          ROLE_SUPER: '/devices',
+          ROLE_ADMIN: '/summary',
+          ROLE_USER: '/summary',
+        };
+        navigate(homePage[role as keyof typeof homePage]);
+      },
+      (error) => {
+        // TODO: 알림 추가
+        console.log('에러', error);
+      }
+    );
   };
 
   return (
@@ -34,15 +76,17 @@ const Login = () => {
           <Text content={title} type="title" />
           <Text content={content} type="subtitle" />
         </div>
-        <form className="login__form">
+        <form className="login__form" onSubmit={handleLogin}>
           <div className="login__form__input">
             <Input
               size="medium"
               type="text"
               shape="line"
-              value={loginId}
+              value={username}
               placeholder="ID"
-              onChange={loginIdHandler}
+              onChange={(e) => {
+                setUsername(e.target.value);
+              }}
             />
             <Input
               size="medium"
@@ -50,7 +94,9 @@ const Login = () => {
               shape="line"
               value={password}
               placeholder="PASSWORD"
-              onChange={passwordHandler}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
             />
           </div>
           <div className="login__change-pwd">
