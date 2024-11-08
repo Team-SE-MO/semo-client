@@ -7,7 +7,6 @@
 
   &__main-title {
     font-size: 30px;
-    margin-bottom: 10px;
   }
   &__main-content {
     font-size: 18px;
@@ -25,6 +24,12 @@
     font-size: 15px;
     cursor: pointer;
   }
+  &__highlight {
+    font-size: 24px;
+  }
+  &__detail {
+    font-size: 12px;
+  }
   &--primary {
     color: $main-text-color;
   }
@@ -39,6 +44,12 @@
   }
   &--neutral {
     color: #acacac;
+  }
+  &--light {
+    color: $white;
+  }
+  &--summary {
+    color: $placeholder-color;
   }
   &--underline {
     text-decoration: underline;
