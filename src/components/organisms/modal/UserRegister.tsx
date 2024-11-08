@@ -55,15 +55,18 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
   ].join('\n');
 
   return (
-    <div className="user-register__container">
-      <div className="user-register__content">
-        <div className="user-register__text">
+    <div className="user-register__background">
+      <div className="user-register__modal-container">
+        <div className="user-register__title">
           <Text content={title} type="title" bold />
           <Text content={subtitle} type="subtitle" />
-          <Text type="info" content={content} />
         </div>
 
-        <div className="user-register__form">
+        <div className="user-register__content">
+          {/* 서브 타이틀 */}
+          <div className="user-register__info">
+            <Text type="info" content={content} />
+          </div>
           <div className="user-register__input">
             <Input
               type="text"
@@ -73,8 +76,6 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
               size="large"
               shape="line"
             />
-          </div>
-          <div className="user-register__input">
             <Input
               type="email"
               placeholder="이메일"
@@ -101,27 +102,26 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
               </div>
             )}
           </div>
-        </div>
-
-        <div className="user-register__button">
-          <Button
-            size="large"
-            type="button"
-            label="CANCEL"
-            color="other"
-            radius="oval"
-            shadow
-            onClick={onClose}
-          />
-          <Button
-            size="large"
-            type="button"
-            label="COMPLETE"
-            color="primary"
-            radius="oval"
-            shadow
-            onClick={handleSubmit}
-          />
+          <div className="user-register__button-group">
+            <Button
+              size="large"
+              type="button"
+              label="CANCEL"
+              color="other"
+              radius="oval"
+              shadow
+              onClick={onClose}
+            />
+            <Button
+              size="large"
+              type="button"
+              label="COMPLETE"
+              color="primary"
+              radius="oval"
+              shadow
+              onClick={handleSubmit}
+            />
+          </div>
         </div>
       </div>
     </div>
