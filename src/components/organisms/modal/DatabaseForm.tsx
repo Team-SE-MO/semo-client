@@ -16,19 +16,40 @@ interface DatabaseFormProps {
 const DatabaseForm = ({
   isOpen,
   onClose,
-  mode = 'register',
+  mode = 'edit',
 }: DatabaseFormProps) => {
-  const [databaseAlias, setDatabaseAlias] = useState('');
-  const [type, setType] = useState('');
-  const [ip, setIp] = useState('');
-  const [port, setPort] = useState<number | null>(null);
-  const [sid, setSid] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const mockEditData = {
+    companyName: 'SEMO',
+    databaseAlias: 'LOCALHOST',
+    type: 'ORACLE',
+    ip: '127.0.0.1',
+    port: 1521,
+    sid: 'XE',
+    status: true,
+    username: 'semoDB',
+    password: 'semodb123',
+  };
+
+  const [databaseAlias, setDatabaseAlias] = useState(
+    mode === 'edit' ? mockEditData.databaseAlias : ''
+  );
+  const [type, setType] = useState(mode === 'edit' ? mockEditData.type : '');
+  const [ip, setIp] = useState(mode === 'edit' ? mockEditData.ip : '');
+  const [port, setPort] = useState<number | null>(
+    mode === 'edit' ? mockEditData.port : null
+  );
+  const [sid, setSid] = useState(mode === 'edit' ? mockEditData.sid : '');
+  const [username, setUsername] = useState(
+    mode === 'edit' ? mockEditData.username : ''
+  );
+  const [password, setPassword] = useState(
+    mode === 'edit' ? mockEditData.password : ''
+  );
   const [toastVisible, setToastVisible] = useState(false);
-  const [toastStatus, setToastStatus] = useState<'success' | 'failed'>(
+  const [toastStatus, setToastStatus] = useState<'success' | 'failure'>(
     'success'
   );
+  const [message, setMessage] = useState('');
 
   const title =
     mode === 'register' ? 'Registering Database' : 'Modifying the Database';
@@ -37,24 +58,19 @@ const DatabaseForm = ({
 
   const databaseTypeList = [
     {
-      id: 1,
-      type: 'ORACLE',
+      label: 'ORACLE',
     },
     {
-      id: 2,
-      type: 'POSTGRESQL',
+      label: 'POSTGRESQL',
     },
     {
-      id: 3,
-      type: 'MYSQL',
+      label: 'MYSQL',
     },
     {
-      id: 4,
-      type: 'MARIADB',
+      label: 'MARIADB',
     },
     {
-      id: 5,
-      type: 'SQLSERVER',
+      label: 'SQLSERVER',
     },
   ];
 
@@ -78,8 +94,9 @@ const DatabaseForm = ({
     if (!validateInputs()) return;
 
     // TODO: api 연결
-    // 응답코드에 따라 Toast 상태 변경
-    // setToastStatus( ? 'success' : 'failed');
+    // 응답코드에 따라 Toast 상태 변경 및 응답에 대한 'message를 전달해야함
+    setToastStatus(true ? 'success' : 'failure');
+    // setMessage();//응답 메세지 입력
     setToastVisible(true);
   };
 
@@ -106,18 +123,21 @@ const DatabaseForm = ({
   if (!isOpen) return null;
 
   return (
-    <div className="database-form__container">
-      <div className="database-form__content">
+    <div className="database-form__background">
+      <div className="database-form__modal-container">
         <div className="database-form__title">
           <Text content={title} type="title" bold />
           <Text content={subtitle} type="subtitle" />
         </div>
-        <div className="database-form__type">
+
+        <div className="database-form__content">
           <Autocomplete
             disablePortal
             options={databaseTypeList}
             size="small"
-            getOptionLabel={(option) => option.type}
+            value={
+              databaseTypeList.find((option) => option.label === type) || null
+            }
             sx={{
               width: 300,
               backgroundColor: 'white',
@@ -131,7 +151,7 @@ const DatabaseForm = ({
             filterOptions={(options, state) => {
               if (state.inputValue) {
                 return options.filter((option) =>
-                  option.type
+                  option.label
                     .toLowerCase()
                     .includes(state.inputValue.toLowerCase())
                 );
@@ -151,8 +171,7 @@ const DatabaseForm = ({
               />
             )}
           />
-        </div>
-        <div className="database-form__form">
+
           <div className="database-form__input">
             <Input
               type="text"
@@ -162,8 +181,6 @@ const DatabaseForm = ({
               size="large"
               shape="line"
             />
-          </div>
-          <div className="database-form__input">
             <Input
               type="text"
               placeholder="IP"
@@ -172,8 +189,6 @@ const DatabaseForm = ({
               size="large"
               shape="line"
             />
-          </div>
-          <div className="database-form__input">
             <Input
               type="text"
               size="large"
@@ -189,8 +204,6 @@ const DatabaseForm = ({
                 }
               }}
             />
-          </div>
-          <div className="database-form__input">
             <Input
               type="text"
               placeholder="SID"
@@ -199,8 +212,6 @@ const DatabaseForm = ({
               size="large"
               shape="line"
             />
-          </div>
-          <div className="database-form__input">
             <Input
               type="text"
               placeholder="USERNAME"
@@ -209,8 +220,6 @@ const DatabaseForm = ({
               size="large"
               shape="line"
             />
-          </div>
-          <div className="database-form__input">
             <Input
               type="password"
               placeholder="PASSWORD"
@@ -231,32 +240,33 @@ const DatabaseForm = ({
             />
             <div className="database-form__toast">
               <Toast
-                status={toastStatus}
+                type={toastStatus}
+                message={`${toastStatus}: ${message}`}
                 visible={toastVisible}
                 onClose={() => setToastVisible(false)}
               />
             </div>
           </div>
-        </div>
-        <div className="database-form__button">
-          <Button
-            size="large"
-            type="button"
-            label="CANCEL"
-            color="other"
-            radius="oval"
-            shadow
-            onClick={onClose}
-          />
-          <Button
-            size="large"
-            type="button"
-            label="COMPLETE"
-            color="primary"
-            radius="oval"
-            shadow
-            onClick={handleSubmit}
-          />
+          <div className="database-form__button-group">
+            <Button
+              size="large"
+              type="button"
+              label="CANCEL"
+              color="other"
+              radius="oval"
+              shadow
+              onClick={onClose}
+            />
+            <Button
+              size="large"
+              type="button"
+              label="COMPLETE"
+              color="primary"
+              radius="oval"
+              shadow
+              onClick={handleSubmit}
+            />
+          </div>
         </div>
       </div>
     </div>
