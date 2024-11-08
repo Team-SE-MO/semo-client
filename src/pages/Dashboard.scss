@@ -1,4 +1,4 @@
-@import '../styles/variables';
+@import 'styles/variables';
 
 .base-chart {
   width: 90%;
@@ -21,15 +21,21 @@
   }
 
   &__title {
-    width: 80%;
+    width: 90%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+    &__sub {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: end;
+    }
   }
 
   &__charts {
-    width: 80%;
+    width: 90%;
     display: flex;
     flex-direction: column;
     gap: 40px;
