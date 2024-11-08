@@ -45,6 +45,9 @@
   &--neutral {
     color: #acacac;
   }
+  &--light {
+    color: $white;
+  }
   &--summary {
     color: $placeholder-color;
   }

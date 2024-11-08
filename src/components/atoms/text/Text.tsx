@@ -12,7 +12,7 @@ interface TextProps {
     | 'link'
     | 'highlight'
     | 'detail';
-  color?: 'primary' | 'success' | 'danger' | 'link-color' | 'neutral';
+  color?: 'primary' | 'success' | 'danger' | 'link-color' | 'neutral' | 'light';
   bold?: boolean;
   underline?: boolean;
   remainingTime?: number;
