@@ -1,10 +1,8 @@
 @import '../../../styles/fonts';
 @import '../../../styles/variables';
 .toast {
-  font-family: 'Pretendard';
-  font-size: 15px;
   color: white;
-  position: relative;
+  position: fixed;
   display: flex;
   align-items: center;
   border-radius: 10px;
@@ -23,19 +21,21 @@
     transform: rotate(45deg);
   }
 
-  &--success {
+  &__icon--success {
     .toast__icon {
       color: $success-color;
     }
   }
 
-  &--failed {
+  &__icon--failure {
     .toast__icon {
       color: $danger-color;
     }
   }
 
-  &__message {
-    font-size: 14px;
+  &__icon--info {
+    .toast__icon {
+      color: $main-theme-color;
+    }
   }
 }
