@@ -72,8 +72,8 @@ const Header = () => {
         <>
           <div className="header__menu">
             <div
+              className="header__menu__home"
               onClick={handleHomeClick}
-              style={{ cursor: 'pointer' }}
               role="presentation"
             >
               <Text content="홈" type="subtitle" bold />

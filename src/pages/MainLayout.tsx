@@ -5,11 +5,13 @@ import { Outlet, useLocation } from 'react-router-dom';
 
 const MainLayout = () => {
   const location = useLocation();
+  const hideHeaderFooterPaths = ['/login', '/signup'];
+  const showHeaderFooter = !hideHeaderFooterPaths.includes(location.pathname);
   return (
     <div className="main-layout__container">
-      <Header />
+      {showHeaderFooter && <Header />}
       <Outlet />
-      <Footer />
+      {showHeaderFooter && <Footer />}
     </div>
   );
 };

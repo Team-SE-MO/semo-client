@@ -2,17 +2,16 @@
 @import '../../../styles/variables';
 
 .header {
-  background-color: $white;
+  width: 100%;
 
   &__container {
     display: flex;
+    position: sticky;
+    background-color: $white;
+    top: 0;
     justify-content: space-around;
-    height: 8vh;
+    height: 5.2vh;
     align-items: center;
-  }
-
-  &__logo {
-    // padding: 20px 0;
   }
 
   &__menu {
@@ -21,12 +20,16 @@
     width: 65%;
     gap: 110px;
 
+    &__home {
+      cursor: pointer;
+    }
+
     &__item {
       position: relative;
       cursor: pointer;
       width: 180px;
       .text {
-        padding: 20px 0;
+        padding: 13px 0;
       }
       &:hover {
         .header__menu__dropdown {
