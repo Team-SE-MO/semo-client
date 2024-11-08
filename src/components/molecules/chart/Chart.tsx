@@ -1,5 +1,5 @@
-import React from 'react';
-import { Bar, Line, Pie, Radar } from 'react-chartjs-2';
+import { Bar, Line } from 'react-chartjs-2';
+import 'chart.js/auto';
 
 interface DatasetProps {
   label: string;
@@ -12,10 +12,11 @@ interface DatasetProps {
 interface ChartProps {
   labels: string[];
   datasets: DatasetProps[];
-  chartType: 'Line' | 'Bar' | 'Pie' | 'Radar';
+  chartType: 'Line' | 'Bar';
+  options?: any;
 }
 
-const Chart = ({ labels, datasets, chartType }: ChartProps) => {
+const Chart = ({ labels, datasets, chartType, options }: ChartProps) => {
   const data = {
     labels,
     datasets: datasets.map((dataset) => ({
@@ -24,19 +25,13 @@ const Chart = ({ labels, datasets, chartType }: ChartProps) => {
       backgroundColor: dataset.backgroundColor,
       borderColor: dataset.borderColor,
       fill: dataset.fill,
+      stack: 'stack1',
     })),
-  };
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
   };
 
   const chartMap = {
     Line,
     Bar,
-    Pie,
-    Radar,
   };
 
   const ChartComponent = chartMap[chartType] || Bar;
