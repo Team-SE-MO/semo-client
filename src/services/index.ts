@@ -24,4 +24,15 @@ const apiFormInstance = (): AxiosInstance => {
   return AxiosInst;
 };
 
-export { apiInstance, apiFormInstance };
+const apiLoginInstance = (): AxiosInstance => {
+  const AxiosInst = axios.create({
+    baseURL: URL,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  });
+
+  return AxiosInst;
+};
+
+export { apiInstance, apiFormInstance, apiLoginInstance };
