@@ -47,7 +47,7 @@ const DatabaseForm = ({
   );
   const [toastVisible, setToastVisible] = useState(false);
   const [toastStatus, setToastStatus] = useState<'success' | 'failure'>(
-    'success'
+    'failure'
   );
   const [message, setMessage] = useState('');
 
@@ -75,16 +75,8 @@ const DatabaseForm = ({
   ];
 
   const validateInputs = () => {
-    if (
-      !databaseAlias ||
-      !type ||
-      !ip ||
-      !port ||
-      !sid ||
-      !username ||
-      !password
-    ) {
-      alert('모든 필드를 입력해주세요.');
+    if (!databaseAlias || !type || !ip || !port || !sid || !username) {
+      alert('필수 필드를 모두 입력해주세요.');
       return false;
     }
     return true;
@@ -96,7 +88,7 @@ const DatabaseForm = ({
     // TODO: api 연결
     // 응답코드에 따라 Toast 상태 변경 및 응답에 대한 'message를 전달해야함
     setToastStatus(true ? 'success' : 'failure');
-    // setMessage();//응답 메세지 입력
+    // setMessage('info 메세지가 담/길 예정'); // 응답 메세지 입력
     setToastVisible(true);
   };
 

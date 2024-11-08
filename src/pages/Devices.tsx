@@ -3,6 +3,7 @@ import Text from 'components/atoms/text/Text';
 import Table from 'components/organisms/table/Table';
 import DevicesRow from 'components/molecules/table/DevicesRow';
 import PageButton from 'components/molecules/button/PageButton';
+import DatabaseForm from 'components/organisms/modal/DatabaseForm';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Button from 'components/atoms/button/Button';
@@ -166,6 +167,15 @@ const Devices = () => {
     }
   }, [companyName]);
 
+  const [isDeviceModalOpen, setIsDeviceModalOpen] = useState(false);
+
+  const handleDeviceRegistration = () => {
+    setIsDeviceModalOpen(true);
+  };
+  const handleDeviceCloseModal = () => {
+    setIsDeviceModalOpen(false);
+  };
+
   return (
     <div className="devices__container">
       <div className="devices__title">
@@ -181,6 +191,12 @@ const Devices = () => {
               radius="rounded"
               shadow
               type="button"
+              onClick={handleDeviceRegistration}
+            />
+            <DatabaseForm
+              isOpen={isDeviceModalOpen}
+              onClose={handleDeviceCloseModal}
+              mode="register"
             />
           </div>
         )}
