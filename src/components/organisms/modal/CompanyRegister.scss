@@ -1,42 +1,54 @@
 @import '../../../styles/variables';
 .company-register {
-  &__container {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+  &__background {
     display: flex;
+    position: fixed;
+    width: 100%;
+    height: 100%;
     align-items: center;
     justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
   }
 
-  &__content {
+  &__container {
     display: flex;
+    width: 35%;
+    align-items: center;
     flex-direction: column;
     justify-content: space-between;
     background-color: $main-theme-color;
     border-radius: 50px;
-    padding: 60px;
-    gap: 30px;
+    padding: 60px 0;
+    gap: 50px;
   }
 
-  &__text-group {
-    text-align: start;
+  &__header {
+    display: flex;
+    width: 75%;
+    height: 30%;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
   }
 
   &__form {
     display: flex;
+    position: relative;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
+
+    &__email__warning,
+    &__tax-id__warning {
+      position: absolute;
+      text-align: start;
+    }
   }
 
   &__button-group {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 30px;
-  }
-  &__email-auth__warning {
-    position: absolute;
-    text-align: start;
   }
 }
