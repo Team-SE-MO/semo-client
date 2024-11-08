@@ -2,21 +2,25 @@
 @import '../../../styles/variables';
 
 .footer {
-  width: 100%;
-  height: 200px;
   background-color: $white;
 
   &__container {
     display: flex;
-    flex-direction: column;
-    align-items: start;
+    width: 100%;
+    padding: 13px 0;
+    align-items: center;
+    justify-content: center;
     text-align: start;
-    margin: 50px 100px;
   }
   &__logo {
-    width: 240px;
-    height: 200px;
-    background-image: url('../../../assets/images/semo_logo_footer.svg');
-    background-repeat: no-repeat;
+    display: flex;
+    width: 5%;
+    img {
+      width: 60px;
+      height: auto;
+    }
+  }
+  &__content {
+    width: 88%;
   }
 }

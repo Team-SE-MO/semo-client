@@ -26,10 +26,22 @@ const Welcome = () => {
   return (
     <div className="welcome__content">
       <div className="welcome__text-group">
-        <Text content={title} type="main-title" />
-        <Text content={content} type="main-content" />
-        <Text content={title2} type="main-title" />
-        <Text content={content2} type="main-content" />
+        <div className="welcome__start">
+          <div className="welcome__start__title">
+            <Text content={title} type="main-title" />
+          </div>
+          <div className="welcome__start__content">
+            <Text content={content} type="main-content" />
+          </div>
+        </div>
+        <div className="welcome__quality">
+          <div className="welcome__quality__title">
+            <Text content={title2} type="main-title" />
+          </div>
+          <div className="welcome__quality__content">
+            <Text content={content2} type="main-content" />
+          </div>
+        </div>
       </div>
       <div className="welcome__button-group">
         <Button

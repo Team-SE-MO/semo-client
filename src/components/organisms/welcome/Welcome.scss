@@ -5,9 +5,9 @@
   &__content {
     display: flex;
     justify-content: space-between;
-    width: 1400px;
-    height: 600px;
-    padding: 40px;
+    width: 75%;
+    height: 60%;
+    padding: 60px;
     background-color: $main-theme-color;
     border-radius: 20px;
     box-shadow:
@@ -17,14 +17,20 @@
   &__text-group {
     display: flex;
     flex-direction: column;
-    text-align: left;
     justify-content: center;
   }
+  &__start,
+  &__quality {
+    text-align: left;
+    &__title {
+      padding: 10px 0;
+    }
+  }
+
   &__button-group {
     display: flex;
-    justify-content: center;
     flex-direction: column;
-    padding-right: 40px;
+    justify-content: center;
     gap: 100px;
   }
 }

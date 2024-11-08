@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Dropdown from 'components/molecules/dropdown/Dropdown';
 import './Header.scss';
@@ -6,15 +6,16 @@ import Profile from 'components/molecules/profile/Profile';
 import ProfileDetail from 'components/molecules/profiledetail/ProfileDropdown';
 import Text from 'components/atoms/text/Text';
 import Button from 'components/atoms/button/Button';
+import logo from 'assets/images/semo_logo_header.svg';
 
 const Header = () => {
   // const token = localStorage.getItem('token');
   // 테스트용 임시 토큰 - true, false 로 테스트!
-  const token = false;
+  const token = true;
   // const userRole = jwt토큰 decode 진행해서 얻기;
   // 테스트용 임시 유저 권한 - super, admin, user 로 테스트!
-  type UserRole = 'super' | 'admin' | 'user';
-  const userRole: UserRole = 'super';
+  type UserRole = 'ROLE_SUPER' | 'ROLE_ADMIN' | 'ROLE_USER';
+  const userRole: UserRole = 'ROLE_SUPER';
   const [isProfileDetailOpen, setIsProfileDetailOpen] = useState(false);
   // 테스트용 임시 유저 이름
   const userName = '태연님';
@@ -27,7 +28,7 @@ const Header = () => {
       label: 'DB관리',
       route: '/database-management',
     },
-    ...(userRole === 'super'
+    ...(userRole === 'ROLE_SUPER'
       ? [
           {
             label: '요청 관리',
@@ -49,14 +50,14 @@ const Header = () => {
   const handleHomeClick = () => {
     let homePath;
     switch (userRole as UserRole) {
-      case 'super':
-        homePath = '/super-home';
+      case 'ROLE_SUPER':
+        homePath = '/';
         break;
-      case 'admin':
-        homePath = '/admin-home';
+      case 'ROLE_ADMIN':
+        homePath = '/';
         break;
-      case 'user':
-        homePath = '/user-home';
+      case 'ROLE_USER':
+        homePath = '/';
         break;
       default:
         homePath = '/';
@@ -66,21 +67,21 @@ const Header = () => {
 
   return (
     <div className="header__container">
-      <div className="header__logo" />
+      <img src={logo} alt="Logo" className="header__logo" />
       {token ? (
         <>
           <div className="header__menu">
             <div
+              className="header__menu__home"
               onClick={handleHomeClick}
-              style={{ cursor: 'pointer' }}
               role="presentation"
             >
               <Text content="홈" type="subtitle" bold />
             </div>
-            {(userRole === 'super' || userRole === 'admin') && (
-              <div className="header__menu-item">
+            {(userRole === 'ROLE_SUPER' || userRole === 'ROLE_ADMIN') && (
+              <div className="header__menu__item">
                 <Text content="관리자 메뉴" type="subtitle" bold />
-                <div className="header__menu-dropdown">
+                <div className="header__menu__dropdown">
                   <Dropdown items={items} />
                 </div>
               </div>
