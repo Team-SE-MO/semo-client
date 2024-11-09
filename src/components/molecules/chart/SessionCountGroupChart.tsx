@@ -16,6 +16,9 @@ const getGroupDatasets = (
   if (!groupData) {
     return [];
   }
+
+  const colors = ['rgba(52, 76, 129, 1)', 'rgba(108, 175, 201, 1)'];
+
   const uniqueNames = Array.from(
     new Set(
       Object.values(groupData).flatMap((items) =>
@@ -24,7 +27,7 @@ const getGroupDatasets = (
     )
   );
 
-  return uniqueNames.map((name) => ({
+  return uniqueNames.map((name, index) => ({
     label: name,
     data: labels.map((label) => {
       const fullLabel = `${commonDate}T${label}`;
@@ -32,9 +35,7 @@ const getGroupDatasets = (
         groupData[fullLabel]?.find((item) => item.name === name)?.value || 0
       );
     }),
-    backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
-      Math.random() * 255
-    )}, ${Math.floor(Math.random() * 255)}, 0.6)`,
+    backgroundColor: colors[index % colors.length], // 색상 배열에서 순차적으로 색상을 할당
     stack: 'stack1',
   }));
 };
@@ -59,12 +60,22 @@ const SessionCountGroupChart = ({
       y: {
         min: 0,
         stacked: true,
+        ticks: {
+          precision: 0,
+          stepSize: 1,
+        },
       },
     },
     plugins: {
       legend: {
         display: true,
-        position: 'top' as const,
+        position: 'top',
+        align: 'end',
+        labels: {
+          usePointStyle: true,
+          boxWidth: 8,
+          boxHeight: 8,
+        },
       },
     },
   };

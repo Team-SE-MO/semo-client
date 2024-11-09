@@ -18,7 +18,7 @@ const MetricChart = () => {
   });
   const [commonDate, setCommonDate] = useState<string>('');
   const token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NCIsInJvbGUiOiJST0xFX0FETUlOIiwibG9naW5JZCI6IkExMjM0NTY3ODkxNDQiLCJjb21wYW55SWQiOjQxLCJzYWx0IjoiUkRRQzFOaGhlK21GWiswUHdPV2V4UT09IiwiaWF0IjoxNzMxMDg3MjY4LCJleHAiOjE3MzEwOTMyNjh9.HGfQTQ73PIdWJOrDL-4w96rHG0A8uq_baTT6jgJv9JM';
+    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NCIsInJvbGUiOiJST0xFX0FETUlOIiwibG9naW5JZCI6IkExMjM0NTY3ODkxNDQiLCJjb21wYW55SWQiOjQxLCJzYWx0IjoiV1M3aHlJbnNkc1lSWUVWK1hVYWVFQT09IiwiaWF0IjoxNzMxMTM1ODkyLCJleHAiOjE3MzExNDE4OTJ9.-Wgf_ZVjCaQ9DE1MJikNDsLW_QuJsZhQu0pJZA0mB-E';
 
   useEffect(() => {
     const loadData = () => {

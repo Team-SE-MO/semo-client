@@ -33,6 +33,12 @@ const ActiveTotalSessionChart = ({
       legend: {
         display: true,
         position: 'top',
+        align: 'end',
+        labels: {
+          usePointStyle: true,
+          boxWidth: 9,
+          boxHeight: 9,
+        },
       },
       tooltip: {
         mode: 'index',
