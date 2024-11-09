@@ -246,18 +246,6 @@ const Devices = () => {
           ) : (
             <div className="devices__info__spacer" />
           )}
-          <div className="devices__info__text">
-            <Text
-              startNumber={(pageNumber - 1) * pageSize + 1}
-              endNumber={
-                totalElement < pageNumber * pageSize
-                  ? totalElement
-                  : pageNumber * pageSize
-              }
-              totalItems={filteredContent.length}
-              type="info"
-            />
-          </div>
         </div>
       </div>
       <div className="devices__table">
