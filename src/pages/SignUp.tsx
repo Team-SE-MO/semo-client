@@ -5,9 +5,9 @@ import { getCompanies } from 'services/company';
 import CompanyRegister from 'components/organisms/modal/CompanyRegister';
 import Company from 'types/Company';
 import { useNavigate } from 'react-router-dom';
-import Text from '../components/atoms/text/Text';
-import Input from '../components/atoms/input/Input';
-import Button from '../components/atoms/button/Button';
+import Button from 'components/atoms/button/Button';
+import Text from 'components/atoms/text/Text';
+import Input from 'components/atoms/input/Input';
 import './SignUp.scss';
 
 const SignUp = () => {
