@@ -3,6 +3,8 @@ import Button from 'components/atoms/button/Button';
 import { SvgIcon } from '@mui/material';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import DatabaseForm from 'components/organisms/modal/DatabaseForm';
+import DatabaseDelete from 'components/organisms/modal/DatabaseDelete';
 
 interface DevicesRowProps {
   i: number;
@@ -23,9 +25,40 @@ interface DevicesRowProps {
 
 const DevicesRow = ({ i, data }: DevicesRowProps) => {
   const [rowData, setRowData] = useState(data);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const handleDeviceEdit = () => {
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+  };
+
+  const handleDeviceDelete = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
   useEffect(() => {
     setRowData(data);
   }, [data]);
+
+  // TODO: 차후 api 연결시, 응답 데이터로 변경 필요
+  const editData = {
+    databaseAlias: 'LOCALHOST',
+    type: 'ORACLE',
+    ip: '127.0.0.1',
+    port: 1521,
+    sid: 'XE',
+    username: 'semoDB',
+    password: 'semodb123',
+  };
+
   return (
     <tr>
       <td className="table__row">{i + 1}</td>
@@ -59,12 +92,20 @@ const DevicesRow = ({ i, data }: DevicesRowProps) => {
       <td className="table__row">{rowData.updatedAt}</td>
       <td className="table__row">
         <div className="table__btn">
+          {/* TODO: api 연결 필요 */}
           <Button
             size="small"
             label="수정"
             color="other"
             radius="oval"
             type="button"
+            onClick={handleDeviceEdit}
+          />
+          <DatabaseForm
+            isOpen={isEditModalOpen}
+            onClose={closeEditModal}
+            mode="edit"
+            editData={editData}
           />
           <Button
             size="small"
@@ -72,6 +113,11 @@ const DevicesRow = ({ i, data }: DevicesRowProps) => {
             color="danger"
             radius="oval"
             type="button"
+            onClick={handleDeviceDelete}
+          />
+          <DatabaseDelete
+            isOpen={isDeleteModalOpen}
+            onClose={closeDeleteModal}
           />
         </div>
       </td>

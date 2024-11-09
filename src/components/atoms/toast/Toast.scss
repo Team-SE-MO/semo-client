@@ -1,0 +1,41 @@
+@import '../../../styles/fonts';
+@import '../../../styles/variables';
+.toast {
+  color: white;
+  position: fixed;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  background-color: $main-text-color;
+  padding: 10px 15px;
+  gap: 10px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 30px;
+    width: 18px;
+    height: 18px;
+    background-color: $main-text-color;
+    transform: rotate(45deg);
+  }
+
+  &__icon--success {
+    .toast__icon {
+      color: $success-color;
+    }
+  }
+
+  &__icon--failure {
+    .toast__icon {
+      color: $danger-color;
+    }
+  }
+
+  &__icon--info {
+    .toast__icon {
+      color: $main-theme-color;
+    }
+  }
+}

@@ -1,0 +1,61 @@
+@import '../../../styles/variables';
+
+.database-form {
+  &__background {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__modal-container {
+    background-color: $main-theme-color;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.75rem;
+    padding: 3rem 0rem;
+    width: 35%;
+  }
+
+  &__title {
+    display: flex;
+    flex-direction: column;
+    width: 512px;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    width: 512px;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  &__input {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__connection {
+    position: relative;
+    text-align: left;
+  }
+
+  &__toast {
+    position: absolute;
+    bottom: 4.75rem;
+  }
+
+  &__button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+}
