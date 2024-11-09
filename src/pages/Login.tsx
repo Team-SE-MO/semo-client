@@ -15,6 +15,7 @@ interface CustomJwtPayload extends JwtPayload {
   companyId: number;
 }
 
+// TODO: 회원가입, 홈으로 가는 버튼이나 링크 추가
 const Login = () => {
   const title = 'Login';
   const content = '로그인하기';
@@ -53,13 +54,17 @@ const Login = () => {
         const userInfo = JSON.parse(userInfoStorage || '');
         const { role } = userInfo.state;
 
-        // TODO: flag로 분기처리
         const homePage = {
           ROLE_SUPER: '/devices',
           ROLE_ADMIN: '/summary',
           ROLE_USER: '/summary',
         };
-        navigate(homePage[role as keyof typeof homePage]);
+        alert('로그인 성공');
+        navigate(
+          data.flag === false && password === '0000'
+            ? '/change-password'
+            : homePage[role as keyof typeof homePage]
+        );
       },
       (error) => {
         // TODO: 알림 추가
