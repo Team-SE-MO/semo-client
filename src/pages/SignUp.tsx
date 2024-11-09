@@ -70,7 +70,7 @@ const SignUp = () => {
       return;
     }
     if (!isEmailValid) {
-      alert('이메일 중복체트 팔요');
+      alert('이메일 중복 체크 필요');
       return;
     }
     createMemberRequest(
