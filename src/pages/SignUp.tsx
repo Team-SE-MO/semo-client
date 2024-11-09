@@ -1,20 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Autocomplete, TextField } from '@mui/material';
+import { createMemberRequest, getEmailStatus } from 'services/user';
+import { getCompanies } from 'services/company';
 import CompanyRegister from 'components/organisms/modal/CompanyRegister';
+import Company from 'types/Company';
+import { useNavigate } from 'react-router-dom';
 import Text from '../components/atoms/text/Text';
 import Input from '../components/atoms/input/Input';
 import Button from '../components/atoms/button/Button';
 import './SignUp.scss';
 
 const SignUp = () => {
-  const [email, setEmail] = useState('');
-  const [companyName, setCompanyName] = useState('');
-  const [managerName, setManagerName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleSubmit = () => {
-    // TODO : 제출로직 추가
-    console.log('제출된 데이터:', { email, companyName, managerName });
-  };
 
   const title = 'Sevice Registration Request';
   const subtitle = '서비스 등록 요청하기';
@@ -27,6 +24,65 @@ const SignUp = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const [email, setEmail] = useState('');
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const emailValidCheck = () => {
+    getEmailStatus(
+      email,
+      ({ data }) => {
+        setIsEmailValid(data);
+        alert('사용 가능한 이메일입니다.');
+      },
+      (error) => console.log('에러', error)
+    );
+  };
+
+  const [companyList, getCompanyList] = useState<Company[]>([]);
+  useEffect(() => {
+    const keyword = '';
+    getCompanies(
+      keyword,
+      ({ data }) => {
+        getCompanyList(data.data);
+      },
+      (error) => console.log('에러', error)
+    );
+  }, []);
+
+  const companies =
+    companyList && companyList.length > 0
+      ? companyList.map((item) => {
+          const temp = {
+            label: `${item.companyName} (${item.taxId})`,
+            ...item,
+          };
+          return temp;
+        })
+      : [];
+  const navigate = useNavigate();
+  const [companyId, setCompanyId] = useState<number | null>();
+  const [ownerName, setOwnerName] = useState('');
+  const handleSubmit = () => {
+    if (!email || !companyId || !ownerName) {
+      alert('모든 정보를 입력하세요');
+      return;
+    }
+    if (!isEmailValid) {
+      alert('이메일 중복체트 팔요');
+      return;
+    }
+    createMemberRequest(
+      email,
+      companyId,
+      ownerName,
+      (response) => {
+        alert(response.data.message);
+        navigate('/');
+      },
+      (error) => console.log(error)
+    );
   };
 
   return (
@@ -44,7 +100,10 @@ const SignUp = () => {
               type="email"
               placeholder="연락처(이메일)"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setIsEmailValid(false);
+              }}
               size="large"
               shape="line"
             />
@@ -53,16 +112,42 @@ const SignUp = () => {
               label="중복확인"
               size="medium"
               color="primary"
+              onClick={emailValidCheck}
             />
           </div>
           <div className="signup__input-button-group">
-            <Input
-              type="text"
-              placeholder="회사명"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-              size="large"
-              shape="line"
+            <Autocomplete
+              disablePortal
+              options={companies}
+              size="small"
+              sx={{
+                width: 510,
+                borderRadius: 3,
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    BorderBottom: 1,
+                  },
+                },
+              }}
+              filterOptions={(options, state) => {
+                if (state.inputValue) {
+                  return options.filter((option) =>
+                    option.label
+                      .toLowerCase()
+                      .includes(state.inputValue.toLowerCase())
+                  );
+                }
+                return options;
+              }}
+              onInputChange={(event) => {
+                setCompanyId(null);
+              }}
+              onChange={(event, selectedOption) => {
+                if (selectedOption) {
+                  setCompanyId(selectedOption.id);
+                }
+              }}
+              renderInput={(params) => <TextField {...params} label="회사명" />}
             />
             <Button
               type="button"
@@ -75,8 +160,8 @@ const SignUp = () => {
           <Input
             type="text"
             placeholder="관리자 성명"
-            value={managerName}
-            onChange={(e) => setManagerName(e.target.value)}
+            value={ownerName}
+            onChange={(e) => setOwnerName(e.target.value)}
             size="large"
             shape="line"
           />

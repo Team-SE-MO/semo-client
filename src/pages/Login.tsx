@@ -3,7 +3,7 @@ import Text from 'components/atoms/text/Text';
 import Input from 'components/atoms/input/Input';
 import Button from 'components/atoms/button/Button';
 import { useNavigate } from 'react-router-dom';
-import getLogin from 'services/user';
+import { getLogin } from 'services/user';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import useAuthStore from 'store/useAuthStore';
 import Role from 'types/Role';
