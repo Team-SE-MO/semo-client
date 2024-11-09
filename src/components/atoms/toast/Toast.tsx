@@ -3,7 +3,7 @@ import { SvgIcon } from '@mui/material';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import Text from '../text/Text';
+import Text from 'components/atoms/text/Text';
 import './Toast.scss';
 
 interface ToastProps {
@@ -14,14 +14,9 @@ interface ToastProps {
 }
 
 const icons = {
-  success: (
-    <SvgIcon
-      component={CheckCircleOutlineOutlinedIcon}
-      className="toast__icon"
-    />
-  ),
-  failure: <SvgIcon component={CancelOutlinedIcon} className="toast__icon" />,
-  info: <SvgIcon component={InfoOutlinedIcon} className="toast__icon" />,
+  success: CheckCircleOutlineOutlinedIcon,
+  failure: CancelOutlinedIcon,
+  info: InfoOutlinedIcon,
 };
 
 const Toast = ({ type = 'failure', message, visible, onClose }: ToastProps) => {
@@ -40,7 +35,7 @@ const Toast = ({ type = 'failure', message, visible, onClose }: ToastProps) => {
 
   return (
     <div className={`toast toast__icon--${type}`}>
-      {icons[type]}
+      <SvgIcon component={icons[type]} className="toast__icon" />
       <Text type="info" color="light" content={message} />
     </div>
   );

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import CompanyRegister from 'components/organisms/modal/CompanyRegister';
-import Text from '../components/atoms/text/Text';
-import Input from '../components/atoms/input/Input';
-import Button from '../components/atoms/button/Button';
+import Button from 'components/atoms/button/Button';
+import Text from 'components/atoms/text/Text';
+import Input from 'components/atoms/input/Input';
 import './SignUp.scss';
 
 const SignUp = () => {

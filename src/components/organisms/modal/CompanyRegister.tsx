@@ -1,8 +1,8 @@
 import React, { useState, ChangeEvent } from 'react';
 import './CompanyRegister.scss';
 import Text from 'components/atoms/text/Text';
-import Button from '../../atoms/button/Button';
-import Input from '../../atoms/input/Input';
+import Button from 'components/atoms/button/Button';
+import Input from 'components/atoms/input/Input';
 
 interface CompanyRegisterProps {
   isOpen: boolean;

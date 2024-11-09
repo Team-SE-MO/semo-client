@@ -1,8 +1,7 @@
-import React, { useState, ChangeEvent } from 'react';
+import React from 'react';
 import './DatabaseDelete.scss';
 import Text from 'components/atoms/text/Text';
-import Button from '../../atoms/button/Button';
-import Input from '../../atoms/input/Input';
+import Button from 'components/atoms/button/Button';
 
 interface DatabaseDeleteProps {
   isOpen: boolean;

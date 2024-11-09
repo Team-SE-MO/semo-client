@@ -3,9 +3,9 @@ import Autocomplete from '@mui/material/Autocomplete';
 import './DatabaseForm.scss';
 import Text from 'components/atoms/text/Text';
 import { TextField } from '@mui/material';
-import Button from '../../atoms/button/Button';
-import Input from '../../atoms/input/Input';
-import Toast from '../../atoms/toast/Toast';
+import Button from 'components/atoms/button/Button';
+import Input from 'components/atoms/input/Input';
+import Toast from 'components/atoms/toast/Toast';
 
 interface DatabaseFormProps {
   isOpen: boolean;
