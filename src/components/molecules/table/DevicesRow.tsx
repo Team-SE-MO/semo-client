@@ -47,6 +47,18 @@ const DevicesRow = ({ i, data }: DevicesRowProps) => {
   useEffect(() => {
     setRowData(data);
   }, [data]);
+
+  // TODO: 차후 api 연결시, 응답 데이터로 변경 필요
+  const editData = {
+    databaseAlias: 'LOCALHOST',
+    type: 'ORACLE',
+    ip: '127.0.0.1',
+    port: 1521,
+    sid: 'XE',
+    username: 'semoDB',
+    password: 'semodb123',
+  };
+
   return (
     <tr>
       <td className="table__row">{i + 1}</td>
@@ -93,6 +105,7 @@ const DevicesRow = ({ i, data }: DevicesRowProps) => {
             isOpen={isEditModalOpen}
             onClose={closeEditModal}
             mode="edit"
+            editData={editData}
           />
           <Button
             size="small"

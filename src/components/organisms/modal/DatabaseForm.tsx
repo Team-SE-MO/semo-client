@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import './DatabaseForm.scss';
 import Text from 'components/atoms/text/Text';
@@ -10,40 +10,42 @@ import Toast from 'components/atoms/toast/Toast';
 interface DatabaseFormProps {
   isOpen: boolean;
   onClose: () => void;
-  mode?: 'register' | 'edit';
+  mode: 'register' | 'edit';
+  editData?: {
+    databaseAlias: string;
+    type: string;
+    ip: string;
+    port: number;
+    sid: string;
+    username?: string;
+    password?: string;
+  };
 }
 
 const DatabaseForm = ({
   isOpen,
   onClose,
-  mode = 'edit',
+  mode,
+  editData,
 }: DatabaseFormProps) => {
-  const mockEditData = {
-    companyName: 'SEMO',
-    databaseAlias: 'LOCALHOST',
-    type: 'ORACLE',
-    ip: '127.0.0.1',
-    port: 1521,
-    sid: 'XE',
-    status: true,
-    username: 'semoDB',
-    password: 'semodb123',
-  };
-
   const [databaseAlias, setDatabaseAlias] = useState(
-    mode === 'edit' ? mockEditData.databaseAlias : ''
+    mode === 'edit' && editData ? editData.databaseAlias : ''
   );
-  const [type, setType] = useState(mode === 'edit' ? mockEditData.type : '');
-  const [ip, setIp] = useState(mode === 'edit' ? mockEditData.ip : '');
+  const [type, setType] = useState(
+    mode === 'edit' && editData ? editData.type : ''
+  );
+  const [ip, setIp] = useState(mode === 'edit' && editData ? editData.ip : '');
   const [port, setPort] = useState<number | null>(
-    mode === 'edit' ? mockEditData.port : null
+    mode === 'edit' && editData ? editData.port : null
   );
-  const [sid, setSid] = useState(mode === 'edit' ? mockEditData.sid : '');
+  const [sid, setSid] = useState(
+    mode === 'edit' && editData ? editData.sid : ''
+  );
   const [username, setUsername] = useState(
-    mode === 'edit' ? mockEditData.username : ''
+    mode === 'edit' && editData?.username ? editData.username : ''
   );
   const [password, setPassword] = useState(
-    mode === 'edit' ? mockEditData.password : ''
+    mode === 'edit' && editData?.password ? editData.password : ''
   );
   const [toastVisible, setToastVisible] = useState(false);
   const [toastStatus, setToastStatus] = useState<'success' | 'failure'>(
@@ -92,6 +94,42 @@ const DatabaseForm = ({
     setToastVisible(true);
   };
 
+  // 모든 입력값 초기화하는 함수
+  const resetForm = () => {
+    setDatabaseAlias('');
+    setType('');
+    setIp('');
+    setPort(null);
+    setSid('');
+    setUsername('');
+    setPassword('');
+    setToastVisible(false);
+    setMessage('');
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      if (mode === 'register') {
+        resetForm();
+      }
+    } else if (mode === 'edit' && editData) {
+      setDatabaseAlias(editData.databaseAlias);
+      setType(editData.type);
+      setIp(editData.ip);
+      setPort(editData.port);
+      setSid(editData.sid);
+      setUsername(editData.username || '');
+      setPassword(editData.password || '');
+    }
+  }, [isOpen, mode, editData]);
+
+  const handleClose = () => {
+    if (mode === 'register') {
+      resetForm();
+    }
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   const handleSubmit = async () => {
@@ -111,8 +149,6 @@ const DatabaseForm = ({
     console.log('제출할 데이터:', submitData);
     onClose();
   };
-
-  if (!isOpen) return null;
 
   return (
     <div className="database-form__background">
@@ -247,7 +283,7 @@ const DatabaseForm = ({
               color="other"
               radius="oval"
               shadow
-              onClick={onClose}
+              onClick={handleClose}
             />
             <Button
               size="large"
