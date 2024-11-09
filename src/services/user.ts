@@ -1,7 +1,8 @@
 import { AxiosResponse, AxiosError } from 'axios';
-import { apiLoginInstance } from './index';
+import { apiFormInstance, apiInstance } from './index';
 
-const api = apiLoginInstance();
+const api = apiInstance();
+const apiForm = apiFormInstance();
 
 const getLogin = async (
   username: string,
@@ -9,7 +10,7 @@ const getLogin = async (
   success: (response: AxiosResponse) => void,
   fail: (error: AxiosError) => void
 ): Promise<void> => {
-  await api({
+  await apiForm({
     method: 'post',
     url: '/login',
     data: {
@@ -21,4 +22,40 @@ const getLogin = async (
     .catch(fail);
 };
 
-export default getLogin;
+const getEmailStatus = async (
+  email: string,
+  success: (response: AxiosResponse) => void,
+  fail: (error: AxiosError) => void
+): Promise<void> => {
+  await apiForm({
+    method: 'get',
+    url: '/member/email-check',
+    params: {
+      email,
+    },
+  })
+    .then(success)
+    .catch(fail);
+};
+
+const createMemberRequest = async (
+  email: string,
+  companyId: number,
+  ownerName: string,
+  success: (response: AxiosResponse) => void,
+  fail: (error: AxiosError) => void
+): Promise<void> => {
+  await api({
+    method: 'post',
+    url: '/member/form',
+    data: {
+      email,
+      companyId,
+      ownerName,
+    },
+  })
+    .then(success)
+    .catch(fail);
+};
+
+export { getLogin, getEmailStatus, createMemberRequest };

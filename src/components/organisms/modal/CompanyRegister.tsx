@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import './CompanyRegister.scss';
+import { createCompanyRequest } from 'services/company';
 import Text from 'components/atoms/text/Text';
 import Button from 'components/atoms/button/Button';
 import Input from 'components/atoms/input/Input';
@@ -58,15 +59,26 @@ const CompanyRegister = ({ isOpen, onClose }: CompanyRegisterProps) => {
   };
 
   const handleSubmit = async () => {
-    // TODO : axios 인터페이스 설정 시 해당 요청 api 연결
-    console.log('입력된 데이터:', formData);
-    setFormData({
-      email: '',
-      companyName: '',
-      taxId: '',
-      ownerName: '',
-    });
-    onClose();
+    if (
+      !formData.email ||
+      !formData.companyName ||
+      !formData.taxId ||
+      !formData.ownerName
+    ) {
+      alert('모든 정보를 입력해주세요');
+      return;
+    }
+    createCompanyRequest(
+      formData.email,
+      formData.companyName,
+      formData.taxId,
+      formData.ownerName,
+      (responese) => {
+        alert(responese.data.message);
+        onClose();
+      },
+      (error) => console.log('에러', error)
+    );
   };
 
   return (
