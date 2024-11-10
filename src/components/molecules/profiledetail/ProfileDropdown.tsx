@@ -51,11 +51,9 @@ const ProfileDropdown = ({
       <div className="profile-dropdown__close">
         <CloseIcon onClick={onClose} fontSize="medium" />
       </div>
-      <div className="profile-detail__header">
-        <Profile arrangement="vertical" userName={userName} />
-        <div className="profile-dropdown__info">
-          <Text content={userId} type="info" color="neutral" />
-        </div>
+      <Profile arrangement="vertical" userName={userName} />
+      <div className="profile-dropdown__info">
+        <Text content={userId} type="info" color="neutral" />
       </div>
       <div className="profile-dropdown__buttons">
         <Button

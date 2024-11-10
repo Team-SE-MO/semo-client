@@ -26,7 +26,7 @@ interface ButtonProps {
   shadow?: boolean;
   type: 'button' | 'submit';
   icon?: SvgIconComponent;
-  disalbed?: boolean;
+  disabled?: boolean;
   onClick?: () => void;
 }
 
@@ -38,7 +38,7 @@ const Button = ({
   shadow = false,
   type,
   icon,
-  disalbed = false,
+  disabled = false,
   ...props
 }: ButtonProps) => {
   const neumorphism = shadow ? 'button--shadow' : '';
@@ -52,7 +52,7 @@ const Button = ({
         `button--${radius}`,
         neumorphism,
       ].join(' ')}
-      disabled={disalbed}
+      disabled={disabled}
       {...props}
     >
       {icon && (

@@ -17,17 +17,6 @@ const apiFormInstance = (): AxiosInstance => {
   const AxiosInst = axios.create({
     baseURL: URL,
     headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
-
-  return AxiosInst;
-};
-
-const apiLoginInstance = (): AxiosInstance => {
-  const AxiosInst = axios.create({
-    baseURL: URL,
-    headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   });
@@ -35,4 +24,4 @@ const apiLoginInstance = (): AxiosInstance => {
   return AxiosInst;
 };
 
-export { apiInstance, apiFormInstance, apiLoginInstance };
+export { apiInstance, apiFormInstance };

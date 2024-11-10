@@ -3,6 +3,7 @@ import Button from 'components/atoms/button/Button';
 import Input from 'components/atoms/input/Input';
 import Text from 'components/atoms/text/Text';
 import PageButton from 'components/molecules/button/PageButton';
+import UserRegister from 'components/organisms/modal/UserRegister';
 import UserRow from 'components/molecules/table/UserRow';
 import Table from 'components/organisms/table/Table';
 import { Autocomplete, TextField } from '@mui/material';
@@ -79,6 +80,15 @@ const Users = () => {
           return temp;
         })
       : [];
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleUserRegistration = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     const filtered = content.filter((item) => {
@@ -172,16 +182,16 @@ const Users = () => {
           />
         </div>
         <div className="company-users__summary">
-          <Text
-            startNumber={(pageNumber - 1) * pageSize + 1}
-            endNumber={
-              totalElement < pageNumber * pageSize
-                ? totalElement
-                : pageNumber * pageSize
-            }
-            totalItems={totalElement}
-            type="info"
+          {/* TODO: api 연동후 사용자가 super일때는 hidden 처리 . admin일때는 보여줘야함 */}
+          <Button
+            size="medium"
+            label="+ 유저 추가"
+            radius="rounded"
+            shadow
+            type="button"
+            onClick={handleUserRegistration}
           />
+          <UserRegister isOpen={isModalOpen} onClose={handleCloseModal} />
         </div>
       </div>
       <div className="company-req__table">

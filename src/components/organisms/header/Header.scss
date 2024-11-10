@@ -2,40 +2,42 @@
 @import '../../../styles/variables';
 
 .header {
-  background-color: $white;
+  width: 100%;
 
   &__container {
     display: flex;
-    justify-content: space-between;
+    position: sticky;
+    background-color: $white;
+    top: 0;
+    justify-content: space-around;
+    height: 5.2vh;
     align-items: center;
-    height: 6vh;
-    padding: 0.7% 30px;
-  }
-
-  &__logo {
-    width: 150px;
-    height: 40px;
-    background-image: url('../../../assets/images/semo_logo_header.svg');
-    background-repeat: no-repeat;
   }
 
   &__menu {
     display: flex;
     align-items: center;
-    gap: 100px;
-    margin-right: 60%;
+    width: 65%;
+    gap: 110px;
 
-    &-item {
+    &__home {
+      cursor: pointer;
+    }
+
+    &__item {
       position: relative;
       cursor: pointer;
-
+      width: 180px;
+      .text {
+        padding: 13px 0;
+      }
       &:hover {
-        .header__menu-dropdown {
+        .header__menu__dropdown {
           display: flex;
         }
       }
     }
-    &-dropdown {
+    &__dropdown {
       display: none;
       position: relative;
       &:hover {
@@ -46,10 +48,7 @@
 
   &__profile {
     position: relative;
-    cursor: pointer;
-  }
-  &__auth {
     display: flex;
-    gap: 40px;
+    cursor: pointer;
   }
 }

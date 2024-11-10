@@ -3,8 +3,16 @@ import './Text.scss';
 
 interface TextProps {
   content?: string;
-  type: 'main-title' | 'main-content' | 'title' | 'subtitle' | 'info' | 'link';
-  color?: 'primary' | 'success' | 'danger' | 'link-color' | 'neutral';
+  type:
+    | 'main-title'
+    | 'main-content'
+    | 'title'
+    | 'subtitle'
+    | 'info'
+    | 'link'
+    | 'highlight'
+    | 'detail';
+  color?: 'primary' | 'success' | 'danger' | 'link-color' | 'neutral' | 'light';
   bold?: boolean;
   underline?: boolean;
   remainingTime?: number;
