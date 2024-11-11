@@ -22,6 +22,9 @@ const ActiveTotalSessionChart = ({
           autoSkip: true,
           maxTicksLimit: Math.ceil(labels.length / 2),
         },
+        grid: {
+          display: false,
+        },
       },
       y: {
         beginAtZero: true,
@@ -54,14 +57,14 @@ const ActiveTotalSessionChart = ({
           labels={labels}
           datasets={[
             {
-              label: '# of total session',
+              label: 'Total session',
               data: totalSessions,
               backgroundColor: 'rgba(108,175,201,0.3)',
               borderColor: 'rgba(108,175,201,1)',
               fill: true,
             },
             {
-              label: '# of active session',
+              label: 'Active session',
               data: activeSessions,
               backgroundColor: 'rgba(40,167,69,0.45)',
               borderColor: 'rgba(40,167,69,1)',
@@ -70,6 +73,7 @@ const ActiveTotalSessionChart = ({
           ]}
           chartType="Line"
           options={activeTotalSessionOptions}
+          applyAverageLine
         />
       </div>
       <div className="chart-subtitle">
