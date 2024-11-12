@@ -58,4 +58,67 @@ const createMemberRequest = async (
     .catch(fail);
 };
 
-export { getLogin, getEmailStatus, createMemberRequest };
+const getUserFormList = async (
+  success: (response: AxiosResponse) => void,
+  fail: (error: AxiosError) => void
+): Promise<void> => {
+  const token = localStorage.getItem('accessToken');
+  await api({
+    headers: { Authorization: `Bearer ${token}` },
+    method: 'get',
+    url: '/member/form',
+  })
+    .then(success)
+    .catch(fail);
+};
+
+const updateUserFormStatus = async (
+  formId: number,
+  decisionStatus: 'approved' | 'denied',
+  success: (response: AxiosResponse) => void,
+  fail: (error: AxiosError) => void
+): Promise<void> => {
+  const token = localStorage.getItem('accessToken');
+  await api({
+    headers: { Authorization: `Bearer ${token}` },
+    method: 'patch',
+    url: '/member/form',
+    data: {
+      formId,
+      decisionStatus,
+    },
+  })
+    .then(success)
+    .catch(fail);
+};
+
+const registerMember = async (
+  companyId: number,
+  email: string,
+  ownerName: string,
+  success: (response: AxiosResponse) => void,
+  fail: (error: AxiosError) => void
+): Promise<void> => {
+  const token = localStorage.getItem('accessToken');
+  await api({
+    headers: { Authorization: `Bearer ${token}` },
+    method: 'post',
+    url: '/member',
+    data: {
+      companyId,
+      email,
+      ownerName,
+    },
+  })
+    .then(success)
+    .catch(fail);
+};
+
+export {
+  getLogin,
+  getEmailStatus,
+  createMemberRequest,
+  getUserFormList,
+  updateUserFormStatus,
+  registerMember,
+};

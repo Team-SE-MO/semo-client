@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import Button from 'components/atoms/button/Button';
+import { registerMember, updateUserFormStatus } from 'services/user';
+import { sendEmail } from 'services/email';
 
 interface UserReqRowProps {
   i: number;
-  data: {
+  content: {
     formId: number;
     company: {
       id: number;
@@ -18,8 +20,64 @@ interface UserReqRowProps {
   };
 }
 // TODO: 승인, 거절 누르면 rowData 상태 변경
-const UserReqRow = ({ i, data }: UserReqRowProps) => {
-  const [rowData, setRowData] = useState(data);
+const UserReqRow = ({ i, content }: UserReqRowProps) => {
+  const [rowData, setRowData] = useState(content);
+  const approveForm = () => {
+    updateUserFormStatus(
+      rowData.formId,
+      'approved',
+      (response) => {
+        setRowData((prev) => ({
+          ...prev,
+          formStatus: response.data.data.formStatus,
+          approvedAt: response.data.data.approvedAt
+            .replace('T', '\n')
+            .split('.')[0],
+        }));
+        registerMember(
+          rowData.company.id,
+          rowData.email,
+          rowData.ownerName,
+          ({ data }) => {
+            sendEmail(
+              'REGISTER_MEMBER',
+              data.data,
+              () => {
+                alert('승인 처리 완료');
+              },
+              (sendEmailError) => console.log('이메일 에러:', sendEmailError)
+            );
+          },
+          (registerError) => console.log('Register Error:', registerError)
+        );
+      },
+      (updateStatusError) =>
+        console.log('Update Status Error:', updateStatusError)
+    );
+  };
+
+  const denyForm = () => {
+    updateUserFormStatus(
+      rowData.formId,
+      'denied',
+      (response) => {
+        setRowData((prev) => ({
+          ...prev,
+          formStatus: response.data.data.formStatus,
+        }));
+        sendEmail(
+          'FAIL_MEMBER',
+          rowData.email,
+          () => {
+            alert('거절 처리 완료');
+          },
+          (sendEmailError) => console.log('이메일 에러:', sendEmailError)
+        );
+      },
+      (updateStatusError) =>
+        console.log('Update Status Error:', updateStatusError)
+    );
+  };
   return (
     <tr>
       <td className="table__row">{i + 1}</td>
@@ -37,6 +95,7 @@ const UserReqRow = ({ i, data }: UserReqRowProps) => {
               color="success"
               radius="oval"
               type="button"
+              onClick={approveForm}
             />
             <Button
               size="small"
@@ -44,6 +103,7 @@ const UserReqRow = ({ i, data }: UserReqRowProps) => {
               color="danger"
               radius="oval"
               type="button"
+              onClick={denyForm}
             />
           </div>
         </td>
