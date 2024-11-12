@@ -4,7 +4,7 @@ interface TableProps<T> {
   colWidth: string[];
   headerMeta: string[];
   content: T[];
-  RowComponent: React.ComponentType<{ i: number; data: T }>;
+  RowComponent: React.ComponentType<{ i: number; content: T }>;
 }
 
 const Table = <T,>({
@@ -30,7 +30,7 @@ const Table = <T,>({
       </thead>
       <tbody>
         {content.map((form, index) => (
-          <RowComponent i={index} data={form} />
+          <RowComponent i={index} content={form} />
         ))}
       </tbody>
     </table>
