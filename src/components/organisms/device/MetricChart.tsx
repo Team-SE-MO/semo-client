@@ -4,6 +4,24 @@ import ChartCollection from 'components/molecules/chart/ChartCollection';
 import Text from 'components/atoms/text/Text';
 import getMonitoringData from 'services/deviceMonitoring';
 import { ChartData } from 'types/ChartData';
+import { convertSessionCountByKey } from 'utils/convertSessionCountByKey';
+
+const mergeCounts = (
+  prevGroup: Record<string, number[]>,
+  newGroup: Record<string, number[]>
+) => {
+  const mergedGroup = { ...prevGroup };
+
+  Object.entries(newGroup).forEach(([key, newValues]) => {
+    if (!mergedGroup[key]) {
+      mergedGroup[key] = [...newValues];
+    } else {
+      mergedGroup[key] = [...mergedGroup[key], ...newValues];
+    }
+  });
+
+  return mergedGroup;
+};
 
 const MetricChart = () => {
   const [chartData, setChartData] = useState<ChartData>({
@@ -20,40 +38,12 @@ const MetricChart = () => {
   const [commonDate, setCommonDate] = useState<string>('');
   const token =
     'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0Iiwicm9sZSI6IlJPTEVfQURNSU4iLCJsb2dpbklkIjoiQTAwMDAwMDAwMDE2MSIsImNvbXBhbnlJZCI6OTk5OSwic2FsdCI6Inc5aTFBSkRZbXZHS0s0M3M4WDNRbmc9PSIsIm93bmVyTmFtZSI6IuqzoOq4uOuPmSIsImlhdCI6MTczMTI0MTI4MiwiZXhwIjoxNzM3MjQxMjgyfQ.JzUX4pJOkUiaKA8SD9tkNkkkz6qwCF0rzMJMdRYO1vo'; // 실제 token 값 사용
+
   const location = useLocation();
   const socketRef = useRef<WebSocket | null>(null);
 
-  const mergeCounts = (
-    prevGroup: Record<string, { name: string; value: number }[]>,
-    newGroup: Record<string, { name: string; value: number }[]>
-  ) => {
-    const mergedGroup = { ...prevGroup };
-    Object.entries(newGroup).forEach(([key, newValues]) => {
-      if (!mergedGroup[key]) {
-        mergedGroup[key] = [...newValues];
-      } else {
-        newValues.forEach((newItem) => {
-          const existingItem = mergedGroup[key].find(
-            (item) => item.name === newItem.name
-          );
-          if (existingItem) {
-            existingItem.value = newItem.value;
-          } else {
-            mergedGroup[key].push(newItem);
-          }
-        });
-      }
-    });
-    return mergedGroup;
-  };
-
   useEffect(() => {
     const loadData = () => {
-      if (!token) {
-        console.error('토큰이 없습니다. 로그인이 필요합니다.');
-        return;
-      }
-
       getMonitoringData(
         token,
         'LOCALHOST',
@@ -62,10 +52,25 @@ const MetricChart = () => {
         '2024-11-10T01:11:00',
         (response) => {
           const { data } = response.data;
-          console.log('초기 데이터 로드:', data); // 초기 데이터 확인용
           const fullLabels = Object.keys(data.totalSessions);
           const commonDateValue = fullLabels[0].split('T')[0];
           const labels = fullLabels.map((label) => label.split('T')[1]);
+          const convertedUserData = convertSessionCountByKey(
+            data,
+            'sessionCountGroupByUser'
+          );
+          const convertedTypeData = convertSessionCountByKey(
+            data,
+            'sessionCountGroupByType'
+          );
+          const convertedCommandData = convertSessionCountByKey(
+            data,
+            'sessionCountGroupByCommand'
+          );
+          const convertedMachineData = convertSessionCountByKey(
+            data,
+            'sessionCountGroupByMachine'
+          );
 
           setChartData({
             labels,
@@ -73,10 +78,10 @@ const MetricChart = () => {
             activeSessions: Object.values(data.activeSessions),
             blockingSessions: Object.values(data.blockingSessions),
             waitSessions: Object.values(data.waitSessions),
-            sessionCountGroupByUser: data.sessionCountGroupByUser || {},
-            sessionCountGroupByType: data.sessionCountGroupByType || {},
-            sessionCountGroupByCommand: data.sessionCountGroupByCommand || {},
-            sessionCountGroupByMachine: data.sessionCountGroupByMachine || {},
+            sessionCountGroupByUser: convertedUserData,
+            sessionCountGroupByType: convertedTypeData,
+            sessionCountGroupByCommand: convertedCommandData,
+            sessionCountGroupByMachine: convertedMachineData,
           });
 
           setCommonDate(commonDateValue);
@@ -101,16 +106,28 @@ const MetricChart = () => {
         `ws://localhost:8080/ws/monitoring/9999/LOCALHOST?token=${token}`
       );
 
-      ws.onopen = () => {
-        console.log('WebSocket 연결 성공');
-      };
-
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
           const fullLabels = Object.keys(data.totalSessions);
           const newTimestamp = fullLabels[0].split('T')[1];
           const commonDateValue = fullLabels[0].split('T')[0];
+          const convertedUserData = convertSessionCountByKey(
+            data,
+            'sessionCountGroupByUser'
+          );
+          const convertedTypeData = convertSessionCountByKey(
+            data,
+            'sessionCountGroupByType'
+          );
+          const convertedCommandData = convertSessionCountByKey(
+            data,
+            'sessionCountGroupByCommand'
+          );
+          const convertedMachineData = convertSessionCountByKey(
+            data,
+            'sessionCountGroupByMachine'
+          );
 
           setChartData((prevData) => {
             const updatedLabels = [...prevData.labels, newTimestamp];
@@ -131,25 +148,22 @@ const MetricChart = () => {
               data.waitSessions[fullLabels[0]],
             ];
 
-            const updatedSessionCountGroupByUser = {
-              ...prevData.sessionCountGroupByUser,
-              ...data.sessionCountGroupByUser,
-            };
-
-            const updatedSessionCountGroupByType = {
-              ...prevData.sessionCountGroupByType,
-              ...data.sessionCountGroupByType,
-            };
-
-            const updatedSessionCountGroupByCommand = {
-              ...prevData.sessionCountGroupByCommand,
-              ...data.sessionCountGroupByCommand,
-            };
-
-            const updatedSessionCountGroupByMachine = {
-              ...prevData.sessionCountGroupByMachine,
-              ...data.sessionCountGroupByMachine,
-            };
+            const updatedSessionCountGroupByUser = mergeCounts(
+              prevData.sessionCountGroupByUser,
+              convertedUserData
+            );
+            const updatedSessionCountGroupByType = mergeCounts(
+              prevData.sessionCountGroupByType,
+              convertedTypeData
+            );
+            const updatedSessionCountGroupByCommand = mergeCounts(
+              prevData.sessionCountGroupByCommand,
+              convertedCommandData
+            );
+            const updatedSessionCountGroupByMachine = mergeCounts(
+              prevData.sessionCountGroupByMachine,
+              convertedMachineData
+            );
 
             const maxDataPoints = 13;
             if (updatedLabels.length > maxDataPoints) {
@@ -158,6 +172,30 @@ const MetricChart = () => {
               updatedActiveSessions.shift();
               updatedBlockingSessions.shift();
               updatedWaitSessions.shift();
+
+              Object.keys(updatedSessionCountGroupByUser).forEach((key) => {
+                if (updatedSessionCountGroupByUser[key].length > maxDataPoints)
+                  updatedSessionCountGroupByUser[key].shift();
+              });
+
+              Object.keys(updatedSessionCountGroupByType).forEach((key) => {
+                if (updatedSessionCountGroupByType[key].length > maxDataPoints)
+                  updatedSessionCountGroupByType[key].shift();
+              });
+
+              Object.keys(updatedSessionCountGroupByCommand).forEach((key) => {
+                if (
+                  updatedSessionCountGroupByCommand[key].length > maxDataPoints
+                )
+                  updatedSessionCountGroupByCommand[key].shift();
+              });
+
+              Object.keys(updatedSessionCountGroupByMachine).forEach((key) => {
+                if (
+                  updatedSessionCountGroupByMachine[key].length > maxDataPoints
+                )
+                  updatedSessionCountGroupByMachine[key].shift();
+              });
             }
 
             return {
@@ -172,10 +210,9 @@ const MetricChart = () => {
               sessionCountGroupByMachine: updatedSessionCountGroupByMachine,
             };
           });
-
           setCommonDate(commonDateValue);
         } catch (error) {
-          console.error('데이터 처리 오류:', error);
+          console.error('WebSocket 데이터 처리 오류:', error);
         }
       };
 

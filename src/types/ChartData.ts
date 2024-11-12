@@ -4,10 +4,10 @@ export interface ChartData {
   activeSessions: number[];
   blockingSessions: number[];
   waitSessions: number[];
-  sessionCountGroupByUser: Record<string, { name: string; value: number }[]>;
-  sessionCountGroupByType: Record<string, { name: string; value: number }[]>;
-  sessionCountGroupByCommand: Record<string, { name: string; value: number }[]>;
-  sessionCountGroupByMachine: Record<string, { name: string; value: number }[]>;
+  sessionCountGroupByUser: Record<string, number[]>;
+  sessionCountGroupByType: Record<string, number[]>;
+  sessionCountGroupByCommand: Record<string, number[]>;
+  sessionCountGroupByMachine: Record<string, number[]>;
   [key: string]: any;
 }
 

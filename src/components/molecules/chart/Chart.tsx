@@ -4,7 +4,7 @@ import 'chart.js/auto';
 
 interface DatasetProps {
   label: string;
-  data: number[];
+  data: number[] | Record<string, number>;
   backgroundColor?: string | string[];
   borderColor?: string | string[];
   fill?: boolean;
@@ -28,12 +28,9 @@ const averageLinePlugin: Plugin<'line' | 'bar'> = {
       const data = dataset.data as number[];
       if (data && data.length > 0) {
         const average = data.reduce((a, b) => a + b, 0) / data.length;
-
-        // 각 데이터셋의 색상과 레이블 가져오기
         const color = 'rgba(66, 82, 110, 1)';
         const label = dataset.label || 'Avg';
 
-        // 평균선 그리기
         ctx.save();
         ctx.strokeStyle = color as string;
         ctx.lineWidth = 2;
