@@ -4,7 +4,6 @@ import { apiInstance } from 'services';
 const api = apiInstance();
 
 const getMonitoringData = async (
-  token: string,
   deviceAlias: string,
   interval: string,
   startTime: string,
@@ -12,12 +11,13 @@ const getMonitoringData = async (
   success: (response: AxiosResponse) => void,
   fail: (error: AxiosError) => void
 ): Promise<void> => {
+  const token = localStorage.getItem('accessToken');
   await api({
-    method: 'post',
-    url: '/monitoring/chart',
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    method: 'post',
+    url: '/monitoring/chart',
     data: {
       deviceAlias,
       interval,
