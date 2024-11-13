@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Autocomplete, TextField } from '@mui/material';
-import { createMemberRequest, getEmailStatus } from 'services/user';
+import { createUserRequest, getEmailStatus } from 'services/user';
 import { getCompanies } from 'services/company';
 import CompanyRegister from 'components/organisms/modal/CompanyRegister';
 import Company from 'types/Company';
@@ -73,7 +73,7 @@ const SignUp = () => {
       alert('이메일 중복 체크 필요');
       return;
     }
-    createMemberRequest(
+    createUserRequest(
       email,
       companyId,
       ownerName,
@@ -139,7 +139,7 @@ const SignUp = () => {
                 }
                 return options;
               }}
-              onInputChange={(event) => {
+              onInputChange={() => {
                 setCompanyId(null);
               }}
               onChange={(event, selectedOption) => {

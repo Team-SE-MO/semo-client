@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from 'components/atoms/button/Button';
-import { registerMember, updateUserFormStatus } from 'services/user';
+import { registerUser, updateUserFormStatus } from 'services/user';
 import { sendEmail } from 'services/email';
 
 interface UserReqRowProps {
@@ -34,7 +34,7 @@ const UserReqRow = ({ i, content }: UserReqRowProps) => {
             .replace('T', '\n')
             .split('.')[0],
         }));
-        registerMember(
+        registerUser(
           rowData.company.id,
           rowData.email,
           rowData.ownerName,
