@@ -1,4 +1,5 @@
 import { AxiosResponse, AxiosError } from 'axios';
+import Role from 'types/Role';
 import { apiFormInstance, apiInstance } from './index';
 
 const api = apiInstance();
@@ -38,7 +39,7 @@ const getEmailStatus = async (
     .catch(fail);
 };
 
-const createMemberRequest = async (
+const createUserRequest = async (
   email: string,
   companyId: number,
   ownerName: string,
@@ -58,4 +59,128 @@ const createMemberRequest = async (
     .catch(fail);
 };
 
-export { getLogin, getEmailStatus, createMemberRequest };
+const getUserFormList = async (
+  success: (response: AxiosResponse) => void,
+  fail: (error: AxiosError) => void
+): Promise<void> => {
+  const token = localStorage.getItem('accessToken');
+  await api({
+    headers: { Authorization: `Bearer ${token}` },
+    method: 'get',
+    url: '/member/form',
+  })
+    .then(success)
+    .catch(fail);
+};
+
+const updateUserFormStatus = async (
+  formId: number,
+  decisionStatus: 'approved' | 'denied',
+  success: (response: AxiosResponse) => void,
+  fail: (error: AxiosError) => void
+): Promise<void> => {
+  const token = localStorage.getItem('accessToken');
+  await api({
+    headers: { Authorization: `Bearer ${token}` },
+    method: 'patch',
+    url: '/member/form',
+    data: {
+      formId,
+      decisionStatus,
+    },
+  })
+    .then(success)
+    .catch(fail);
+};
+
+const registerUser = async (
+  companyId: number,
+  email: string,
+  ownerName: string,
+  success: (response: AxiosResponse) => void,
+  fail: (error: AxiosError) => void
+): Promise<void> => {
+  const token = localStorage.getItem('accessToken');
+  await api({
+    headers: { Authorization: `Bearer ${token}` },
+    method: 'post',
+    url: '/member',
+    data: {
+      companyId,
+      email,
+      ownerName,
+    },
+  })
+    .then(success)
+    .catch(fail);
+};
+
+const updatePassword = async (
+  email: string,
+  newPassword: string,
+  success: (response: AxiosResponse) => void,
+  fail: (error: AxiosError) => void
+): Promise<void> => {
+  await api({
+    method: 'patch',
+    url: '/member',
+    data: {
+      email,
+      newPassword,
+    },
+  })
+    .then(success)
+    .catch(fail);
+};
+
+const deleteUser = async (
+  loginId: string,
+  success: (response: AxiosResponse) => void,
+  fail: (error: AxiosError) => void
+): Promise<void> => {
+  const token = localStorage.getItem('accessToken');
+  await api({
+    headers: { Authorization: `Bearer ${token}` },
+    method: 'delete',
+    url: '/member',
+    params: {
+      loginId,
+    },
+  })
+    .then(success)
+    .catch(fail);
+};
+
+const getUserList = async (
+  companyId: number | null,
+  role: Role[] | [],
+  keyword: string | null,
+  success: (response: AxiosResponse) => void,
+  fail: (error: AxiosError) => void
+): Promise<void> => {
+  const token = localStorage.getItem('accessToken');
+  await api({
+    headers: { Authorization: `Bearer ${token}` },
+    method: 'get',
+    url: '/member',
+    params: {
+      companyId,
+      role,
+      keyword,
+    },
+  })
+    .then(success)
+    .catch(fail);
+};
+
+export {
+  getLogin,
+  getEmailStatus,
+  createUserRequest,
+  getUserFormList,
+  updateUserFormStatus,
+  registerUser,
+  updatePassword,
+  deleteUser,
+  getUserList,
+};

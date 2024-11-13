@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Text from 'components/atoms/text/Text';
 import Table from 'components/organisms/table/Table';
 import CompanyReqRow from 'components/molecules/table/CompanyReqRow';
 import PageButton from 'components/molecules/button/PageButton';
 import './CompanyRequests.scss';
+import { getCompanyFormList } from 'services/company';
+
+interface Form {
+  formId: number;
+  companyName: string;
+  taxId: string;
+  ownerName: string;
+  email: string;
+  formStatus: string;
+  requestDate: string;
+  approvedAt: string;
+}
 
 const CompanyRequests = () => {
   const headerMeta = [
@@ -19,113 +31,21 @@ const CompanyRequests = () => {
 
   const colWidth = ['7%', '15%', '10%', '7%', '16%', '13%', '16%', '16%'];
 
-  const formContent = [
-    {
-      formId: 41,
-      companyName: 'Test Form Company',
-      taxId: '000-00-00007',
-      ownerName: '홍길동',
-      email: 'gogo7@ac.kr',
-      formStatus: 'PENDING',
-      requestDate: '2024-10-23 22:06:36.000',
-      approvedAt: null,
-    },
-    {
-      formId: 25,
-      companyName: 'test Company3',
-      taxId: '000-00-00003',
-      ownerName: '황석현',
-      email: 'smu_hsh@naver.com',
-      formStatus: 'PENDING',
-      requestDate: '2024-10-18 13:53:07.000',
-      approvedAt: null,
-    },
-    {
-      formId: 21,
-      companyName: 'Test Form Company',
-      taxId: '000-00-00001',
-      ownerName: '홍길동',
-      email: 'gogo3@ac.kr',
-      formStatus: 'APPROVED',
-      requestDate: '2024-10-18 11:03:21.000',
-      approvedAt: '2024-10-23 22:07:46.000',
-    },
-    {
-      formId: 3,
-      companyName: 'test Company',
-      taxId: '000-00-00002',
-      ownerName: '홍길동',
-      email: 'gogo1@ac.kr',
-      formStatus: 'APPROVED',
-      requestDate: '2024-10-18 01:06:20.000',
-      approvedAt: '2024-10-22 13:37:49.000',
-    },
-    {
-      formId: 1,
-      companyName: '테스트회사 요청',
-      taxId: '123-45-67891',
-      ownerName: '김길동',
-      email: 'gogo@ac.kr',
-      formStatus: 'APPROVED',
-      requestDate: '2024-10-17 23:33:46.000',
-      approvedAt: '2024-10-22 01:17:45.000',
-    },
-    {
-      formId: 41,
-      companyName: 'Test Form Company',
-      taxId: '000-00-00007',
-      ownerName: '홍길동',
-      email: 'gogo7@ac.kr',
-      formStatus: 'PENDING',
-      requestDate: '2024-10-23 22:06:36.000',
-      approvedAt: null,
-    },
-    {
-      formId: 25,
-      companyName: 'test Company3',
-      taxId: '000-00-00003',
-      ownerName: '황석현',
-      email: 'smu_hsh@naver.com',
-      formStatus: 'DENIED',
-      requestDate: '2024-10-18 13:53:07.000',
-      approvedAt: null,
-    },
-    {
-      formId: 21,
-      companyName: 'Test Form Company',
-      taxId: '000-00-00001',
-      ownerName: '홍길동',
-      email: 'gogo3@ac.kr',
-      formStatus: 'APPROVED',
-      requestDate: '2024-10-18 11:03:21.000',
-      approvedAt: '2024-10-23 22:07:46.000',
-    },
-    {
-      formId: 3,
-      companyName: 'test Company',
-      taxId: '000-00-00002',
-      ownerName: '홍길동',
-      email: 'gogo1@ac.kr',
-      formStatus: 'APPROVED',
-      requestDate: '2024-10-18 01:06:20.000',
-      approvedAt: '2024-10-22 13:37:49.000',
-    },
-    {
-      formId: 1,
-      companyName: '테스트회사 요청',
-      taxId: '123-45-67891',
-      ownerName: '김길동',
-      email: 'gogo@ac.kr',
-      formStatus: 'APPROVED',
-      requestDate: '2024-10-17 23:33:46.000',
-      approvedAt: '2024-10-22 01:17:45.000',
-    },
-  ];
-
-  const pageNumber = 1;
-  const pageSize = 10;
-  const totalPages = 1;
-  const totalElement = 10;
+  const [formContent, setFormContent] = useState<Form[]>([]);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  useEffect(() => {
+    getCompanyFormList(
+      ({ data }) => {
+        setFormContent(data.data.content);
+        setPageNumber(data.data.pageable.pageNumber + 1);
+        setTotalPages(data.data.totalPages);
+      },
+      (error) => {
+        console.log('에러', error);
+      }
+    );
+  }, []);
 
   const changeDateFormat = (date: string) => {
     return date.replace(' ', '\n').replace('.000', '');
@@ -143,18 +63,6 @@ const CompanyRequests = () => {
       <div className="company-req__title">
         <Text content="Service Registration Request List" type="title" />
         <Text content="서비스 등록 요청 정보" type="subtitle" />
-      </div>
-      <div className="company-req__info">
-        <Text
-          startNumber={(pageNumber - 1) * pageSize + 1}
-          endNumber={
-            totalElement < pageNumber * pageSize
-              ? totalElement
-              : pageNumber * pageSize
-          }
-          totalItems={totalElement}
-          type="info"
-        />
       </div>
       <div className="company-req__table">
         <Table

@@ -8,7 +8,7 @@ import DatabaseDelete from 'components/organisms/modal/DatabaseDelete';
 
 interface DevicesRowProps {
   i: number;
-  data: {
+  content: {
     deviceId: number;
     companyName?: string;
     taxId?: string;
@@ -23,8 +23,8 @@ interface DevicesRowProps {
   };
 }
 
-const DevicesRow = ({ i, data }: DevicesRowProps) => {
-  const [rowData, setRowData] = useState(data);
+const DevicesRow = ({ i, content }: DevicesRowProps) => {
+  const [rowData, setRowData] = useState(content);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -45,8 +45,8 @@ const DevicesRow = ({ i, data }: DevicesRowProps) => {
   };
 
   useEffect(() => {
-    setRowData(data);
-  }, [data]);
+    setRowData(content);
+  }, [content]);
 
   // TODO: 차후 api 연결시, 응답 데이터로 변경 필요
   const editData = {

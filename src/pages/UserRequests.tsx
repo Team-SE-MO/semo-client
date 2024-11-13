@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Text from 'components/atoms/text/Text';
 import PageButton from 'components/molecules/button/PageButton';
 import Table from 'components/organisms/table/Table';
 import UserReqRow from 'components/molecules/table/UserReqRow';
+import { getUserFormList } from 'services/user';
+import Company from 'types/Company';
 
+interface Form {
+  formId: number;
+  company: Company;
+  ownerName: string;
+  email: string;
+  formStatus: string;
+  requestDate: string;
+  approvedAt: string;
+}
 const UserRequests = () => {
   const headerMeta = [
     'No.',
@@ -15,51 +26,21 @@ const UserRequests = () => {
     '승인 일자',
   ];
   const colWidth = ['10%', '15%', '10%', '20%', '13%', '16%', '16%'];
-  const content = [
-    {
-      formId: 81,
-      company: {
-        id: 42,
-        companyName: 'test Company',
-        taxId: '000-00-00002',
+  const [content, setContent] = useState<Form[]>([]);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  useEffect(() => {
+    getUserFormList(
+      ({ data }) => {
+        setContent(data.data.content);
+        setPageNumber(data.data.pageable.pageNumber + 1);
+        setTotalPages(data.data.totalPages);
       },
-      ownerName: '길동',
-      email: 'test7@gmail.com',
-      formStatus: 'DENIED',
-      requestDate: '2024-10-29 21:31:10',
-      approvedAt: null,
-    },
-    {
-      formId: 62,
-      company: {
-        id: 42,
-        companyName: 'test Company',
-        taxId: '000-00-00002',
-      },
-      ownerName: '홍길동',
-      email: 'test2@gmail.com',
-      formStatus: 'PENDING',
-      requestDate: '2024-10-27 00:15:21',
-      approvedAt: null,
-    },
-    {
-      formId: 61,
-      company: {
-        id: 42,
-        companyName: 'test Company',
-        taxId: '000-00-00002',
-      },
-      ownerName: '홍길동',
-      email: 'test1@gmail.com',
-      formStatus: 'APPROVED',
-      requestDate: '2024-10-27 00:14:57',
-      approvedAt: '2024-10-30 18:31:01',
-    },
-  ];
-  const pageNumber = 1;
-  const pageSize = 10;
-  const totalPages = 1;
-  const totalElement = 3;
+      (error) => {
+        console.log('에러', error);
+      }
+    );
+  }, []);
 
   const changeDateFormat = (date: string) => {
     return date.replace(' ', '\n').replace('.000', '');
@@ -76,18 +57,6 @@ const UserRequests = () => {
       <div className="company-req__title">
         <Text content="Service Registration Request List" type="title" />
         <Text content="서비스 등록 요청 정보" type="subtitle" />
-      </div>
-      <div className="company-req__info">
-        <Text
-          startNumber={(pageNumber - 1) * pageSize + 1}
-          endNumber={
-            totalElement < pageNumber * pageSize
-              ? totalElement
-              : pageNumber * pageSize
-          }
-          totalItems={totalElement}
-          type="info"
-        />
       </div>
       <div className="company-req__table">
         <Table

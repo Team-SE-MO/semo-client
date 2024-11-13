@@ -29,4 +29,18 @@ const getMonitoringData = async (
     .catch(fail);
 };
 
-export default getMonitoringData;
+const getSummaryData = async (
+  success: (response: AxiosResponse) => void,
+  fail: (error: AxiosError) => void
+): Promise<void> => {
+  const token = localStorage.getItem('accessToken');
+  await api({
+    headers: { Authorization: `Bearer ${token}` },
+    method: 'get',
+    url: '/monitoring',
+  })
+    .then(success)
+    .catch(fail);
+};
+
+export { getMonitoringData, getSummaryData };

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 // TODO: user 공통 타입 구현
 interface UserRowProps {
   i: number;
-  data: {
+  content: {
     loginId: string;
     role: string;
     email: string;
@@ -17,8 +17,8 @@ interface UserRowProps {
   };
 }
 // TODO: 삭제 버튼 누르면 delete 요청 보내는 기능 구현
-const UserRow = ({ i, data }: UserRowProps) => {
-  const [rowData, setRowData] = useState(data);
+const UserRow = ({ i, content }: UserRowProps) => {
+  const [rowData, setRowData] = useState(content);
   return (
     <tr>
       <td className="table__row">{i + 1}</td>

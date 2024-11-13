@@ -53,11 +53,12 @@ const Login = () => {
         const userInfoStorage = localStorage.getItem('userInfoStorage');
         const userInfo = JSON.parse(userInfoStorage || '');
         const { role } = userInfo.state;
+        const { companyId } = userInfo.state;
 
         const homePage = {
           ROLE_SUPER: '/devices',
-          ROLE_ADMIN: '/summary',
-          ROLE_USER: '/summary',
+          ROLE_ADMIN: `/dashboard/${companyId}`,
+          ROLE_USER: `/dashboard/${companyId}`,
         };
         alert('로그인 성공');
         navigate(

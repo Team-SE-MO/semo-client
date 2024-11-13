@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, matchPath, useNavigate } from 'react-router-dom';
 import ChartCollection from 'components/molecules/chart/ChartCollection';
 import Text from 'components/atoms/text/Text';
-import getMonitoringData from 'services/deviceMonitoring';
+import { getMonitoringData } from 'services/deviceMonitoring';
 import { DeviceMetricData } from 'types/ChartData';
 import { convertSessionCountByKey } from 'utils/convertSessionCountByKey';
 import TextField from '@mui/material/TextField';

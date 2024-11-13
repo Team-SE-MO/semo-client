@@ -16,129 +16,63 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import OracleIcon from 'assets/images/oracle_icon.svg';
 
 import './Summary.scss';
+import { getSummaryData } from 'services/deviceMonitoring';
+import { useNavigate, useParams } from 'react-router-dom';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const Summary = () => {
-  const data = {
-    companyName: '테스트회사 요청',
-    totalProcessInfo: {
-      activeDeviceCnt: 29,
-      inActiveDeviceCnt: 5,
-      blockedDeviceCnt: 1,
-      topUsedDevices: {
-        LOCALHOST20: 26,
-        LOCALHOST14: 26,
-        LOCALHOST7: 26,
-      },
-      warnDevice: {
-        // LOCALHOST21: 3,
-        // BLOKING SESSION 3개
-      },
-      unusedDevice: {
-        LOCALHOST22: 55,
-        // 55분 전
-      },
-    },
-    allDevices: [
-      {
-        deviceAlias: 'LOCALHOST1',
-        type: 'ORACLE',
-        status: 'ACTIVE',
-        sid: 'XE',
-        ip: '127.0.0.1',
-        port: 1521,
-        statusValue: 30,
-      },
-      {
-        deviceAlias: 'LOCALHOST2',
-        type: 'ORACLE',
-        status: 'ACTIVE',
-        sid: 'XE',
-        ip: '127.0.0.1',
-        port: 1521,
-        statusValue: 30,
-      },
-      {
-        deviceAlias: 'LOCALHOST3',
-        type: 'ORACLE',
-        status: 'INACTIVE',
-        sid: 'XE',
-        ip: '127.0.0.1',
-        port: 1521,
-        statusValue: 30,
-      },
-      {
-        deviceAlias: 'LOCALHOST4',
-        type: 'ORACLE',
-        status: 'INACTIVE',
-        sid: 'XE',
-        ip: '127.0.0.1',
-        port: 1521,
-        statusValue: 30,
-      },
-      {
-        deviceAlias: 'LOCALHOST5',
-        type: 'ORACLE',
-        status: 'BLOCKED',
-        sid: 'XE',
-        ip: '127.0.0.1',
-        port: 1521,
-        statusValue: 30,
-      },
-      {
-        deviceAlias: 'LOCALHOST6',
-        type: 'ORACLE',
-        status: 'INACTIVE',
-        sid: 'XE',
-        ip: '127.0.0.1',
-        port: 1521,
-        statusValue: 30,
-      },
-      {
-        deviceAlias: 'LOCALHOST7',
-        type: 'ORACLE',
-        status: 'INACTIVE',
-        sid: 'XE',
-        ip: '127.0.0.1',
-        port: 1521,
-        statusValue: 30,
-      },
-      {
-        deviceAlias: 'LOCALHOST8',
-        type: 'ORACLE',
-        status: 'BLOCKED',
-        sid: 'XE',
-        ip: '127.0.0.1',
-        port: 1521,
-        statusValue: 30,
-      },
-      {
-        deviceAlias: 'LOCALHOST9',
-        type: 'ORACLE',
-        status: 'INACTIVE',
-        sid: 'XE',
-        ip: '127.0.0.1',
-        port: 1521,
-        statusValue: 30,
-      },
-      {
-        deviceAlias: 'LOCALHOST10',
-        type: 'ORACLE',
-        status: 'INACTIVE',
-        sid: 'XE',
-        ip: '127.0.0.1',
-        port: 1521,
-        statusValue: 30,
-      },
-    ],
+interface Device {
+  deviceAlias: string;
+  type: string;
+  status: string;
+  sid: string;
+  ip: string;
+  port: number;
+  statusValue: number;
+}
+
+interface DeviceItem extends Device {
+  label: string;
+}
+
+interface SummaryData {
+  companyName: string;
+  totalProcessInfo: {
+    activeDeviceCnt: number;
+    inActiveDeviceCnt: number;
+    blockedDeviceCnt: number;
+    topUsedDevices: { [deviceName: string]: number } | null;
+    warnDevice: { [deviceName: string]: number } | null;
+    unusedDevice: { [deviceName: string]: number } | null;
   };
+  allDevices: Device[];
+}
 
-  const { companyName } = data;
+const Summary = () => {
+  const [summaryData, setSummaryData] = useState<SummaryData>();
+  const [deviceList, setDeviceList] = useState<DeviceItem[]>([]);
+  useEffect(() => {
+    getSummaryData(
+      ({ data }) => {
+        setSummaryData(data.data);
+        setDeviceList(
+          data.data.allDevices.map((item: Device) => ({
+            label: item.deviceAlias,
+            ...item,
+          }))
+        );
+      },
+      (error) => {
+        console.log('에러', error);
+      }
+    );
+  }, []);
 
-  const activeCnt = data.totalProcessInfo.activeDeviceCnt;
-  const inactiveCnt = data.totalProcessInfo.inActiveDeviceCnt;
-  const blockedCnt = data.totalProcessInfo.blockedDeviceCnt;
+  const companyName = summaryData?.companyName;
+
+  const activeCnt = summaryData?.totalProcessInfo.activeDeviceCnt || 0;
+  const inactiveCnt = summaryData?.totalProcessInfo.inActiveDeviceCnt || 0;
+  const blockedCnt = summaryData?.totalProcessInfo.blockedDeviceCnt || 0;
 
   const doughnutData = {
     labels: ['ACTIVE', 'INACTIVE', 'BLOCKED'],
@@ -173,30 +107,9 @@ const Summary = () => {
     },
   };
 
-  interface Device {
-    deviceAlias: string;
-    type: string;
-    status: string;
-    sid: string;
-    ip: string;
-    port: number;
-    statusValue: number;
-  }
-
-  const { topUsedDevices } = data.totalProcessInfo;
-  const { warnDevice } = data.totalProcessInfo;
-  const { unusedDevice } = data.totalProcessInfo;
-  const deviceList =
-    data.allDevices.length > 0
-      ? data.allDevices.map((item: Device) => {
-          const temp = {
-            label: item.deviceAlias,
-            ...item,
-          };
-
-          return temp;
-        })
-      : [];
+  const topUsedDevices = summaryData?.totalProcessInfo.topUsedDevices || {};
+  const warnDevice = summaryData?.totalProcessInfo.warnDevice || {};
+  const unusedDevice = summaryData?.totalProcessInfo.unusedDevice || {};
 
   const [keyword, setKeyword] = useState('');
   const [filteredDevice, setFilteredDevice] = useState(deviceList);
@@ -211,6 +124,12 @@ const Summary = () => {
       setFilteredDevice(deviceList);
     }
   }, [keyword]);
+
+  const navigate = useNavigate();
+  const companyId = useParams<{ companyId: string }>();
+  const getDetails = (name: string) => {
+    navigate(`/dashboard/${companyId}/${name}`);
+  };
 
   return (
     <div className="summary__container">
@@ -263,10 +182,10 @@ const Summary = () => {
             <div>
               {Object.keys(warnDevice).map((item) => (
                 <div className="summary__card__db">
-                  <Text content={item} type="info" />
+                  <Text content={item} type="subtitle" />
                   <Text
                     content={`${warnDevice[item as keyof typeof warnDevice]}`}
-                    type="info"
+                    type="subtitle"
                   />
                 </div>
               ))}
@@ -297,7 +216,7 @@ const Summary = () => {
               ))}
             </div>
           ) : (
-            <Text content="내역이 없습니다." type="info" color="neutral" />
+            <Text content="내역이 없습니다." type="subtitle" color="neutral" />
           )}
         </div>
       </div>
@@ -364,6 +283,8 @@ const Summary = () => {
               className={['device-card', `device-card--${item.status}`].join(
                 ' '
               )}
+              onClick={() => getDetails(item.deviceAlias)}
+              role="presentation"
             >
               <div className="device-card__type">
                 <img src={OracleIcon} alt="oracleIcon" />
