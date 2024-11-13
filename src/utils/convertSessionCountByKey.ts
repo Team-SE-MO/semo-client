@@ -3,18 +3,16 @@ interface SessionData {
   value: number;
 }
 
-interface ApiResponse {
-  code: number;
-  message: string;
+interface ApiData {
   data: {
     [key: string]: Record<string, SessionData[]>;
   };
 }
 
-export function convertSessionCountByKey(
-  data: ApiResponse['data'],
+export const convertSessionCountByKey = (
+  data: ApiData['data'],
   key: string
-): Record<string, number[]> {
+): Record<string, number[]> => {
   const targetData = data[key];
   const result: Record<string, number[]> = {};
 
@@ -28,4 +26,4 @@ export function convertSessionCountByKey(
   });
 
   return result;
-}
+};
