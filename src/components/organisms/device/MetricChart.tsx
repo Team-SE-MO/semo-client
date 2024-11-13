@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
-import { useLocation, matchPath } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { useLocation, matchPath, useNavigate } from 'react-router-dom';
 import ChartCollection from 'components/molecules/chart/ChartCollection';
 import Text from 'components/atoms/text/Text';
 import getMonitoringData from 'services/deviceMonitoring';
-import { ChartData } from 'types/ChartData';
+import { DeviceMetricData } from 'types/ChartData';
 import { convertSessionCountByKey } from 'utils/convertSessionCountByKey';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 const mergeCounts = (
   prevGroup: Record<string, number[]>,
@@ -24,7 +26,31 @@ const mergeCounts = (
 };
 
 const MetricChart = () => {
-  const [chartData, setChartData] = useState<ChartData>({
+  const deviceList = [
+    { deviceAlias: 'LOCALHOST' },
+    { deviceAlias: 'LOCALHOST2' },
+  ];
+
+  const devices = deviceList.map((item) => ({
+    label: `${item.deviceAlias}`,
+    ...item,
+  }));
+  const token = localStorage.getItem('accessToken');
+  const userInfoStorage = localStorage.getItem('userInfoStorage');
+  const userInfo = JSON.parse(userInfoStorage || '');
+  const { companyId } = userInfo.state;
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const socketRef = useRef<Map<string, WebSocket>>(new Map());
+  const pathMatch = matchPath(
+    '/dashboard/:companyId/:deviceAlias',
+    location.pathname
+  );
+  const initialDeviceAlias = pathMatch?.params.deviceAlias || '';
+
+  const [deviceAlias, setDeviceAlias] = useState(initialDeviceAlias);
+  const [chartData, setChartData] = useState<DeviceMetricData>({
     labels: [],
     totalSessions: [],
     activeSessions: [],
@@ -36,20 +62,13 @@ const MetricChart = () => {
     sessionCountGroupByMachine: {},
   });
   const [commonDate, setCommonDate] = useState<string>('');
-  const token =
-    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0Iiwicm9sZSI6IlJPTEVfQURNSU4iLCJsb2dpbklkIjoiQTAwMDAwMDAwMDE2MSIsImNvbXBhbnlJZCI6OTk5OSwic2FsdCI6Inc5aTFBSkRZbXZHS0s0M3M4WDNRbmc9PSIsIm93bmVyTmFtZSI6IuqzoOq4uOuPmSIsImlhdCI6MTczMTI0MTI4MiwiZXhwIjoxNzM3MjQxMjgyfQ.JzUX4pJOkUiaKA8SD9tkNkkkz6qwCF0rzMJMdRYO1vo'; // 실제 token 값 사용
-
-  const location = useLocation();
-  const socketRef = useRef<WebSocket | null>(null);
-
   useEffect(() => {
     const loadData = () => {
       getMonitoringData(
-        token,
-        'LOCALHOST',
+        deviceAlias || '',
         '5s',
-        '2024-11-10T01:10:00',
-        '2024-11-10T01:11:00',
+        '2024-11-12T21:34:00',
+        '2024-11-12T21:35:00',
         (response) => {
           const { data } = response.data;
           const fullLabels = Object.keys(data.totalSessions);
@@ -96,15 +115,19 @@ const MetricChart = () => {
   }, [token]);
 
   useEffect(() => {
-    const isDashboardPath = matchPath(
-      '/dashboard/:companyId/:deviceAlias',
-      location.pathname
-    );
+    const openNewSocket = () => {
+      // 이전에 같은 deviceAlias에 대해 열린 WebSocket이 있으면 종료
+      const existingSocket = socketRef.current.get(deviceAlias);
+      if (existingSocket) {
+        existingSocket.close();
+        socketRef.current.delete(deviceAlias);
+      }
 
-    if (isDashboardPath && !socketRef.current) {
+      // 새로운 WebSocket 연결 생성
       const ws = new WebSocket(
-        `ws://localhost:8080/ws/monitoring/9999/LOCALHOST?token=${token}`
+        `ws://localhost:8080/ws/monitoring/${companyId}/${deviceAlias}?token=${token}`
       );
+      socketRef.current.set(deviceAlias, ws);
 
       ws.onmessage = (event) => {
         try {
@@ -221,25 +244,65 @@ const MetricChart = () => {
       };
 
       ws.onclose = () => {
-        console.log('WebSocket 연결 종료');
-        socketRef.current = null;
+        console.log(`WebSocket 연결 종료: ${deviceAlias}`);
+        socketRef.current.delete(deviceAlias);
       };
+    };
 
-      socketRef.current = ws;
-    }
+    openNewSocket();
 
     return () => {
-      if (socketRef.current) {
-        socketRef.current.close();
-        socketRef.current = null;
+      // 컴포넌트가 언마운트되거나 deviceAlias가 변경되면 기존 연결 종료
+      const socket = socketRef.current.get(deviceAlias);
+      if (socket) {
+        socket.close();
+        socketRef.current.delete(deviceAlias);
       }
     };
-  }, [location.pathname, token]);
+  }, [deviceAlias, token]);
 
   return (
     <div className="dashboard">
       <div className="dashboard__title">
-        <Text content="Database Monitoring Service" type="title" />
+        <div className="dashboard__title__main">
+          <Text content="Database Monitoring Service" type="title" />
+          <Autocomplete
+            disablePortal
+            options={devices}
+            size="small"
+            sx={{
+              width: 300,
+              backgroundColor: 'white',
+              borderRadius: 3,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  border: 'none',
+                },
+              },
+            }}
+            filterOptions={(options, { inputValue }) =>
+              options.filter((option) =>
+                option.label.toLowerCase().includes(inputValue.toLowerCase())
+              )
+            }
+            onChange={(event, newValue) => {
+              const selectedDeviceAlias = newValue?.deviceAlias;
+              if (selectedDeviceAlias) {
+                setDeviceAlias(selectedDeviceAlias);
+                navigate(`/dashboard/9999/${selectedDeviceAlias}`);
+              }
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="DATABASE ALIAS"
+                onChange={(e) => {
+                  setDeviceAlias(e.target.value);
+                }}
+              />
+            )}
+          />
+        </div>
         <div className="dashboard__title__sub">
           <Text content="모니터링 서비스" type="subtitle" />
           <Text content={`기준 기간: ${commonDate}`} type="info" bold />
