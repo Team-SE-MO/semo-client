@@ -6,7 +6,7 @@ import SessionCountGroupChart from './SessionCountGroupChart';
 const ChartCollection = ({ chartData }: ChartWrapper) => {
   return (
     <div className="dashboard__charts">
-      <div className="dashboard__large-charts">
+      <div className="dashboard__main-chart">
         <ActiveTotalSessionChart
           labels={chartData.labels}
           totalSessions={chartData.totalSessions}
@@ -19,7 +19,7 @@ const ChartCollection = ({ chartData }: ChartWrapper) => {
         />
       </div>
 
-      <div className="dashboard__small-charts">
+      <div className="dashboard__sub-chart">
         {['User', 'Type', 'Command', 'Machine'].map((group) => (
           <SessionCountGroupChart
             key={group}
