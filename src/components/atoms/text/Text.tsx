@@ -15,7 +15,8 @@ interface TextProps {
   color?: 'primary' | 'success' | 'danger' | 'link-color' | 'neutral' | 'light';
   bold?: boolean;
   underline?: boolean;
-  remainingTime?: number;
+  initialTime?: number;
+  resetTimer?: number;
   onClick?: () => void;
   startNumber?: number;
   endNumber?: number;
@@ -26,7 +27,8 @@ const Text = ({
   content = '',
   type = 'subtitle',
   color = 'primary',
-  remainingTime = 0,
+  initialTime,
+  resetTimer,
   bold = false,
   underline = false,
   startNumber,
@@ -34,23 +36,29 @@ const Text = ({
   totalItems,
   ...props
 }: TextProps) => {
-  const [timeLeft, setTimeLeft] = useState(remainingTime);
-  useEffect(() => {
-    if (remainingTime <= 0) return undefined;
+  const [timeLeft, setTimeLeft] = useState(initialTime || 0);
+  if (initialTime) {
+    useEffect(() => {
+      setTimeLeft(initialTime);
+      let alertShown = false;
 
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+      const timer = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            if (!alertShown) {
+              alert('코드를 재발급 받으세요');
+              alertShown = true;
+            }
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
 
-    return () => clearInterval(timer);
-  }, [remainingTime]);
-
+      return () => clearInterval(timer);
+    }, [resetTimer, initialTime]);
+  }
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
