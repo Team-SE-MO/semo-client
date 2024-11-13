@@ -1,4 +1,4 @@
-export interface ChartData {
+export interface DeviceMetricData {
   labels: string[];
   totalSessions: number[];
   activeSessions: number[];
@@ -12,6 +12,6 @@ export interface ChartData {
 }
 
 export interface ChartWrapper {
-  chartData: ChartData;
+  chartData: DeviceMetricData;
   commonDate: string;
 }
