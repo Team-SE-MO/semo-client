@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './UserReqRow.scss';
 import Button from 'components/atoms/button/Button';
 import { registerUser, updateUserFormStatus } from 'services/user';
 import { sendEmail } from 'services/email';
@@ -78,13 +79,27 @@ const UserReqRow = ({ i, content }: UserReqRowProps) => {
         console.log('Update Status Error:', updateStatusError)
     );
   };
+
+  const getStatusClassName = (status: string) => {
+    switch (status) {
+      case 'PENDING':
+        return 'table__row__status--pending';
+      case 'APPROVED':
+        return 'table__row__status--approved';
+      default:
+        return '';
+    }
+  };
+
   return (
     <tr>
       <td className="table__row">{i + 1}</td>
       <td className="table__row">{rowData.company.companyName}</td>
       <td className="table__row">{rowData.ownerName}</td>
       <td className="table__row">{rowData.email}</td>
-      <td className="table__row">{rowData.formStatus}</td>
+      <td className={`table__row ${getStatusClassName(rowData.formStatus)}`}>
+        {rowData.formStatus}
+      </td>
       <td className="table__row">{rowData.requestDate}</td>
       {rowData.formStatus === 'PENDING' ? (
         <td className="table__row">
