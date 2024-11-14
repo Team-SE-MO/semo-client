@@ -1,5 +1,4 @@
 import { AxiosResponse, AxiosError } from 'axios';
-import Role from 'types/Role';
 import { apiFormInstance, apiInstance } from './index';
 
 const api = apiInstance();
@@ -18,6 +17,20 @@ const getLogin = async (
       username,
       password,
     },
+  })
+    .then(success)
+    .catch(fail);
+};
+
+const getLogout = async (
+  success: (response: AxiosResponse) => void,
+  fail: (error: AxiosError) => void
+): Promise<void> => {
+  const token = localStorage.getItem('accessToken');
+  await api({
+    headers: { Authorization: `Bearer ${token}` },
+    method: 'post',
+    url: '/logout',
   })
     .then(success)
     .catch(fail);
@@ -104,7 +117,7 @@ const registerUser = async (
   await api({
     headers: { Authorization: `Bearer ${token}` },
     method: 'post',
-    url: '/member',
+    url: '/member/register',
     data: {
       companyId,
       email,
@@ -153,7 +166,7 @@ const deleteUser = async (
 
 const getUserList = async (
   companyId: number | null,
-  role: Role[] | [],
+  roleList: string[] | [],
   keyword: string | null,
   success: (response: AxiosResponse) => void,
   fail: (error: AxiosError) => void
@@ -161,11 +174,11 @@ const getUserList = async (
   const token = localStorage.getItem('accessToken');
   await api({
     headers: { Authorization: `Bearer ${token}` },
-    method: 'get',
+    method: 'post',
     url: '/member',
-    params: {
+    data: {
       companyId,
-      role,
+      roleList,
       keyword,
     },
   })
@@ -175,6 +188,7 @@ const getUserList = async (
 
 export {
   getLogin,
+  getLogout,
   getEmailStatus,
   createUserRequest,
   getUserFormList,
