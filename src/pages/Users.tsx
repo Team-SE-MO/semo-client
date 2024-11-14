@@ -34,15 +34,6 @@ const Users = () => {
       },
       (error) => console.log('에러', error)
     );
-    getUserList(
-      null,
-      [],
-      null,
-      ({ data }) => {
-        setContent(data.data);
-      },
-      (error) => console.log('에러', error)
-    );
   }, []);
 
   const roles = ['ROLE_ADMIN', 'ROLE_USER'];

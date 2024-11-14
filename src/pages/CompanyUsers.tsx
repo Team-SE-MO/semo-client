@@ -47,20 +47,8 @@ const CompanyUsers = () => {
   useEffect(() => {
     getUserList(
       companyId,
-      [],
-      null,
-      ({ data }) => {
-        setContent(data.data);
-      },
-      (error) => console.log('에러', error)
-    );
-  }, []);
-
-  useEffect(() => {
-    getUserList(
-      companyId,
       [...checkedRoles],
-      '',
+      keyword,
       ({ data }) => {
         setContent(data.data);
       },
