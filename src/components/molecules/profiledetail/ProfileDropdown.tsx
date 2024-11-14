@@ -6,6 +6,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import CloseIcon from '@mui/icons-material/Close';
 import Text from 'components/atoms/text/Text';
+import useAuthStore from 'store/useAuthStore';
+import { getLogout } from 'services/user';
 import Profile from '../profile/Profile';
 
 interface ProfileDropdownProps {
@@ -43,7 +45,16 @@ const ProfileDropdown = ({
   };
 
   const handleLogout = () => {
-    navigate('/login');
+    getLogout(
+      () => {
+        localStorage.removeItem('accessToken');
+        const { logout } = useAuthStore.getState();
+        logout();
+        alert('로그아웃 되었습니다.');
+        navigate('/login');
+      },
+      (error) => console.log('에러', error)
+    );
   };
 
   return (
