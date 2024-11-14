@@ -20,15 +20,4 @@
       gap: 5px;
     }
   }
-  &__summary {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    padding-right: 10px;
-    &__btn {
-      position: absolute;
-      top: -530%;
-    }
-  }
 }

@@ -9,10 +9,15 @@
     position: sticky;
     background-color: $white;
     top: 0;
-    justify-content: space-around;
+    justify-content: center;
     height: 5.2vh;
     align-items: center;
     z-index: 1;
+  }
+  &__content {
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
   }
 
   &__menu {
@@ -51,5 +56,9 @@
     position: relative;
     display: flex;
     cursor: pointer;
+  }
+  &__auth {
+    display: flex;
+    gap: 10px;
   }
 }

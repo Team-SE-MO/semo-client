@@ -19,7 +19,7 @@ interface CompanyData {
 
 const CompanyRegister = ({ isOpen, onClose }: CompanyRegisterProps) => {
   const emailRegEx =
-    /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/i;
+    /^[A-Za-z0-9]+([.-]?[A-Za-z0-9]+)*@[A-Za-z0-9]+([.-]?[A-Za-z0-9]+)*.[A-Za-z]{2,}$/i;
   const taxIdRegEx = /^\d{3}-\d{2}-\d{5}$/;
 
   const [formData, setFormData] = useState<CompanyData>({

@@ -13,6 +13,7 @@ interface CustomJwtPayload extends JwtPayload {
   role: Role;
   loginId: string;
   companyId: number;
+  ownerName: string;
 }
 
 // TODO: 회원가입, 홈으로 가는 버튼이나 링크 추가
@@ -32,7 +33,7 @@ const Login = () => {
   const handleLogin = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
 
-    const { login, setRole, setLoginId, setCompanyId } =
+    const { login, setRole, setLoginId, setCompanyId, setOwnerName } =
       useAuthStore.getState();
 
     if (!username || !password) {
@@ -49,6 +50,7 @@ const Login = () => {
         setRole(decode.role);
         setLoginId(decode.loginId);
         setCompanyId(decode.companyId);
+        setOwnerName(decode.ownerName);
 
         const userInfoStorage = localStorage.getItem('userInfoStorage');
         const userInfo = JSON.parse(userInfoStorage || '');

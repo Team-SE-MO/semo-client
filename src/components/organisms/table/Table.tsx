@@ -4,7 +4,10 @@ interface TableProps<T> {
   colWidth: string[];
   headerMeta: string[];
   content: T[];
-  RowComponent: React.ComponentType<{ i: number; content: T }>;
+  RowComponent: React.ComponentType<
+    { i: number; content: T } & { onDelete?: (loginId: string) => void }
+  >;
+  onDelete?: (loginId: string) => void;
 }
 
 const Table = <T,>({
@@ -12,6 +15,7 @@ const Table = <T,>({
   headerMeta,
   content,
   RowComponent,
+  onDelete,
   ...props
 }: TableProps<T>) => {
   return (
@@ -30,7 +34,11 @@ const Table = <T,>({
       </thead>
       <tbody>
         {content.map((form, index) => (
-          <RowComponent i={index} content={form} />
+          <RowComponent
+            i={index}
+            content={form}
+            {...(onDelete ? { onDelete } : {})}
+          />
         ))}
       </tbody>
     </table>

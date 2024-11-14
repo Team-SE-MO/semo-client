@@ -1,8 +1,10 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import './UserRegister.scss';
 import Text from 'components/atoms/text/Text';
 import Button from 'components/atoms/button/Button';
 import Input from 'components/atoms/input/Input';
+import { getEmailStatus, registerUser } from 'services/user';
+import { sendEmail } from 'services/email';
 
 interface UserRegisterProps {
   isOpen: boolean;
@@ -21,11 +23,21 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
   });
 
   const emailRegEx =
-    /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/i;
+    /^[A-Za-z0-9]+([.-]?[A-Za-z0-9]+)*@[A-Za-z0-9]+([.-]?[A-Za-z0-9]+)*.[A-Za-z]{2,}$/i;
 
   const [emailValid, setEmailValid] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(false);
 
-  if (!isOpen) return null;
+  const emailValidCheck = () => {
+    getEmailStatus(
+      formData.email,
+      ({ data }) => {
+        setIsEmailValid(data);
+        alert('사용 가능한 이메일입니다.');
+      },
+      (error) => console.log('에러', error)
+    );
+  };
 
   const handleInputChange =
     (field: keyof UserData) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -33,17 +45,45 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
         ...prev,
         [field]: event.target.value,
       }));
-      if (emailRegEx.test(formData.email)) {
-        setEmailValid(true);
-      } else {
-        setEmailValid(false);
-      }
     };
 
-  const handleSubmit = async () => {
-    // TODO: axios 인터페이스 설정 시 해당 요청 api 연결(companyId 필요)
-    console.log('입력된 데이터:', formData);
-    onClose();
+  useEffect(() => {
+    if (emailRegEx.test(formData.email)) {
+      setEmailValid(true);
+    } else {
+      setEmailValid(false);
+    }
+  }, [formData.email]);
+
+  const userInfoStorage = localStorage.getItem('userInfoStorage');
+  const userInfo = JSON.parse(userInfoStorage || '');
+  const { companyId } = userInfo.state;
+
+  const handleSubmit = () => {
+    if (!formData.email || !formData.ownerName) {
+      alert('모든 정보를 입력하세요');
+      return;
+    }
+    if (!isEmailValid) {
+      alert('이메일 중복 체크 필요');
+      return;
+    }
+    registerUser(
+      companyId,
+      formData.email,
+      formData.ownerName,
+      ({ data }) => {
+        sendEmail(
+          'REGISTER_MEMBER',
+          data.data,
+          () => {
+            alert('승인 처리 완료');
+          },
+          (sendEmailError) => console.log('이메일 에러:', sendEmailError)
+        );
+      },
+      (registerError) => console.log('Register Error:', registerError)
+    );
   };
 
   const title = 'User Registration';
@@ -55,7 +95,7 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
   ].join('\n');
 
   return (
-    <div className="user-register__background">
+    <div className={`user-register__background ${isOpen ? '' : 'hidden'}`}>
       <div className="user-register__modal-container">
         <div className="user-register__title">
           <Text content={title} type="title" bold />
@@ -90,6 +130,7 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
               label="중복확인"
               size="medium"
               color="primary"
+              onClick={emailValidCheck}
             />
 
             {formData.email && emailValid === false && (

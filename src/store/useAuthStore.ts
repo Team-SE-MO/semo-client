@@ -13,6 +13,8 @@ interface AuthStore {
   setLoginId: (loginId: string) => void;
   companyId: number | null;
   setCompanyId: (companyId: number) => void;
+  ownerName: string | null;
+  setOwnerName: (ownerName: string) => void;
 }
 
 const useAuthStore = createStore(
@@ -28,6 +30,8 @@ const useAuthStore = createStore(
       setLoginId: (loginId: string) => set({ loginId }),
       companyId: null,
       setCompanyId: (companyId: number) => set({ companyId }),
+      ownerName: null,
+      setOwnerName: (ownerName: string) => set({ ownerName }),
     }),
     { name: 'userInfoStorage' }
   )
