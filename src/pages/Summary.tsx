@@ -51,6 +51,7 @@ interface SummaryData {
 const Summary = () => {
   const [summaryData, setSummaryData] = useState<SummaryData>();
   const [deviceList, setDeviceList] = useState<DeviceItem[]>([]);
+  const [filteredDevice, setFilteredDevice] = useState<DeviceItem[]>([]);
   useEffect(() => {
     getSummaryData(
       ({ data }) => {
@@ -61,6 +62,7 @@ const Summary = () => {
             ...item,
           }))
         );
+        setFilteredDevice(data.data.allDevices);
       },
       (error) => {
         console.log('에러', error);
@@ -112,7 +114,6 @@ const Summary = () => {
   const unusedDevice = summaryData?.totalProcessInfo.unusedDevice || {};
 
   const [keyword, setKeyword] = useState('');
-  const [filteredDevice, setFilteredDevice] = useState(deviceList);
 
   useEffect(() => {
     if (keyword) {
@@ -128,7 +129,7 @@ const Summary = () => {
   const navigate = useNavigate();
   const companyId = useParams<{ companyId: string }>();
   const getDetails = (name: string) => {
-    navigate(`/dashboard/${companyId}/${name}`);
+    navigate(`/dashboard/${companyId}/${name}`, { state: { deviceList } });
   };
 
   return (
@@ -277,7 +278,6 @@ const Summary = () => {
             />
           )}
           {filteredDevice.map((item) => (
-            // TODO: onClick 이벤트 추가(대시보드 페이지로 이동)
             <div
               key={item.deviceAlias}
               className={['device-card', `device-card--${item.status}`].join(
