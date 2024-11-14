@@ -3,56 +3,47 @@ import Button from 'components/atoms/button/Button';
 import Input from 'components/atoms/input/Input';
 import Text from 'components/atoms/text/Text';
 import PageButton from 'components/molecules/button/PageButton';
-import UserRegister from 'components/organisms/modal/UserRegister';
 import UserRow from 'components/molecules/table/UserRow';
 import Table from 'components/organisms/table/Table';
 import { Autocomplete, TextField } from '@mui/material';
+import Company from 'types/Company';
+import { deleteUser, getUserList } from 'services/user';
+import { getCompanies } from 'services/company';
+
+interface UserDetail {
+  loginId: string;
+  role: string;
+  email: string;
+  ownerName: string;
+  deletedAt: null;
+  company: Company;
+}
 
 const Users = () => {
   const headerMeta = ['No.', '회사명', '권한', 'ID', 'EMAIL', '성명', '삭제'];
   const colWidth = ['7%', '18%', '10%', '18%', '18%', '18%', '13%'];
-  const content = [
-    {
-      loginId: 'A00000000022',
-      role: 'ROLE_ADMIN',
-      email: 'admin2@test.com',
-      ownerName: 'admin계정2',
-      deletedAt: null,
-      company: {
-        id: 42,
-        companyName: 'test Company',
-        taxId: '000-00-00002',
+
+  const [content, setContent] = useState<UserDetail[]>([]);
+  const [companyList, setCompanyList] = useState<Company[]>([]);
+  useEffect(() => {
+    const keyword = '';
+    getCompanies(
+      keyword,
+      ({ data }) => {
+        setCompanyList(data.data);
       },
-    },
-    {
-      loginId: 'A00000000022',
-      role: 'ROLE_ADMIN',
-      email: 'admin2@test.com',
-      ownerName: 'admin계정2',
-      deletedAt: null,
-      company: {
-        id: 42,
-        companyName: 'test Company',
-        taxId: '000-00-00002',
+      (error) => console.log('에러', error)
+    );
+    getUserList(
+      null,
+      [],
+      null,
+      ({ data }) => {
+        setContent(data.data);
       },
-    },
-  ];
-  const companyList = [
-    {
-      id: 43,
-      companyName: 'Test Form Company',
-      taxId: '000-00-00001',
-    },
-    {
-      id: 42,
-      companyName: 'test Company',
-      taxId: '000-00-00002',
-    },
-  ];
-  const pageNumber = 1;
-  const pageSize = 10;
-  const totalPages = 1;
-  const totalElement = 2;
+      (error) => console.log('에러', error)
+    );
+  }, []);
 
   const roles = ['ROLE_ADMIN', 'ROLE_USER'];
   const [checkedRoles, setCheckedRoles] = useState<Set<string>>(new Set());
@@ -67,8 +58,6 @@ const Users = () => {
   };
 
   const [keyword, setKeyword] = useState('');
-  const [companyName, setCompanyName] = useState('');
-  const [filteredContent, setFilteredContent] = useState(content);
 
   const companies =
     companyList && companyList.length > 0
@@ -81,32 +70,43 @@ const Users = () => {
         })
       : [];
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const handleUserRegistration = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
+  const [companyId, setCompanyId] = useState<number | null>(null);
   useEffect(() => {
-    const filtered = content.filter((item) => {
-      const normalizedCompanyName = item.company.companyName
-        .replace(/[^\w\s]/g, '')
-        .toLowerCase();
-      const normalizedTaxId = item.company.taxId.replace(/[^0-9]/g, '');
-      const normalizedInput = companyName.replace(/[^\w\s]/g, '').toLowerCase();
-      const normalizedInputTaxId = companyName.replace(/[^0-9]/g, '');
+    getUserList(
+      companyId,
+      [...checkedRoles],
+      '',
+      ({ data }) => {
+        setContent(data.data);
+      },
+      (error) => console.log('에러', error)
+    );
+  }, [companyId, checkedRoles]);
 
-      return (
-        normalizedCompanyName.includes(normalizedInput) ||
-        normalizedTaxId.includes(normalizedInputTaxId)
-      );
-    });
-    setFilteredContent(filtered);
-  }, [companyName]);
+  const searchUsers = () => {
+    getUserList(
+      companyId,
+      [...checkedRoles],
+      keyword,
+      ({ data }) => {
+        setContent(data.data);
+      },
+      (error) => console.log('에러', error)
+    );
+  };
 
+  const handleUserDelete = (loginId: string) => {
+    deleteUser(
+      loginId,
+      () => {
+        alert('삭제 성공');
+        setContent((prevContent) =>
+          prevContent.filter((user) => user.loginId !== loginId)
+        );
+      },
+      (error) => console.log('에러', error)
+    );
+  };
   return (
     <div className="company-req__container">
       <div className="company-req__title">
@@ -139,18 +139,14 @@ const Users = () => {
               }
               return options;
             }}
-            onInputChange={(event, newInputValue) => {
-              setCompanyName(newInputValue);
+            onChange={(event, newValue) => {
+              if (newValue) {
+                setCompanyId(newValue.id); // 선택된 회사의 id 값을 companyId로 설정
+              } else {
+                setCompanyId(null); // 선택이 해제되었을 경우
+              }
             }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="회사명"
-                onChange={(e) => {
-                  setCompanyName(e.target.value);
-                }}
-              />
-            )}
+            renderInput={(params) => <TextField {...params} label="회사명" />}
           />
           <div className="company-users__checkbox">
             {roles.map((item) => (
@@ -178,34 +174,23 @@ const Users = () => {
             radius="rounded"
             shadow
             type="button"
-            // TODO: onClick event 구현 value에서 사업자 번호 추출해야됨
+            onClick={searchUsers}
           />
-        </div>
-        <div className="company-users__summary">
-          {/* TODO: api 연동후 사용자가 super일때는 hidden 처리 . admin일때는 보여줘야함 */}
-          <Button
-            size="medium"
-            label="+ 유저 추가"
-            radius="rounded"
-            shadow
-            type="button"
-            onClick={handleUserRegistration}
-          />
-          <UserRegister isOpen={isModalOpen} onClose={handleCloseModal} />
         </div>
       </div>
       <div className="company-req__table">
         <Table
           colWidth={colWidth}
           headerMeta={headerMeta}
-          content={filteredContent}
+          content={content as UserDetail[]}
           RowComponent={UserRow}
+          onDelete={handleUserDelete}
         />
       </div>
       {/* TODO: 페이지 이동 기능 추가 */}
-      <div className="company-req__page-btn">
+      {/* <div className="company-req__page-btn">
         <PageButton pageNumber={pageNumber} totalPages={totalPages} />
-      </div>
+      </div> */}
     </div>
   );
 };

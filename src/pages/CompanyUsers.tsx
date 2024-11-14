@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Text from 'components/atoms/text/Text';
 import Table from 'components/organisms/table/Table';
 import CompanyUserRow from 'components/molecules/table/CompanyUserRow';
@@ -6,40 +6,29 @@ import PageButton from 'components/molecules/button/PageButton';
 import Input from 'components/atoms/input/Input';
 import Button from 'components/atoms/button/Button';
 import './CompanyUsers.scss';
+import { getUserList } from 'services/user';
+import Company from 'types/Company';
+import UserRegister from 'components/organisms/modal/UserRegister';
 
+interface UserDetail {
+  loginId: string;
+  role: string;
+  email: string;
+  ownerName: string;
+  deletedAt: null;
+  company: Company;
+}
 const CompanyUsers = () => {
   const headerMeta = ['No.', '권한', 'ID', 'EMAIL', '성명', '삭제'];
   const colWidth = ['10%', '15%', '22%', '22%', '18%', '13%'];
-  const content = [
-    {
-      loginId: 'A00000000022',
-      role: 'ROLE_ADMIN',
-      email: 'admin2@test.com',
-      ownerName: 'admin계정2',
-      deletedAt: null,
-      company: {
-        id: 42,
-        companyName: 'test Company',
-        taxId: '000-00-00002',
-      },
-    },
-    {
-      loginId: 'A00000000022',
-      role: 'ROLE_ADMIN',
-      email: 'admin2@test.com',
-      ownerName: 'admin계정2',
-      deletedAt: null,
-      company: {
-        id: 42,
-        companyName: 'test Company',
-        taxId: '000-00-00002',
-      },
-    },
-  ];
-  const pageNumber = 1;
-  const pageSize = 10;
-  const totalPages = 1;
-  const totalElement = 2;
+  const userInfoStorage = localStorage.getItem('userInfoStorage');
+  const userInfo = JSON.parse(userInfoStorage || '');
+  const { companyId } = userInfo.state;
+  const [content, setContent] = useState<UserDetail[]>([]);
+  // const pageNumber = 1;
+  // const pageSize = 10;
+  // const totalPages = 1;
+  // const totalElement = 2;
 
   const roles = ['ROLE_ADMIN', 'ROLE_USER'];
   const [checkedRoles, setCheckedRoles] = useState<Set<string>>(new Set());
@@ -54,6 +43,51 @@ const CompanyUsers = () => {
   };
 
   const [keyword, setKeyword] = useState('');
+
+  useEffect(() => {
+    getUserList(
+      companyId,
+      [],
+      null,
+      ({ data }) => {
+        setContent(data.data);
+      },
+      (error) => console.log('에러', error)
+    );
+  }, []);
+
+  useEffect(() => {
+    getUserList(
+      companyId,
+      [...checkedRoles],
+      '',
+      ({ data }) => {
+        setContent(data.data);
+      },
+      (error) => console.log('에러', error)
+    );
+  }, [checkedRoles]);
+
+  const searchUsers = () => {
+    getUserList(
+      companyId,
+      [...checkedRoles],
+      keyword,
+      ({ data }) => {
+        setContent(data.data);
+      },
+      (error) => console.log('에러', error)
+    );
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleUserRegistration = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
   return (
     <div className="company-req__container">
       <div className="company-req__title">
@@ -88,44 +122,31 @@ const CompanyUsers = () => {
             radius="rounded"
             shadow
             type="button"
-            // TODO: onClick event 구현
+            onClick={searchUsers}
           />
         </div>
-        <div className="company-users__summary">
-          <div className="company-users__summary__btn">
-            <Button
-              size="medium"
-              label="+ 유저 등록"
-              radius="rounded"
-              shadow
-              type="button"
-              // TODO: onClick event 모달 띄우기 구현
-            />
-          </div>
-          <Text
-            startNumber={(pageNumber - 1) * pageSize + 1}
-            endNumber={
-              totalElement < pageNumber * pageSize
-                ? totalElement
-                : pageNumber * pageSize
-            }
-            totalItems={totalElement}
-            type="info"
-          />
-        </div>
+        <Button
+          size="medium"
+          label="+ 유저 등록"
+          radius="rounded"
+          shadow
+          type="button"
+          onClick={handleUserRegistration}
+        />
+        <UserRegister isOpen={isModalOpen} onClose={handleCloseModal} />
       </div>
       <div className="company-req__table">
         <Table
           colWidth={colWidth}
           headerMeta={headerMeta}
-          content={content}
+          content={content as UserDetail[]}
           RowComponent={CompanyUserRow}
         />
       </div>
       {/* TODO: 페이지 이동 기능 추가 */}
-      <div className="company-req__page-btn">
+      {/* <div className="company-req__page-btn">
         <PageButton pageNumber={pageNumber} totalPages={totalPages} />
-      </div>
+      </div> */}
     </div>
   );
 };
