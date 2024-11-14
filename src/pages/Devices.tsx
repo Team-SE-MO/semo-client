@@ -9,7 +9,6 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Button from 'components/atoms/button/Button';
 import './Devices.scss';
 
-type UserRole = 'ROLE_SUPER' | 'ROLE_ADMIN' | 'ROLE_USER';
 interface DeviceBase {
   deviceId: number;
   deviceAlias: string;
@@ -26,10 +25,12 @@ interface DeviceWithCompany extends DeviceBase {
   taxId: string;
 }
 const Devices = () => {
-  const userRole: UserRole = 'ROLE_SUPER' as UserRole;
+  const userInfoStorage = localStorage.getItem('userInfoStorage');
+  const userInfo = JSON.parse(userInfoStorage || '');
+  const { role } = userInfo.state;
 
   const headerMeta =
-    userRole === 'ROLE_SUPER'
+    role === 'ROLE_SUPER'
       ? [
           'No.',
           '회사명',
@@ -57,15 +58,15 @@ const Devices = () => {
         ];
 
   const colWidth =
-    userRole === 'ROLE_SUPER'
+    role === 'ROLE_SUPER'
       ? ['7%', '15%', '7%', '7%', '7%', '7%', '7%', '5%', '10%', '10%', '13%']
       : ['7%', '7%', '7%', '7%', '7%', '7%', '5%', '10%', '10%', '13%'];
 
   const formContent: (DeviceBase | DeviceWithCompany)[] = [
     {
       deviceId: 1,
-      companyName: 'SEMO',
-      taxId: '000-00-00007',
+      // companyName: 'SEMO',
+      // taxId: '000-00-00007',
       deviceAlias: 'LOCALHOST',
       type: 'ORACLE',
       ip: '127.0.0.1',
@@ -77,8 +78,8 @@ const Devices = () => {
     },
     {
       deviceId: 2,
-      companyName: '(주)네모바지',
-      taxId: '000-00-00002',
+      // companyName: '(주)네모바지',
+      // taxId: '000-00-00002',
       deviceAlias: 'LOCALHOST',
       type: 'ORACLE',
       ip: '127.0.0.1',
@@ -90,8 +91,8 @@ const Devices = () => {
     },
     {
       deviceId: 3,
-      companyName: '(주)네모바지',
-      taxId: '000-00-00002',
+      // companyName: '(주)네모바지',
+      // taxId: '000-00-00002',
       deviceAlias: 'LOCALHOST1',
       type: 'ORACLE',
       ip: '127.0.0.1',
@@ -145,7 +146,7 @@ const Devices = () => {
   const [filteredContent, setFilteredContent] = useState(formContent);
 
   useEffect(() => {
-    if (userRole === 'ROLE_SUPER') {
+    if (role === 'ROLE_SUPER') {
       const filtered = (formContent as DeviceWithCompany[]).filter((item) => {
         const normalizedCompanyName = item.companyName
           .replace(/[^\w\s]/g, '')
@@ -183,7 +184,7 @@ const Devices = () => {
         <Text content="데이터베이스 등록 정보" type="subtitle" />
       </div>
       <div className="devices__info">
-        {userRole === 'ROLE_ADMIN' && (
+        {role === 'ROLE_ADMIN' && (
           <div className="devices__info__register-btn">
             <Button
               size="medium"
@@ -201,7 +202,7 @@ const Devices = () => {
           </div>
         )}
         <div className="devices__info__row">
-          {userRole === 'ROLE_SUPER' ? (
+          {role === 'ROLE_SUPER' ? (
             <div className="devices__info__search">
               {companies && (
                 <Autocomplete
