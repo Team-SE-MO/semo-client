@@ -9,30 +9,28 @@ import Button from 'components/atoms/button/Button';
 import logo from 'assets/images/semo_logo_header.svg';
 
 const Header = () => {
-  // const token = localStorage.getItem('token');
-  // 테스트용 임시 토큰 - true, false 로 테스트!
-  const token = true;
-  // const userRole = jwt토큰 decode 진행해서 얻기;
-  // 테스트용 임시 유저 권한 - super, admin, user 로 테스트!
-  type UserRole = 'ROLE_SUPER' | 'ROLE_ADMIN' | 'ROLE_USER';
-  const userRole: UserRole = 'ROLE_SUPER';
+  const userInfoStorage = localStorage.getItem('userInfoStorage');
+  const userInfo = JSON.parse(userInfoStorage || '');
   const [isProfileDetailOpen, setIsProfileDetailOpen] = useState(false);
-  // 테스트용 임시 유저 이름
-  const userName = '태연님';
+  const { isLoggedIn } = userInfo.state;
+  const { role } = userInfo.state;
+  const { ownerName } = userInfo.state;
+  const { companyId } = userInfo.state;
+  const { loginId } = userInfo.state;
   const items = [
     {
       label: '유저 관리',
-      route: '/user-management',
+      route: role === 'ROLE_SUPER' ? '/users' : `/users/${companyId}`,
     },
     {
       label: 'DB관리',
-      route: '/database-management',
+      route: '/devices',
     },
-    ...(userRole === 'ROLE_SUPER'
+    ...(role === 'ROLE_SUPER'
       ? [
           {
             label: '요청 관리',
-            route: 'request-management',
+            route: 'user-req',
           },
         ]
       : []),
@@ -46,80 +44,72 @@ const Header = () => {
   const handleClosePopup = () => {
     setIsProfileDetailOpen(false);
   };
-
+  const homePath = {
+    ROLE_SUPER: '/devices',
+    ROLE_ADMIN: `/dashboard/${companyId}`,
+    ROLE_USER: `/dashboard/${companyId}`,
+  };
   const handleHomeClick = () => {
-    let homePath;
-    switch (userRole as UserRole) {
-      case 'ROLE_SUPER':
-        homePath = '/';
-        break;
-      case 'ROLE_ADMIN':
-        homePath = '/';
-        break;
-      case 'ROLE_USER':
-        homePath = '/';
-        break;
-      default:
-        homePath = '/';
-    }
-    navigate(homePath);
+    navigate(!role ? '/' : homePath[role as keyof typeof homePath]);
   };
 
   return (
     <div className="header__container">
-      <img src={logo} alt="Logo" className="header__logo" />
-      {token ? (
-        <>
-          <div className="header__menu">
-            <div
-              className="header__menu__home"
-              onClick={handleHomeClick}
-              role="presentation"
-            >
-              <Text content="홈" type="subtitle" bold />
-            </div>
-            {(userRole === 'ROLE_SUPER' || userRole === 'ROLE_ADMIN') && (
-              <div className="header__menu__item">
-                <Text content="관리자 메뉴" type="subtitle" bold />
-                <div className="header__menu__dropdown">
-                  <Dropdown items={items} />
-                </div>
+      <div className="header__content">
+        <img src={logo} alt="Logo" className="header__logo" />
+        {isLoggedIn ? (
+          <>
+            <div className="header__menu">
+              <div
+                className="header__menu__home"
+                onClick={handleHomeClick}
+                role="presentation"
+              >
+                <Text content="홈" type="subtitle" bold />
               </div>
-            )}
-          </div>
-          <div className="header__profile">
-            <Profile
-              userName={userName}
-              arrangement="horizontal"
-              onClick={handleProfileClick}
-            />
-            {isProfileDetailOpen && (
-              <ProfileDetail
-                userName={userName}
-                userId="test123456"
-                onClose={handleClosePopup}
+              {(role === 'ROLE_SUPER' || role === 'ROLE_ADMIN') && (
+                <div className="header__menu__item">
+                  <Text content="관리자 메뉴" type="subtitle" bold />
+                  <div className="header__menu__dropdown">
+                    <Dropdown items={items} />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="header__profile">
+              <Profile
+                userName={ownerName}
+                arrangement="horizontal"
+                onClick={handleProfileClick}
               />
-            )}
+              {isProfileDetailOpen && (
+                <ProfileDetail
+                  userName={ownerName}
+                  userId={loginId}
+                  onClose={handleClosePopup}
+                />
+              )}
+            </div>
+          </>
+        ) : (
+          <div className="header__auth">
+            <Button
+              size="medium"
+              label="로그인"
+              type="button"
+              radius="rounded"
+              onClick={() => navigate('/login')}
+            />
+            <Button
+              size="medium"
+              label="회원가입"
+              type="button"
+              radius="rounded"
+              onClick={() => navigate('/register')}
+            />
           </div>
-        </>
-      ) : (
-        <div className="header__auth">
-          <Button
-            size="medium"
-            label="로그인"
-            type="button"
-            radius="rounded"
-            onClick={() => navigate('/login')}
-          />
-          <Button
-            size="medium"
-            label="회원가입"
-            type="button"
-            radius="rounded"
-            onClick={() => navigate('/register')}
-          />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
