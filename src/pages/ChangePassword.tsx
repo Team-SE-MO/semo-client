@@ -9,8 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ChangePassword = () => {
   const emailRegEx =
-    /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/i;
-
+    /^[A-Za-z0-9]+([.-]?[A-Za-z0-9]+)*@[A-Za-z0-9]+([.-]?[A-Za-z0-9]+)*.[A-Za-z]{2,}$/i;
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
   const [emailValid, setEmailValid] = useState(false);
