@@ -4,6 +4,7 @@ import { createCompanyRequest } from 'services/company';
 import Text from 'components/atoms/text/Text';
 import Button from 'components/atoms/button/Button';
 import Input from 'components/atoms/input/Input';
+import Swal from 'sweetalert2';
 
 interface CompanyRegisterProps {
   isOpen: boolean;
@@ -65,7 +66,12 @@ const CompanyRegister = ({ isOpen, onClose }: CompanyRegisterProps) => {
       !formData.taxId ||
       !formData.ownerName
     ) {
-      alert('모든 정보를 입력해주세요');
+      Swal.fire({
+        title: '알림',
+        text: '모든 정보를 입력해주세요',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
       return;
     }
     createCompanyRequest(
@@ -74,7 +80,12 @@ const CompanyRegister = ({ isOpen, onClose }: CompanyRegisterProps) => {
       formData.taxId,
       formData.ownerName,
       (responese) => {
-        alert(responese.data.message);
+        Swal.fire({
+          title: '알림',
+          text: responese.data.message,
+          icon: 'success',
+          confirmButtonText: '확인',
+        });
         onClose();
       },
       (error) => console.log('에러', error)

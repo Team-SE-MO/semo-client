@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from 'components/atoms/button/Button';
 import { registerUser, updateUserFormStatus } from 'services/user';
 import { sendEmail } from 'services/email';
+import Swal from 'sweetalert2';
 
 interface UserReqRowProps {
   i: number;
@@ -43,7 +44,12 @@ const UserReqRow = ({ i, content }: UserReqRowProps) => {
               'REGISTER_MEMBER',
               data.data,
               () => {
-                alert('승인 처리 완료');
+                Swal.fire({
+                  title: '알림',
+                  text: '사용자 가입이 완료되었습니다.',
+                  icon: 'success',
+                  confirmButtonText: '확인',
+                });
               },
               (sendEmailError) => console.log('이메일 에러:', sendEmailError)
             );
@@ -69,7 +75,12 @@ const UserReqRow = ({ i, content }: UserReqRowProps) => {
           'FAIL_MEMBER',
           rowData.email,
           () => {
-            alert('거절 처리 완료');
+            Swal.fire({
+              title: '알림',
+              text: '사용자 가입 거절이 완료되었습니다.',
+              icon: 'success',
+              confirmButtonText: '확인',
+            });
           },
           (sendEmailError) => console.log('이메일 에러:', sendEmailError)
         );
