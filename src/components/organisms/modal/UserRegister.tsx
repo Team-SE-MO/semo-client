@@ -5,6 +5,7 @@ import Button from 'components/atoms/button/Button';
 import Input from 'components/atoms/input/Input';
 import { getEmailStatus, registerUser } from 'services/user';
 import { sendEmail } from 'services/email';
+import Swal from 'sweetalert2';
 
 interface UserRegisterProps {
   isOpen: boolean;
@@ -33,7 +34,21 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
       formData.email,
       ({ data }) => {
         setIsEmailValid(data);
-        alert('사용 가능한 이메일입니다.');
+        if (data) {
+          Swal.fire({
+            title: '알림',
+            text: '사용 가능한 이메일입니다.',
+            icon: 'success',
+            confirmButtonText: '확인',
+          });
+        } else {
+          Swal.fire({
+            title: '알림',
+            text: '이미 사용 중인 이메일입니다.',
+            icon: 'error',
+            confirmButtonText: '확인',
+          });
+        }
       },
       (error) => console.log('에러', error)
     );
@@ -61,11 +76,21 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
 
   const handleSubmit = () => {
     if (!formData.email || !formData.ownerName) {
-      alert('모든 정보를 입력하세요');
+      Swal.fire({
+        title: '알림',
+        text: '모든 정보를 입력해 주세요.',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
       return;
     }
     if (!isEmailValid) {
-      alert('이메일 중복 체크 필요');
+      Swal.fire({
+        title: '알림',
+        text: '이메일 중복 체크를 진행해 주세요.',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
       return;
     }
     registerUser(
@@ -77,7 +102,12 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
           'REGISTER_MEMBER',
           data.data,
           () => {
-            alert('승인 처리 완료');
+            Swal.fire({
+              title: '알림',
+              text: '사용자 가입이 완료되었습니다.',
+              icon: 'success',
+              confirmButtonText: '확인',
+            });
           },
           (sendEmailError) => console.log('이메일 에러:', sendEmailError)
         );

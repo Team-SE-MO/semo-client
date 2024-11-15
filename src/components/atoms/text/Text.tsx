@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Text.scss';
+import Swal from 'sweetalert2';
 
 interface TextProps {
   content?: string;
@@ -46,7 +47,12 @@ const Text = ({
         setTimeLeft((prev) => {
           if (prev <= 1) {
             if (!alertShown) {
-              alert('코드를 재발급 받으세요');
+              Swal.fire({
+                title: '알림',
+                text: '코드를 재발급 받으세요',
+                icon: 'warning',
+                confirmButtonText: '확인',
+              });
               alertShown = true;
             }
             clearInterval(timer);

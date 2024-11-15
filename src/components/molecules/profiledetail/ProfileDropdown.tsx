@@ -8,6 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Text from 'components/atoms/text/Text';
 import useAuthStore from 'store/useAuthStore';
 import { getLogout } from 'services/user';
+import Swal from 'sweetalert2';
 import Profile from '../profile/Profile';
 
 interface ProfileDropdownProps {
@@ -50,7 +51,12 @@ const ProfileDropdown = ({
         localStorage.removeItem('accessToken');
         const { logout } = useAuthStore.getState();
         logout();
-        alert('로그아웃 되었습니다.');
+        Swal.fire({
+          title: '알림',
+          text: '로그아웃이 완료되었습니다.',
+          icon: 'success',
+          confirmButtonText: '확인',
+        });
         navigate('/login');
       },
       (error) => console.log('에러', error)

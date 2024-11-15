@@ -6,6 +6,7 @@ import { TextField } from '@mui/material';
 import Button from 'components/atoms/button/Button';
 import Input from 'components/atoms/input/Input';
 import Toast from 'components/atoms/toast/Toast';
+import Swal from 'sweetalert2';
 
 interface DatabaseFormProps {
   isOpen: boolean;
@@ -78,7 +79,12 @@ const DatabaseForm = ({
 
   const validateInputs = () => {
     if (!databaseAlias || !type || !ip || !port || !sid || !username) {
-      alert('필수 필드를 모두 입력해주세요.');
+      Swal.fire({
+        title: '알림',
+        text: '필수 필드를 모두 입력해주세요.',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
       return false;
     }
     return true;

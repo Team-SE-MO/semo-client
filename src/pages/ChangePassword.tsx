@@ -4,8 +4,9 @@ import Input from 'components/atoms/input/Input';
 import Button from 'components/atoms/button/Button';
 import './ChangePassword.scss';
 import { sendAuthCode, verifyEmail } from 'services/email';
-import { updatePassword } from 'services/user';
+import { updatePassword, getLogout } from 'services/user';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const ChangePassword = () => {
   const emailRegEx =
@@ -37,17 +38,32 @@ const ChangePassword = () => {
 
   const handleRequestAuthCode = () => {
     if (!email) {
-      alert('이메일 입력 필요');
+      Swal.fire({
+        title: '알림',
+        text: '이메일을 입력해주세요.',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
       return;
     }
     if (!emailValid) {
-      alert('이메일 인증 필요');
+      Swal.fire({
+        title: '알림',
+        text: '올바른 이메일 형식이 아닙니다.',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
       return;
     }
     sendAuthCode(
       email,
       () => {
-        alert('이메일을 발송했습니다.');
+        Swal.fire({
+          title: '알림',
+          text: '이메일로 인증코드를 발송하였습니다.',
+          icon: 'success',
+          confirmButtonText: '확인',
+        });
         setCodeSent((prev) => prev + 1);
         setResetTimer((prev) => prev + 1);
       },
@@ -58,6 +74,16 @@ const ChangePassword = () => {
   };
 
   const handleEmailVerification = () => {
+    if (!code) {
+      Swal.fire({
+        title: '알림',
+        text: '인증 코드를 입력해주세요.',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
+      return;
+    }
+
     verifyEmail(
       email,
       code,
@@ -65,6 +91,12 @@ const ChangePassword = () => {
         setStep(2);
       },
       (verifyError) => {
+        Swal.fire({
+          title: '알림',
+          text: '인증 코드가 일치하지 않습니다. 다시 확인하여 주시기 바랍니다.',
+          icon: 'error',
+          confirmButtonText: '확인',
+        });
         console.log('에러', verifyError);
       }
     );
@@ -72,18 +104,33 @@ const ChangePassword = () => {
   const navigate = useNavigate();
   const changePassword = () => {
     if (!pwd || !confirmPwd) {
-      alert('비밀번호를 입력하세요');
+      Swal.fire({
+        title: '알림',
+        text: '비밀번호를 입력해주세요.',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
       return;
     }
     if (pwd && confirmPwd && pwd !== confirmPwd) {
-      alert('일치하지 않습니다.');
+      Swal.fire({
+        title: '알림',
+        text: '비밀번호가 일치하지 않습니다. 다시 확인하여 주시기 바랍니다.',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
       return;
     }
     updatePassword(
       email,
       pwd,
       () => {
-        alert('성공적으로 변경했습니다.');
+        Swal.fire({
+          title: '알림',
+          text: '비밀번호가 변경되었습니다.',
+          icon: 'success',
+          confirmButtonText: '확인',
+        });
         navigate('/login');
       },
       (changePwdError) => console.log('비밀번호 변경 에러', changePwdError)
