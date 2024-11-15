@@ -2,10 +2,10 @@
 
 .table__row {
   &__status--pending {
-    color: $chart-color-orange;
+    color: $chart-color-orange !important;
   }
 
   &__status--approved {
-    color: $success-color;
+    color: $success-color !important;
   }
 }
