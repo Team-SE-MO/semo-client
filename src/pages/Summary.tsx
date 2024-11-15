@@ -128,8 +128,10 @@ const Summary = () => {
 
   const navigate = useNavigate();
   const companyId = useParams<{ companyId: string }>();
-  const getDetails = (name: string) => {
-    navigate(`/dashboard/${companyId}/${name}`, { state: { deviceList } });
+  const getDetails = (deviceAlias: string) => {
+    navigate(`/dashboard/${companyId}/${deviceAlias}`, {
+      state: { deviceList },
+    });
   };
 
   return (
