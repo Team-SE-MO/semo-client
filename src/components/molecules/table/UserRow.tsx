@@ -27,14 +27,14 @@ const UserRow = ({ i, content, onDelete }: UserRowProps) => {
     }
   };
   return (
-    <tr>
-      <td className="table__row">{i + 1}</td>
-      <td className="table__row">{rowData.company.companyName}</td>
-      <td className="table__row">{rowData.role.replace('ROLE_', '')}</td>
-      <td className="table__row">{rowData.loginId}</td>
-      <td className="table__row">{rowData.email}</td>
-      <td className="table__row">{rowData.ownerName}</td>
-      <td className="table__row">
+    <tr className="table__row">
+      <td className="table__data">{i + 1}</td>
+      <td className="table__data">{rowData.company.companyName}</td>
+      <td className="table__data">{rowData.role.replace('ROLE_', '')}</td>
+      <td className="table__data">{rowData.loginId}</td>
+      <td className="table__data">{rowData.email}</td>
+      <td className="table__data">{rowData.ownerName}</td>
+      <td className="table__data">
         <div className="table__btn">
           <Button
             size="small"
