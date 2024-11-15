@@ -101,7 +101,13 @@ const ChangePassword = () => {
       }
     );
   };
+
   const navigate = useNavigate();
+
+  const goToLogin = () => {
+    navigate('/login', { replace: true });
+  };
+
   const changePassword = () => {
     if (!pwd || !confirmPwd) {
       Swal.fire({
@@ -131,7 +137,7 @@ const ChangePassword = () => {
           icon: 'success',
           confirmButtonText: '확인',
         });
-        navigate('/login');
+        goToLogin();
       },
       (changePwdError) => console.log('비밀번호 변경 에러', changePwdError)
     );
@@ -204,7 +210,7 @@ const ChangePassword = () => {
       {step === 2 && (
         <div className="set-password__container">
           <Text content={content2} type="subtitle" />
-          <form className="set-password__form">
+          <div className="set-password__form">
             <div>
               <Input
                 size="medium"
@@ -240,12 +246,12 @@ const ChangePassword = () => {
             </div>
             <Button
               size="xlarge"
-              type="submit"
+              type="button"
               label="비밀번호 변경하기"
               radius="oval"
               onClick={changePassword}
             />
-          </form>
+          </div>
         </div>
       )}
     </div>
