@@ -1,0 +1,11 @@
+@import '../../../styles/variables';
+
+.table__row {
+  &__status--pending {
+    color: $chart-color-orange !important;
+  }
+
+  &__status--approved {
+    color: $success-color !important;
+  }
+}

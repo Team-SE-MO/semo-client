@@ -8,6 +8,7 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 import useAuthStore from 'store/useAuthStore';
 import Role from 'types/Role';
 import './Login.scss';
+import Swal from 'sweetalert2';
 
 interface CustomJwtPayload extends JwtPayload {
   role: Role;
@@ -37,6 +38,12 @@ const Login = () => {
       useAuthStore.getState();
 
     if (!username || !password) {
+      Swal.fire({
+        title: '알림',
+        text: '아이디와 비밀번호를 모두 입력해 주십시오.',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
       return;
     }
     getLogin(
@@ -62,15 +69,34 @@ const Login = () => {
           ROLE_ADMIN: `/dashboard/${companyId}`,
           ROLE_USER: `/dashboard/${companyId}`,
         };
-        alert('로그인 성공');
-        navigate(
-          data.flag === false && password === '0000'
-            ? '/change-password'
-            : homePage[role as keyof typeof homePage]
-        );
+
+        Swal.fire({
+          title: '알림',
+          text: '로그인에 성공하였습니다.',
+          icon: 'success',
+          confirmButtonText: '확인',
+        });
+
+        if (data.flag === false && password === '0000') {
+          Swal.fire({
+            title: '알림',
+            text: '초기 비밀번호입니다. 비밀번호를 재설정해 주십시오.',
+            icon: 'warning',
+            confirmButtonText: '확인',
+          }).then(() => {
+            navigate('/change-password');
+          });
+        } else {
+          navigate(homePage[role as keyof typeof homePage]);
+        }
       },
       (error) => {
-        // TODO: 알림 추가
+        Swal.fire({
+          title: '알림',
+          text: '로그인에 실패하였습니다.',
+          icon: 'error',
+          confirmButtonText: '확인',
+        });
         console.log('에러', error);
       }
     );

@@ -9,6 +9,7 @@ import { Autocomplete, TextField } from '@mui/material';
 import Company from 'types/Company';
 import { deleteUser, getUserList } from 'services/user';
 import { getCompanies } from 'services/company';
+import Swal from 'sweetalert2';
 
 interface UserDetail {
   loginId: string;
@@ -81,6 +82,12 @@ const Users = () => {
       keyword,
       ({ data }) => {
         setContent(data.data);
+        Swal.fire({
+          title: '알림',
+          text: '사용자 목록 조회가 완료되었습니다.',
+          icon: 'success',
+          confirmButtonText: '확인',
+        });
       },
       (error) => console.log('에러', error)
     );
@@ -90,7 +97,12 @@ const Users = () => {
     deleteUser(
       loginId,
       () => {
-        alert('삭제 성공');
+        Swal.fire({
+          title: '알림',
+          text: '사용자 삭제가 완료되었습니다.',
+          icon: 'success',
+          confirmButtonText: '확인',
+        });
         setContent((prevContent) =>
           prevContent.filter((user) => user.loginId !== loginId)
         );

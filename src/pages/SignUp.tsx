@@ -9,6 +9,7 @@ import Button from 'components/atoms/button/Button';
 import Text from 'components/atoms/text/Text';
 import Input from 'components/atoms/input/Input';
 import './SignUp.scss';
+import Swal from 'sweetalert2';
 
 const SignUp = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,7 +34,12 @@ const SignUp = () => {
       email,
       ({ data }) => {
         setIsEmailValid(data);
-        alert('사용 가능한 이메일입니다.');
+        Swal.fire({
+          title: '알림',
+          text: '사용 가능한 이메일입니다.',
+          icon: 'success',
+          confirmButtonText: '확인',
+        });
       },
       (error) => console.log('에러', error)
     );
@@ -66,11 +72,21 @@ const SignUp = () => {
   const [ownerName, setOwnerName] = useState('');
   const handleSubmit = () => {
     if (!email || !companyId || !ownerName) {
-      alert('모든 정보를 입력하세요');
+      Swal.fire({
+        title: '알림',
+        text: '모든 정보를 입력하세요',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
       return;
     }
     if (!isEmailValid) {
-      alert('이메일 중복 체크 필요');
+      Swal.fire({
+        title: '알림',
+        text: '이메일 중복 체크를 진행해 주세요.',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
       return;
     }
     createUserRequest(
@@ -78,7 +94,12 @@ const SignUp = () => {
       companyId,
       ownerName,
       (response) => {
-        alert(response.data.message);
+        Swal.fire({
+          title: '알림',
+          text: response.data.message,
+          icon: 'success',
+          confirmButtonText: '확인',
+        });
         navigate('/');
       },
       (error) => console.log(error)

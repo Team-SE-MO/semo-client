@@ -9,6 +9,7 @@ import './CompanyUsers.scss';
 import { getUserList } from 'services/user';
 import Company from 'types/Company';
 import UserRegister from 'components/organisms/modal/UserRegister';
+import Swal from 'sweetalert2';
 
 interface UserDetail {
   loginId: string;
@@ -63,6 +64,12 @@ const CompanyUsers = () => {
       keyword,
       ({ data }) => {
         setContent(data.data);
+        Swal.fire({
+          title: '알림',
+          text: '사용자 목록 조회가 완료되었습니다.',
+          icon: 'success',
+          confirmButtonText: '확인',
+        });
       },
       (error) => console.log('에러', error)
     );

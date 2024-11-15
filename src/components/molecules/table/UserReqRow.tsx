@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import './UserReqRow.scss';
 import Button from 'components/atoms/button/Button';
 import { registerUser, updateUserFormStatus } from 'services/user';
 import { sendEmail } from 'services/email';
+import Swal from 'sweetalert2';
 
 interface UserReqRowProps {
   i: number;
@@ -43,7 +45,12 @@ const UserReqRow = ({ i, content }: UserReqRowProps) => {
               'REGISTER_MEMBER',
               data.data,
               () => {
-                alert('승인 처리 완료');
+                Swal.fire({
+                  title: '알림',
+                  text: '사용자 가입이 완료되었습니다.',
+                  icon: 'success',
+                  confirmButtonText: '확인',
+                });
               },
               (sendEmailError) => console.log('이메일 에러:', sendEmailError)
             );
@@ -69,7 +76,12 @@ const UserReqRow = ({ i, content }: UserReqRowProps) => {
           'FAIL_MEMBER',
           rowData.email,
           () => {
-            alert('거절 처리 완료');
+            Swal.fire({
+              title: '알림',
+              text: '사용자 가입 거절이 완료되었습니다.',
+              icon: 'success',
+              confirmButtonText: '확인',
+            });
           },
           (sendEmailError) => console.log('이메일 에러:', sendEmailError)
         );
@@ -78,13 +90,27 @@ const UserReqRow = ({ i, content }: UserReqRowProps) => {
         console.log('Update Status Error:', updateStatusError)
     );
   };
+
+  const getStatusClassName = (status: string) => {
+    switch (status) {
+      case 'PENDING':
+        return 'table__row__status--pending';
+      case 'APPROVED':
+        return 'table__row__status--approved';
+      default:
+        return '';
+    }
+  };
+
   return (
     <tr>
       <td className="table__row">{i + 1}</td>
       <td className="table__row">{rowData.company.companyName}</td>
       <td className="table__row">{rowData.ownerName}</td>
       <td className="table__row">{rowData.email}</td>
-      <td className="table__row">{rowData.formStatus}</td>
+      <td className={`table__row ${getStatusClassName(rowData.formStatus)}`}>
+        {rowData.formStatus}
+      </td>
       <td className="table__row">{rowData.requestDate}</td>
       {rowData.formStatus === 'PENDING' ? (
         <td className="table__row">
