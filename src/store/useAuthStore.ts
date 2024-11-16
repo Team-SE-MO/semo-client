@@ -23,7 +23,13 @@ const useAuthStore = createStore(
       isLoggedIn: false,
       login: () => set({ isLoggedIn: true }),
       logout: () =>
-        set({ isLoggedIn: false, role: null, loginId: null, companyId: null }),
+        set({
+          isLoggedIn: false,
+          role: null,
+          loginId: null,
+          companyId: null,
+          ownerName: null,
+        }),
       role: null,
       setRole: (role: Role) => set({ role }),
       loginId: null,

@@ -7,6 +7,7 @@ import { sendAuthCode, verifyEmail } from 'services/email';
 import { updatePassword, getLogout } from 'services/user';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import useAuthStore from 'store/useAuthStore';
 
 const ChangePassword = () => {
   const emailRegEx =
@@ -104,7 +105,21 @@ const ChangePassword = () => {
 
   const navigate = useNavigate();
 
+  const userInfoStorage = localStorage.getItem('userInfoStorage');
+  const userInfo = JSON.parse(userInfoStorage || '');
+  const { isLoggedIn } = userInfo.state;
+
   const goToLogin = () => {
+    if (isLoggedIn) {
+      getLogout(
+        () => {
+          localStorage.removeItem('accessToken');
+          const { logout } = useAuthStore.getState();
+          logout();
+        },
+        (error) => console.log('에러', error)
+      );
+    }
     navigate('/login', { replace: true });
   };
 
