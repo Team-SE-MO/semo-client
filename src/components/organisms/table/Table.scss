@@ -1,0 +1,30 @@
+@import 'styles/variables';
+
+.table {
+  width: 100%;
+  &__head {
+    background-color: #f5f5f5;
+    height: 35px;
+    vertical-align: middle;
+    color: $main-text-color;
+    font-weight: 600;
+  }
+  &__row {
+    height: 50px;
+    vertical-align: middle;
+  }
+  &__row:hover {
+    background-color: #f9f9f9;
+  }
+  &__data {
+    max-height: 50px;
+    vertical-align: middle;
+    border-top: 1px solid $main-theme-color;
+    color: $main-text-color;
+  }
+  &__btn {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+}

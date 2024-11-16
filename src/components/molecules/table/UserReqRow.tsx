@@ -103,17 +103,17 @@ const UserReqRow = ({ i, content }: UserReqRowProps) => {
   };
 
   return (
-    <tr>
-      <td className="table__row">{i + 1}</td>
-      <td className="table__row">{rowData.company.companyName}</td>
-      <td className="table__row">{rowData.ownerName}</td>
-      <td className="table__row">{rowData.email}</td>
+    <tr className="table__row">
+      <td className="table__data">{i + 1}</td>
+      <td className="table__data">{rowData.company.companyName}</td>
+      <td className="table__data">{rowData.ownerName}</td>
+      <td className="table__data">{rowData.email}</td>
       <td className={`table__row ${getStatusClassName(rowData.formStatus)}`}>
         {rowData.formStatus}
       </td>
-      <td className="table__row">{rowData.requestDate}</td>
+      <td className="table__data">{rowData.requestDate}</td>
       {rowData.formStatus === 'PENDING' ? (
-        <td className="table__row">
+        <td className="table__data">
           <div className="table__btn">
             <Button
               size="small"
@@ -134,7 +134,7 @@ const UserReqRow = ({ i, content }: UserReqRowProps) => {
           </div>
         </td>
       ) : (
-        <td className="table__row">{rowData.approvedAt}</td>
+        <td className="table__data">{rowData.approvedAt}</td>
       )}
     </tr>
   );
