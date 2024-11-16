@@ -22,8 +22,6 @@ const App = () => {
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Main />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/login" element={<Login />} />
             <Route path="/user-req" element={<UserRequests />} />
             <Route path="/company-req" element={<CompanyRequests />} />
             <Route path="/change-password" element={<ChangePassword />} />
@@ -36,6 +34,8 @@ const App = () => {
               element={<Dashboard />}
             />
           </Route>
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </div>
