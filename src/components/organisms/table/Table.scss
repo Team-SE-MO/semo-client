@@ -21,6 +21,13 @@
     vertical-align: middle;
     border-top: 1px solid $main-theme-color;
     color: $main-text-color;
+    &--pending {
+      color: $chart-color-orange !important;
+    }
+
+    &--approved {
+      color: $success-color !important;
+    }
   }
   &__btn {
     display: flex;

@@ -94,7 +94,11 @@ const CompanyReqRow = ({ i, pageIndex, content }: CompanyReqRowProps) => {
       <td className="table__data">{rowData.taxId}</td>
       <td className="table__data">{rowData.ownerName}</td>
       <td className="table__data">{rowData.email}</td>
-      <td className="table__data">{rowData.formStatus}</td>
+      <td
+        className={`table__data table__data--${rowData.formStatus.toLowerCase()}`}
+      >
+        {rowData.formStatus}
+      </td>
       <td className="table__data">{rowData.requestDate}</td>
       {rowData.formStatus === 'PENDING' ? (
         <td className="table__data">

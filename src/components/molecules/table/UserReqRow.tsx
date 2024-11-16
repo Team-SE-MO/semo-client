@@ -3,7 +3,6 @@ import Button from 'components/atoms/button/Button';
 import { registerUser, updateUserFormStatus } from 'services/user';
 import { sendEmail } from 'services/email';
 import Swal from 'sweetalert2';
-import './UserReqRow.scss';
 
 interface UserReqRowProps {
   i: number;
@@ -92,17 +91,6 @@ const UserReqRow = ({ i, pageIndex, content }: UserReqRowProps) => {
     );
   };
 
-  const getStatusClassName = (status: string) => {
-    switch (status) {
-      case 'PENDING':
-        return 'table__row__status--pending';
-      case 'APPROVED':
-        return 'table__row__status--approved';
-      default:
-        return '';
-    }
-  };
-
   return (
     <tr className="table__row">
       <td className="table__data">
@@ -111,7 +99,9 @@ const UserReqRow = ({ i, pageIndex, content }: UserReqRowProps) => {
       <td className="table__data">{rowData.company.companyName}</td>
       <td className="table__data">{rowData.ownerName}</td>
       <td className="table__data">{rowData.email}</td>
-      <td className={`table__row ${getStatusClassName(rowData.formStatus)}`}>
+      <td
+        className={`table__data table__data--${rowData.formStatus.toLowerCase()}`}
+      >
         {rowData.formStatus}
       </td>
       <td className="table__data">{rowData.requestDate}</td>
