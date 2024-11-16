@@ -22,11 +22,10 @@
     border-top: 1px solid $main-theme-color;
     color: $main-text-color;
     &--pending {
-      color: $chart-color-orange !important;
+      color: $chart-color-orange;
     }
-
     &--approved {
-      color: $success-color !important;
+      color: $success-color;
     }
   }
   &__btn {
