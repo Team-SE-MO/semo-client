@@ -73,6 +73,7 @@ const createUserRequest = async (
 };
 
 const getUserFormList = async (
+  page: number | null,
   success: (response: AxiosResponse) => void,
   fail: (error: AxiosError) => void
 ): Promise<void> => {
@@ -81,6 +82,9 @@ const getUserFormList = async (
     headers: { Authorization: `Bearer ${token}` },
     method: 'get',
     url: '/member/form',
+    params: {
+      page,
+    },
   })
     .then(success)
     .catch(fail);
