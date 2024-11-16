@@ -5,6 +5,38 @@ import Text from 'components/atoms/text/Text';
 
 import './BatchDashboard.scss';
 
+const subMockData = {
+  code: 200,
+  message: '성공적으로 일별 Job의 실행시간을 조회했습니다.',
+  data: {
+    executionDate: {
+      '2024-11-15': {
+        storeJobDuration: 6.2,
+        retentionJobDuration: 0.0,
+      },
+      '2024-11-14': {
+        storeJobDuration: 24.8,
+        retentionJobDuration: 0.0,
+      },
+      '2024-11-13': {
+        storeJobDuration: 42.4,
+        retentionJobDuration: 0.8,
+      },
+      '2024-11-12': {
+        storeJobDuration: 27.4,
+        retentionJobDuration: 0.3,
+      },
+      '2024-11-11': {
+        storeJobDuration: 0.0,
+        retentionJobDuration: 0.0,
+      },
+      '2024-11-10': {
+        storeJobDuration: 0.0,
+        retentionJobDuration: 0.0,
+      },
+    },
+  },
+};
 
 interface MainMockDataType {
   code: number;
@@ -83,7 +115,6 @@ const BatchDashboard = () => {
     return {
       labels: formattedTimes,
       executionData,
-      average,
     };
   };
 
@@ -115,20 +146,38 @@ const BatchDashboard = () => {
         fill: true,
         tension: 0.4,
       },
+    ],
+  };
+
+  const subChartData = transformSubData(subMockData.data);
+
+  const subChart1Data = {
+    labels: subChartData.labels,
+    datasets: [
       {
-        label: 'Average',
-        data: Array(transformMainData(mainMockData.data).labels.length).fill(
-          transformMainData(mainMockData.data).average
-        ),
-        borderColor: '#FF4081',
-        borderDash: [5, 5], // 점선으로 표시
-        fill: false,
-        tension: 0,
+        label: 'Store Job Duration',
+        data: subChartData.storeJobData,
+        borderColor: '#2E5BFF',
+        backgroundColor: 'rgba(46, 91, 255, 0.2)',
+        fill: true,
+        tension: 0.4,
       },
     ],
   };
 
-
+  const subChart2Data = {
+    labels: subChartData.labels,
+    datasets: [
+      {
+        label: 'Retention Job Duration',
+        data: subChartData.retentionJobData,
+        borderColor: '#FFA500',
+        backgroundColor: 'rgba(255, 165, 0, 0.2)',
+        fill: true,
+        tension: 0.4,
+      },
+    ],
+  };
 
   const mainChartOptions: ChartOptions<'line'> = {
     responsive: true,
@@ -175,6 +224,46 @@ const BatchDashboard = () => {
     maintainAspectRatio: true,
   };
 
+  const subChartOptions: ChartOptions<'line'> = {
+    responsive: true,
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: {},
+      },
+      y: {
+        grid: {
+          display: true,
+          color: 'rgba(0, 0, 0, 0.1)',
+        },
+        ticks: {
+          callback: (value: string | number) => `${value as number}s`,
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        align: 'end',
+        labels: {
+          usePointStyle: true,
+          boxWidth: 8,
+          boxHeight: 8,
+        },
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false,
+        callbacks: {
+          label(context: any) {
+            return `${context.dataset.label}: ${context.parsed.y}s`;
+          },
+        },
+      },
+    },
+    maintainAspectRatio: false,
+  };
 
   return (
     <div className="batch-dashboard">
@@ -197,6 +286,38 @@ const BatchDashboard = () => {
             <div className="chart-subtitle">
               <Text
                 content="Real-Time Session Data Collection Performance"
+                type="main-content"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* 서브 차트 영역 */}
+        <div className="batch-dashboard__chart-sub">
+          {/* 서브 차트 카드 1 */}
+          <div className="batch-dashboard__chart-wrapper">
+            <div className="batch-dashboard__chart__card batch-dashboard__chart-small">
+              <div className="base-chart chart-small">
+                <Line data={subChart1Data} options={subChartOptions} />
+              </div>
+            </div>
+            <div className="chart-subtitle">
+              <Text
+                content="CSV Export Performance for Session Data "
+                type="main-content"
+              />
+            </div>
+          </div>
+          {/* 서브 차트 카드 2 */}
+          <div className="batch-dashboard__chart-wrapper">
+            <div className="batch-dashboard__chart__card batch-dashboard__chart-small">
+              <div className="base-chart chart-small">
+                <Line data={subChart2Data} options={subChartOptions} />
+              </div>
+            </div>
+            <div className="chart-subtitle">
+              <Text
+                content="Monitoring Database Cleanup Performance"
                 type="main-content"
               />
             </div>
