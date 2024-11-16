@@ -185,7 +185,7 @@ const Devices = () => {
       </div>
       <div className="devices__info">
         {role === 'ROLE_ADMIN' && (
-          <div className="devices__info__register-btn">
+          <>
             <Button
               size="medium"
               label="+ DB 등록"
@@ -199,7 +199,7 @@ const Devices = () => {
               onClose={handleDeviceCloseModal}
               mode="register"
             />
-          </div>
+          </>
         )}
         <div className="devices__info__row">
           {role === 'ROLE_SUPER' ? (
@@ -257,9 +257,9 @@ const Devices = () => {
           RowComponent={DevicesRow}
         />
       </div>
-      <div className="devices__page-btn">
+      {/* <div className="devices__page-btn">
         <PageButton pageNumber={pageNumber} totalPages={totalPages} />
-      </div>
+      </div> */}
     </div>
   );
 };
