@@ -28,19 +28,32 @@ const UserRequests = () => {
   const colWidth = ['10%', '15%', '10%', '20%', '13%', '16%', '16%'];
   const [content, setContent] = useState<Form[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
   useEffect(() => {
     getUserFormList(
+      pageNumber,
       ({ data }) => {
+        console.log(data.data);
         setContent(data.data.content);
-        setPageNumber(data.data.pageable.pageNumber + 1);
-        setTotalPages(data.data.totalPages);
+        setPageCount(data.data.pageCount);
       },
       (error) => {
         console.log('에러', error);
       }
     );
-  }, []);
+  }, [pageNumber]);
+
+  const getPreviousPage = () => {
+    setPageNumber((prev) => prev - 1);
+  };
+
+  const getSpecificPage = (i: number) => {
+    setPageNumber(i);
+  };
+
+  const getNextPage = () => {
+    setPageNumber((prev) => prev + 1);
+  };
 
   const changeDateFormat = (date: string) => {
     return date.replace(' ', '\n').replace('.000', '');
@@ -66,9 +79,14 @@ const UserRequests = () => {
           RowComponent={UserReqRow}
         />
       </div>
-      {/* TODO: 페이지 이동 기능 추가 */}
       <div className="company-req__page-btn">
-        <PageButton pageNumber={pageNumber} totalPages={totalPages} />
+        <PageButton
+          pageNumber={pageNumber}
+          pageCount={pageCount}
+          getPreviousPage={getPreviousPage}
+          getSpecificPage={getSpecificPage}
+          getNextPage={getNextPage}
+        />
       </div>
     </div>
   );

@@ -33,19 +33,31 @@ const CompanyRequests = () => {
 
   const [formContent, setFormContent] = useState<Form[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
   useEffect(() => {
     getCompanyFormList(
+      pageNumber,
       ({ data }) => {
         setFormContent(data.data.content);
-        setPageNumber(data.data.pageable.pageNumber + 1);
-        setTotalPages(data.data.totalPages);
+        setPageCount(data.data.pageCount);
       },
       (error) => {
         console.log('에러', error);
       }
     );
-  }, []);
+  }, [pageNumber]);
+
+  const getPreviousPage = () => {
+    setPageNumber((prev) => prev - 1);
+  };
+
+  const getSpecificPage = (i: number) => {
+    setPageNumber(i);
+  };
+
+  const getNextPage = () => {
+    setPageNumber((prev) => prev + 1);
+  };
 
   const changeDateFormat = (date: string) => {
     return date.replace(' ', '\n').replace('.000', '');
@@ -72,9 +84,14 @@ const CompanyRequests = () => {
           RowComponent={CompanyReqRow}
         />
       </div>
-      {/* TODO: 페이지 이동 기능 추가 */}
       <div className="company-req__page-btn">
-        <PageButton pageNumber={pageNumber} totalPages={totalPages} />
+        <PageButton
+          pageNumber={pageNumber}
+          pageCount={pageCount}
+          getPreviousPage={getPreviousPage}
+          getSpecificPage={getSpecificPage}
+          getNextPage={getNextPage}
+        />
       </div>
     </div>
   );
