@@ -4,6 +4,7 @@ import Table from 'components/organisms/table/Table';
 import CompanyReqRow from 'components/molecules/table/CompanyReqRow';
 import PageButton from 'components/molecules/button/PageButton';
 import { getCompanyFormList } from 'services/company';
+import RequestPageButtons from 'components/molecules/button/RequestPageButtons';
 import './CompanyRequests.scss';
 
 interface Form {
@@ -82,6 +83,7 @@ const CompanyRequests = () => {
         <Text content="Service Registration Request List" type="title" />
         <Text content="서비스 등록 요청 정보" type="subtitle" />
       </div>
+      <RequestPageButtons />
       <div className="company-req__table">
         <Table
           colWidth={colWidth}

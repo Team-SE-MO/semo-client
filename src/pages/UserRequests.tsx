@@ -5,6 +5,7 @@ import Table from 'components/organisms/table/Table';
 import UserReqRow from 'components/molecules/table/UserReqRow';
 import { getUserFormList } from 'services/user';
 import Company from 'types/Company';
+import RequestPageButtons from 'components/molecules/button/RequestPageButtons';
 
 interface Form {
   formId: number;
@@ -76,6 +77,7 @@ const UserRequests = () => {
         <Text content="Service Registration Request List" type="title" />
         <Text content="서비스 등록 요청 정보" type="subtitle" />
       </div>
+      <RequestPageButtons />
       <div className="company-req__table">
         <Table
           colWidth={colWidth}
