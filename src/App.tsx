@@ -14,6 +14,7 @@ import Users from 'pages/Users';
 import CompanyUsers from 'pages/CompanyUsers';
 import Summary from 'pages/Summary';
 import Dashboard from 'pages/Dashboard';
+import BatchDashboard from 'pages/BatchDashboard';
 
 const App = () => {
   return (
@@ -35,6 +36,7 @@ const App = () => {
               path="/dashboard/:companyId/:deviceAlias"
               element={<Dashboard />}
             />
+            <Route path="/batch-dashboard" element={<BatchDashboard />} />
           </Route>
         </Routes>
       </BrowserRouter>
