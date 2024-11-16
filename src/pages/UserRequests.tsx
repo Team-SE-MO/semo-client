@@ -28,6 +28,7 @@ const UserRequests = () => {
   const colWidth = ['10%', '15%', '10%', '20%', '13%', '16%', '16%'];
   const [content, setContent] = useState<Form[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
+  const [pageIndex, setPageIndex] = useState(1);
   const [pageCount, setPageCount] = useState(1);
   useEffect(() => {
     getUserFormList(
@@ -42,6 +43,10 @@ const UserRequests = () => {
       }
     );
   }, [pageNumber]);
+
+  useEffect(() => {
+    setPageIndex(pageNumber);
+  }, [content]);
 
   const getPreviousPage = () => {
     setPageNumber((prev) => prev - 1);
@@ -76,6 +81,7 @@ const UserRequests = () => {
           colWidth={colWidth}
           headerMeta={headerMeta}
           content={content}
+          pageIndex={pageIndex}
           RowComponent={UserReqRow}
         />
       </div>

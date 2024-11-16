@@ -10,6 +10,7 @@ interface TableProps<T> {
   >;
   onDelete?: (loginId: string) => void;
   className?: string;
+  pageIndex?: number;
 }
 
 const Table = <T,>({
@@ -19,6 +20,7 @@ const Table = <T,>({
   RowComponent,
   onDelete,
   className = '',
+  pageIndex,
   ...props
 }: TableProps<T>) => {
   return (
@@ -40,7 +42,8 @@ const Table = <T,>({
           <RowComponent
             i={index}
             content={form}
-            {...(onDelete ? { onDelete } : {})}
+            {...(onDelete && { onDelete })}
+            {...(pageIndex && { pageIndex })}
           />
         ))}
       </tbody>

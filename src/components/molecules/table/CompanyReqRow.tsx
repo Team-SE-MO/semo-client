@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 
 interface CompanyReqRowProps {
   i: number;
+  pageIndex?: number;
   content: {
     formId: number;
     companyName: string;
@@ -18,7 +19,7 @@ interface CompanyReqRowProps {
   };
 }
 // TODO: 승인, 거절 누르면 rowData 상태 변경
-const CompanyReqRow = ({ i, content }: CompanyReqRowProps) => {
+const CompanyReqRow = ({ i, pageIndex, content }: CompanyReqRowProps) => {
   const [rowData, setRowData] = useState(content);
   const approveForm = () => {
     updateCompanyFormStatus(
@@ -86,7 +87,9 @@ const CompanyReqRow = ({ i, content }: CompanyReqRowProps) => {
   };
   return (
     <tr className="table__row">
-      <td className="table__data">{i + 1}</td>
+      <td className="table__data">
+        {pageIndex && (pageIndex - 1) * 10 + i + 1}
+      </td>
       <td className="table__data">{rowData.companyName}</td>
       <td className="table__data">{rowData.taxId}</td>
       <td className="table__data">{rowData.ownerName}</td>

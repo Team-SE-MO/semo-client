@@ -3,8 +3,8 @@ import Text from 'components/atoms/text/Text';
 import Table from 'components/organisms/table/Table';
 import CompanyReqRow from 'components/molecules/table/CompanyReqRow';
 import PageButton from 'components/molecules/button/PageButton';
-import './CompanyRequests.scss';
 import { getCompanyFormList } from 'services/company';
+import './CompanyRequests.scss';
 
 interface Form {
   formId: number;
@@ -33,7 +33,9 @@ const CompanyRequests = () => {
 
   const [formContent, setFormContent] = useState<Form[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
+  const [pageIndex, setPageIndex] = useState(1);
   const [pageCount, setPageCount] = useState(1);
+
   useEffect(() => {
     getCompanyFormList(
       pageNumber,
@@ -46,6 +48,10 @@ const CompanyRequests = () => {
       }
     );
   }, [pageNumber]);
+
+  useEffect(() => {
+    setPageIndex(pageNumber);
+  }, [formContent]);
 
   const getPreviousPage = () => {
     setPageNumber((prev) => prev - 1);
@@ -81,6 +87,7 @@ const CompanyRequests = () => {
           colWidth={colWidth}
           headerMeta={headerMeta}
           content={formContent}
+          pageIndex={pageIndex}
           RowComponent={CompanyReqRow}
         />
       </div>

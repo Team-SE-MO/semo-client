@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import './UserReqRow.scss';
 import Button from 'components/atoms/button/Button';
 import { registerUser, updateUserFormStatus } from 'services/user';
 import { sendEmail } from 'services/email';
 import Swal from 'sweetalert2';
+import './UserReqRow.scss';
 
 interface UserReqRowProps {
   i: number;
+  pageIndex?: number;
   content: {
     formId: number;
     company: {
@@ -22,7 +23,7 @@ interface UserReqRowProps {
   };
 }
 // TODO: 승인, 거절 누르면 rowData 상태 변경
-const UserReqRow = ({ i, content }: UserReqRowProps) => {
+const UserReqRow = ({ i, pageIndex, content }: UserReqRowProps) => {
   const [rowData, setRowData] = useState(content);
   const approveForm = () => {
     updateUserFormStatus(
@@ -104,7 +105,9 @@ const UserReqRow = ({ i, content }: UserReqRowProps) => {
 
   return (
     <tr className="table__row">
-      <td className="table__data">{i + 1}</td>
+      <td className="table__data">
+        {pageIndex && (pageIndex - 1) * 10 + i + 1}
+      </td>
       <td className="table__data">{rowData.company.companyName}</td>
       <td className="table__data">{rowData.ownerName}</td>
       <td className="table__data">{rowData.email}</td>
