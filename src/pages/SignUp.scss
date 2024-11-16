@@ -8,6 +8,21 @@
     align-items: center;
     height: 100vh;
     background-color: $main-theme-color;
+    position: relative;
+  }
+  &__go-home {
+    position: absolute;
+    top: 5%;
+    left: 3%;
+    display: flex;
+    gap: 5px;
+    cursor: pointer;
+    &__icon {
+      color: $main-text-color;
+    }
+    &:hover {
+      border-bottom: 2px solid $main-text-color;
+    }
   }
   &__image {
     background-image: none;

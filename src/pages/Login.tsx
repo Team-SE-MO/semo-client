@@ -9,6 +9,8 @@ import useAuthStore from 'store/useAuthStore';
 import Role from 'types/Role';
 import './Login.scss';
 import Swal from 'sweetalert2';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { SvgIcon } from '@mui/material';
 
 interface CustomJwtPayload extends JwtPayload {
   role: Role;
@@ -26,10 +28,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
-
-  const goToChangePassword = () => {
-    navigate('/change-password');
-  };
 
   const handleLogin = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -104,6 +102,14 @@ const Login = () => {
 
   return (
     <div className="login__container">
+      <div
+        className="login__go-home"
+        onClick={() => navigate('/')}
+        role="presentation"
+      >
+        <SvgIcon className="login__go-home__icon" component={ArrowBackIcon} />
+        <Text content="HOME" type="subtitle" />
+      </div>
       <div className="login__img" />
       <div className="login__organism">
         <div className="login__explain">
@@ -139,7 +145,14 @@ const Login = () => {
               type="link"
               color="link-color"
               underline
-              onClick={goToChangePassword}
+              onClick={() => navigate('/change-password')}
+            />
+            <Text
+              content="회원가입"
+              type="link"
+              color="link-color"
+              underline
+              onClick={() => navigate('/signup')}
             />
           </div>
           <Button size="xlarge" type="submit" label="LOGIN" radius="oval" />
