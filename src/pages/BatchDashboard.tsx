@@ -292,7 +292,7 @@ const BatchDashboard = () => {
         <div className="batch-dashboard__chart-main">
           <div className="batch-dashboard__chart-wrapper">
             <div className="batch-dashboard__chart__card batch-dashboard__chart-large">
-              <div className="base-chart chart-large">
+              <div className="base-chart">
                 <Line data={sessionChartData} options={sessionChartOptions} />
               </div>
             </div>
