@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Plugin, ChartOptions } from 'chart.js';
+import { ChartOptions } from 'chart.js';
 import {
   getSessionExecutionData,
   getJobExecutionData,
 } from 'services/batchMonitoring';
 import Text from 'components/atoms/text/Text';
-
 import './BatchDashboard.scss';
 
 interface SessionDataType {
@@ -49,9 +48,8 @@ const BatchDashboard = () => {
     );
   }, []);
 
-  // 메인 차트용 데이터 변환 함수
   const transformSessionData = (data: any) => {
-    if (!data) return { labels: [], executionData: [] }; // 데이터가 없을 때 기본값 반환
+    if (!data) return { labels: [], executionData: [] };
     const times = Object.keys(data.executionTimes).reverse();
     const executionData = times.map((time) => data.executionTimes[time]);
 
@@ -71,7 +69,6 @@ const BatchDashboard = () => {
     };
   };
 
-  // 서브 차트용 데이터 변환 함수
   const transformJobData = (data: any) => {
     const dates = Object.keys(data.executionDate).reverse();
     const storeJobData = dates.map(
@@ -81,10 +78,21 @@ const BatchDashboard = () => {
       (date) => data.executionDate[date].retentionJobDuration
     );
 
+    const storeJobAvg = Number(
+      (storeJobData.reduce((a, b) => a + b, 0) / storeJobData.length).toFixed(2)
+    );
+    const retentionJobAvg = Number(
+      (
+        retentionJobData.reduce((a, b) => a + b, 0) / retentionJobData.length
+      ).toFixed(2)
+    );
+
     return {
       labels: dates,
       storeJobData,
       retentionJobData,
+      storeJobAvg,
+      retentionJobAvg,
     };
   };
 
@@ -106,7 +114,13 @@ const BatchDashboard = () => {
 
   const dailyJobChartData = dailyJobData
     ? transformJobData(dailyJobData)
-    : { labels: [], storeJobData: [], retentionJobData: [] };
+    : {
+        labels: [],
+        storeJobData: [],
+        retentionJobData: [],
+        storeJobAvg: 0,
+        retentionJobAvg: 0,
+      };
 
   const storeJobChartData = {
     labels: dailyJobChartData.labels,
@@ -150,7 +164,6 @@ const BatchDashboard = () => {
         grid: {
           display: true,
           color: (context) => {
-            // y축 값이 5의 배수일 때 진한 색상 사용
             return context.tick.value === 5 ? '#FF0000' : 'rgba(0, 0, 0, 0.1)';
           },
           drawTicks: true,
@@ -229,8 +242,41 @@ const BatchDashboard = () => {
           },
         },
       },
+      title: {
+        display: true,
+        position: 'top',
+        align: 'start',
+        padding: { bottom: 10 },
+        color: '#42526e',
+        font: {
+          size: 14,
+          weight: 'bold',
+        },
+      },
     },
     maintainAspectRatio: false,
+  };
+
+  const storeJobChartOptions: ChartOptions<'line'> = {
+    ...dailyJobChartOptions,
+    plugins: {
+      ...dailyJobChartOptions.plugins,
+      title: {
+        ...dailyJobChartOptions.plugins?.title,
+        text: `StoreCsvJob Time Avg: ${dailyJobChartData.storeJobAvg}s`,
+      },
+    },
+  };
+
+  const retentionJobChartOptions: ChartOptions<'line'> = {
+    ...dailyJobChartOptions,
+    plugins: {
+      ...dailyJobChartOptions.plugins,
+      title: {
+        ...dailyJobChartOptions.plugins?.title,
+        text: `Retention Job Time Avg: ${dailyJobChartData.retentionJobAvg}s`,
+      },
+    },
   };
 
   return (
@@ -243,7 +289,6 @@ const BatchDashboard = () => {
         <Text content="배치 시스템 성능 모니터링 서비스 " type="subtitle" />
       </div>
       <div className="batch-dashboard__charts">
-        {/* 메인 차트 영역 */}
         <div className="batch-dashboard__chart-main">
           <div className="batch-dashboard__chart-wrapper">
             <div className="batch-dashboard__chart__card batch-dashboard__chart-large">
@@ -259,13 +304,11 @@ const BatchDashboard = () => {
             </div>
           </div>
         </div>
-
-        {/* 서브 차트 영역 */}
         <div className="batch-dashboard__chart-sub">
           <div className="batch-dashboard__chart-wrapper">
             <div className="batch-dashboard__chart__card batch-dashboard__chart-small">
               <div className="base-chart chart-small">
-                <Line data={storeJobChartData} options={dailyJobChartOptions} />
+                <Line data={storeJobChartData} options={storeJobChartOptions} />
               </div>
             </div>
             <div className="chart-subtitle">
@@ -280,7 +323,7 @@ const BatchDashboard = () => {
               <div className="base-chart chart-small">
                 <Line
                   data={retentionJobChartData}
-                  options={dailyJobChartOptions}
+                  options={retentionJobChartOptions}
                 />
               </div>
             </div>
