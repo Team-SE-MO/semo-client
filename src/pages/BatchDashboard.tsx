@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Plugin, ChartOptions } from 'chart.js';
+import { getSessionExecutionData } from 'services/batchMonitoring';
 import Text from 'components/atoms/text/Text';
 
 import './BatchDashboard.scss';
 
-const subMockData = {
+interface SubMockDataType {
+  code: number;
+  message: string;
+  data: {
+    executionDate: {
+      [key: string]: {
+        storeJobDuration: number;
+        retentionJobDuration: number;
+      };
+    };
+  };
+}
+
+const subMockData: SubMockDataType = {
   code: 200,
   message: '성공적으로 일별 Job의 실행시간을 조회했습니다.',
   data: {
@@ -38,69 +52,36 @@ const subMockData = {
   },
 };
 
-interface MainMockDataType {
-  code: number;
-  message: string;
-  data: {
-    executionTimes: {
-      [key: string]: number;
-    };
+interface SessionJobDataType {
+  executionTimes: {
+    [executionTime: string]: number;
   };
 }
 
-const mainMockData: MainMockDataType = {
-  code: 200,
-  message: '성공적으로 현재 세션 Job의 실행시간을 조회했습니다.',
-  data: {
-    executionTimes: {
-      '2024-11-16T22:06:25': 0.0,
-      '2024-11-16T22:06:20': 1.7,
-      '2024-11-16T22:06:15': 1.7,
-      '2024-11-16T22:06:10': 1.7,
-      '2024-11-16T22:06:05': 1.7,
-      '2024-11-16T22:06:00': 1.7,
-      '2024-11-16T22:05:55': 1.8,
-      '2024-11-16T22:05:50': 1.6,
-      '2024-11-16T22:05:45': 2.5,
-      '2024-11-16T22:05:40': 1.7,
-      '2024-11-16T22:05:35': 1.7,
-      '2024-11-16T22:05:30': 1.6,
-      '2024-11-16T22:05:25': 1.7,
-      '2024-11-16T22:05:20': 1.6,
-      '2024-11-16T22:05:15': 3.4,
-      '2024-11-16T22:05:10': 1.7,
-      '2024-11-16T22:05:05': 1.7,
-      '2024-11-16T22:05:00': 1.7,
-      '2024-11-16T22:04:55': 1.7,
-      '2024-11-16T22:04:50': 1.7,
-      '2024-11-16T22:04:45': 1.7,
-      '2024-11-16T22:04:40': 1.7,
-      '2024-11-16T22:04:35': 1.7,
-      '2024-11-16T22:04:30': 1.7,
-      '2024-11-16T22:04:25': 1.6,
-      '2024-11-16T22:04:20': 1.7,
-      '2024-11-16T22:04:15': 1.7,
-      '2024-11-16T22:04:10': 1.7,
-      '2024-11-16T22:04:05': 1.6,
-      '2024-11-16T22:04:00': 1.7,
-      '2024-11-16T22:03:55': 1.7,
-      '2024-11-16T22:03:50': 2.1,
-      '2024-11-16T22:03:45': 1.7,
-      '2024-11-16T22:03:40': 1.8,
-      '2024-11-16T22:03:35': 1.6,
-      '2024-11-16T22:03:30': 1.7,
-    },
-  },
-};
-
 const BatchDashboard = () => {
+  const [sessionExecutionData, setSessionExecutionData] =
+    useState<SessionJobDataType>();
+
+  useEffect(() => {
+    getSessionExecutionData(
+      ({ data }) => {
+        setSessionExecutionData(data.data);
+      },
+      (error) => {
+        console.log('세션 Job 실행시간 조회 실패:', error);
+      }
+    );
+  }, []);
+
   // 메인 차트용 데이터 변환 함수
   const transformMainData = (data: any) => {
+    if (!data) return { labels: [], executionData: [], average: 0 }; // 데이터가 없을 때 기본값 반환
     const times = Object.keys(data.executionTimes).reverse();
     const executionData = times.map((time) => data.executionTimes[time]);
-    
+
     // 평균 계산
-    const average = executionData.reduce((acc, val) => acc + val, 0) / executionData.length;
+    const average =
+      executionData.reduce((acc, val) => acc + val, 0) / executionData.length;
 
     const formattedTimes = times.map((time) => {
       const date = new Date(time);
@@ -115,6 +96,7 @@ const BatchDashboard = () => {
     return {
       labels: formattedTimes,
       executionData,
+      average,
     };
   };
 
@@ -135,23 +117,35 @@ const BatchDashboard = () => {
     };
   };
 
-  const mainChartData = {
-    labels: transformMainData(mainMockData.data).labels,
-    datasets: [
-      {
-        label: 'Session Job Duration',
-        data: transformMainData(mainMockData.data).executionData,
-        borderColor: '#00BCD4',
-        backgroundColor: 'rgba(0, 188, 212, 0.1)',
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
+  const mainChartData = sessionExecutionData
+    ? {
+        labels: transformMainData(sessionExecutionData).labels,
+        datasets: [
+          {
+            label: 'Session Job Duration',
+            data: transformMainData(sessionExecutionData).executionData,
+            borderColor: '#00BCD4',
+            backgroundColor: 'rgba(0, 188, 212, 0.1)',
+            fill: true,
+            tension: 0.4,
+          },
+          {
+            label: '',
+            data: Array(
+              transformMainData(sessionExecutionData).labels.length
+            ).fill(transformMainData(sessionExecutionData).average),
+            borderColor: '#FF4081',
+            borderDash: [5, 5], // 점선으로 표시
+            fill: false,
+            tension: 0,
+          },
+        ],
+      }
+    : { labels: [], datasets: [] }; // 데이터가 없을 때 빈 차트 데이터 반환
 
   const subChartData = transformSubData(subMockData.data);
 
-  const subChart1Data = {
+  const storeJobChartData = {
     labels: subChartData.labels,
     datasets: [
       {
@@ -165,7 +159,7 @@ const BatchDashboard = () => {
     ],
   };
 
-  const subChart2Data = {
+  const retentionJobChartData = {
     labels: subChartData.labels,
     datasets: [
       {
@@ -194,6 +188,9 @@ const BatchDashboard = () => {
           display: true,
           color: 'rgba(0, 0, 0, 0.1)',
         },
+        beginAtZero: true,
+        min: 0,
+        suggestedMax: 10,
         ticks: {
           callback: (value: string | number) => `${value as number}s`,
         },
@@ -236,6 +233,9 @@ const BatchDashboard = () => {
           display: true,
           color: 'rgba(0, 0, 0, 0.1)',
         },
+        beginAtZero: true,
+        min: 0,
+        suggestedMax: 10,
         ticks: {
           callback: (value: string | number) => `${value as number}s`,
         },
@@ -298,7 +298,7 @@ const BatchDashboard = () => {
           <div className="batch-dashboard__chart-wrapper">
             <div className="batch-dashboard__chart__card batch-dashboard__chart-small">
               <div className="base-chart chart-small">
-                <Line data={subChart1Data} options={subChartOptions} />
+                <Line data={storeJobChartData} options={subChartOptions} />
               </div>
             </div>
             <div className="chart-subtitle">
@@ -312,7 +312,7 @@ const BatchDashboard = () => {
           <div className="batch-dashboard__chart-wrapper">
             <div className="batch-dashboard__chart__card batch-dashboard__chart-small">
               <div className="base-chart chart-small">
-                <Line data={subChart2Data} options={subChartOptions} />
+                <Line data={retentionJobChartData} options={subChartOptions} />
               </div>
             </div>
             <div className="chart-subtitle">
