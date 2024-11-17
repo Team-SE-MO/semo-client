@@ -34,7 +34,7 @@ const App = () => {
               path="/dashboard/:companyId/:deviceAlias"
               element={<Dashboard />}
             />
-            <Route path="/batch-dashboard" element={<BatchDashboard />} />
+            <Route path="/dashboard" element={<BatchDashboard />} />
           </Route>
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />

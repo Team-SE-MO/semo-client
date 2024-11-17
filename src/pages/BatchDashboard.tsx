@@ -28,6 +28,12 @@ const BatchDashboard = () => {
     useState<SessionDataType>();
   const [dailyJobData, setDailyJobData] = useState<DailyJobDataType>();
 
+  const period = sessionExecutionData
+    ? new Date(Object.keys(sessionExecutionData.executionTimes)[0])
+        .toISOString()
+        .split('T')[0]
+    : '';
+
   useEffect(() => {
     getSessionExecutionData(
       ({ data }) => {
@@ -246,7 +252,6 @@ const BatchDashboard = () => {
         display: true,
         position: 'top',
         align: 'start',
-        padding: { bottom: 10 },
         color: '#42526e',
         font: {
           size: 14,
@@ -280,23 +285,27 @@ const BatchDashboard = () => {
   };
 
   return (
-    <div className="batch-dashboard">
+    <div className="batch-dashboard__container">
       <div className="batch-dashboard__title">
         <Text
           content="Batch System Performance Monitoring Service"
           type="title"
         />
-        <Text content="배치 시스템 성능 모니터링 서비스 " type="subtitle" />
+        <div className="batch-dashboard__title--sub">
+          <Text content="배치 시스템 성능 모니터링 서비스 " type="subtitle" />
+          <Text content={`기준 일자 : ${period}`} type="info" bold />
+        </div>
       </div>
+
       <div className="batch-dashboard__charts">
-        <div className="batch-dashboard__chart-main">
-          <div className="batch-dashboard__chart-wrapper">
-            <div className="batch-dashboard__chart__card batch-dashboard__chart-large">
+        <div className="batch-dashboard__chart--main">
+          <div className="batch-dashboard__chart__wrapper">
+            <div className="batch-dashboard__chart__card batch-dashboard__chart--large">
               <div className="base-chart">
                 <Line data={sessionChartData} options={sessionChartOptions} />
               </div>
             </div>
-            <div className="chart-subtitle">
+            <div className="batch-dashboard__chart__subtitle">
               <Text
                 content="Real-Time Session Data Collection Performance"
                 type="main-content"
@@ -304,30 +313,30 @@ const BatchDashboard = () => {
             </div>
           </div>
         </div>
-        <div className="batch-dashboard__chart-sub">
-          <div className="batch-dashboard__chart-wrapper">
-            <div className="batch-dashboard__chart__card batch-dashboard__chart-small">
-              <div className="base-chart chart-small">
+        <div className="batch-dashboard__chart--sub">
+          <div className="batch-dashboard__chart__wrapper">
+            <div className="batch-dashboard__chart__card batch-dashboard__chart--small">
+              <div className="base-chart">
                 <Line data={storeJobChartData} options={storeJobChartOptions} />
               </div>
             </div>
-            <div className="chart-subtitle">
+            <div className="batch-dashboard__chart__subtitle">
               <Text
                 content="CSV Export Performance for Session Data "
                 type="main-content"
               />
             </div>
           </div>
-          <div className="batch-dashboard__chart-wrapper">
-            <div className="batch-dashboard__chart__card batch-dashboard__chart-small">
-              <div className="base-chart chart-small">
+          <div className="batch-dashboard__chart__wrapper">
+            <div className="batch-dashboard__chart__card batch-dashboard__chart--small">
+              <div className="base-chart">
                 <Line
                   data={retentionJobChartData}
                   options={retentionJobChartOptions}
                 />
               </div>
             </div>
-            <div className="chart-subtitle">
+            <div className="batch-dashboard__chart-subtitle">
               <Text
                 content="Monitoring Database Cleanup Performance"
                 type="main-content"
