@@ -141,15 +141,6 @@ const SignUp = () => {
               disablePortal
               options={companies}
               size="small"
-              sx={{
-                width: 510,
-                borderRadius: 3,
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    BorderBottom: 1,
-                  },
-                },
-              }}
               filterOptions={(options, state) => {
                 if (state.inputValue) {
                   return options.filter((option) =>
@@ -168,7 +159,9 @@ const SignUp = () => {
                   setCompanyId(selectedOption.id);
                 }
               }}
-              renderInput={(params) => <TextField {...params} label="회사명" />}
+              renderInput={(params) => (
+                <TextField {...params} placeholder="회사명" label="" />
+              )}
             />
             <Button
               type="button"
