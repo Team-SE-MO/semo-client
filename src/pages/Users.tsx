@@ -10,6 +10,9 @@ import Company from 'types/Company';
 import { deleteUser, getUserList } from 'services/user';
 import { getCompanies } from 'services/company';
 import Swal from 'sweetalert2';
+import UserRegister from 'components/organisms/modal/UserRegister';
+import CompanyUserRow from 'components/molecules/table/CompanyUserRow';
+import './Users.scss';
 
 interface UserDetail {
   loginId: string;
@@ -21,11 +24,35 @@ interface UserDetail {
 }
 
 const Users = () => {
-  const headerMeta = ['No.', '회사명', '권한', 'ID', 'EMAIL', '성명', '삭제'];
-  const colWidth = ['7%', '18%', '10%', '18%', '18%', '18%', '13%'];
+  const headerMetaSuper = [
+    'No.',
+    '회사명',
+    '권한',
+    'ID',
+    'EMAIL',
+    '성명',
+    '삭제',
+  ];
+  const colWidthSuper = ['7%', '18%', '10%', '18%', '18%', '18%', '13%'];
+  const headerMetaAdmin = ['No.', '권한', 'ID', 'EMAIL', '성명', '삭제'];
+  const colWidthAdmin = ['10%', '15%', '22%', '22%', '18%', '13%'];
+
+  const tableContent = {
+    ROLE_SUPER: {
+      headerMeta: headerMetaSuper,
+      colWidth: colWidthSuper,
+      RowComponent: UserRow,
+    },
+    ROLE_ADMIN: {
+      headerMeta: headerMetaAdmin,
+      colWidth: colWidthAdmin,
+      RowComponent: CompanyUserRow,
+    },
+  };
 
   const [content, setContent] = useState<UserDetail[]>([]);
   const [companyList, setCompanyList] = useState<Company[]>([]);
+
   useEffect(() => {
     const keyword = '';
     getCompanies(
@@ -62,7 +89,13 @@ const Users = () => {
         })
       : [];
 
-  const [companyId, setCompanyId] = useState<number | null>(null);
+  const userInfoStorage = localStorage.getItem('userInfoStorage');
+  const userInfo = JSON.parse(userInfoStorage || '');
+  const { role } = userInfo.state;
+
+  const [companyId, setCompanyId] = useState<number | null>(
+    role === 'ROLE_ADMIN' ? userInfo.state.companyId : null
+  );
   useEffect(() => {
     getUserList(
       companyId,
@@ -110,6 +143,15 @@ const Users = () => {
       (error) => console.log('에러', error)
     );
   };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleUserRegistration = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
   return (
     <div className="company-req__container">
       <div className="company-req__title">
@@ -118,39 +160,41 @@ const Users = () => {
       </div>
       <div className="company-users__content">
         <div className="company-users__search">
-          <Autocomplete
-            disablePortal
-            options={companies}
-            size="small"
-            sx={{
-              width: 300,
-              backgroundColor: 'white',
-              borderRadius: 3,
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  border: 'none',
+          {role === 'ROLE_SUPER' && (
+            <Autocomplete
+              disablePortal
+              options={companies}
+              size="small"
+              sx={{
+                width: 300,
+                backgroundColor: 'white',
+                borderRadius: 3,
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    border: 'none',
+                  },
                 },
-              },
-            }}
-            filterOptions={(options, state) => {
-              if (state.inputValue) {
-                return options.filter((option) =>
-                  option.label
-                    .toLowerCase()
-                    .includes(state.inputValue.toLowerCase())
-                );
-              }
-              return options;
-            }}
-            onChange={(event, newValue) => {
-              if (newValue) {
-                setCompanyId(newValue.id); // 선택된 회사의 id 값을 companyId로 설정
-              } else {
-                setCompanyId(null); // 선택이 해제되었을 경우
-              }
-            }}
-            renderInput={(params) => <TextField {...params} label="회사명" />}
-          />
+              }}
+              filterOptions={(options, state) => {
+                if (state.inputValue) {
+                  return options.filter((option) =>
+                    option.label
+                      .toLowerCase()
+                      .includes(state.inputValue.toLowerCase())
+                  );
+                }
+                return options;
+              }}
+              onChange={(event, newValue) => {
+                if (newValue) {
+                  setCompanyId(newValue.id);
+                } else {
+                  setCompanyId(null);
+                }
+              }}
+              renderInput={(params) => <TextField {...params} label="회사명" />}
+            />
+          )}
           <div className="company-users__checkbox">
             {roles.map((item) => (
               <div className="company-users__checkbox__item" key={item}>
@@ -180,13 +224,30 @@ const Users = () => {
             onClick={searchUsers}
           />
         </div>
+        {role === 'ROLE_ADMIN' && (
+          <>
+            <Button
+              size="medium"
+              label="+ 유저 등록"
+              radius="rounded"
+              shadow
+              type="button"
+              onClick={handleUserRegistration}
+            />
+            <UserRegister isOpen={isModalOpen} onClose={handleCloseModal} />
+          </>
+        )}
       </div>
       <div className="company-req__table">
         <Table
-          colWidth={colWidth}
-          headerMeta={headerMeta}
+          colWidth={tableContent[role as keyof typeof tableContent].colWidth}
+          headerMeta={
+            tableContent[role as keyof typeof tableContent].headerMeta
+          }
           content={content as UserDetail[]}
-          RowComponent={UserRow}
+          RowComponent={
+            tableContent[role as keyof typeof tableContent].RowComponent
+          }
           onDelete={handleUserDelete}
         />
       </div>
