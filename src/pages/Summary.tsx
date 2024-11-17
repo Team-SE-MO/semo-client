@@ -5,17 +5,8 @@ import Text from 'components/atoms/text/Text';
 import CompanyDeviceOverview from 'components/organisms/monitoring/CompanyDeviceOverview';
 import DeviceCardList from 'components/organisms/monitoring/DeviceCardList';
 import { getSummaryData } from 'services/deviceMonitoring';
+import Device from 'types/Device';
 import './Summary.scss';
-
-interface Device {
-  deviceAlias: string;
-  type: string;
-  status: string;
-  sid: string;
-  ip: string;
-  port: number;
-  statusValue: number;
-}
 
 interface DeviceItem extends Device {
   label: string;

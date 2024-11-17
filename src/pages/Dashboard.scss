@@ -12,17 +12,14 @@
 }
 
 .dashboard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 40px;
-  background-color: $main-theme-color;
-  padding: 50px 0;
-
   &__container {
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    background-color: $main-theme-color;
+    padding: 50px 0;
   }
-
   &__title {
     width: 90%;
     display: flex;
@@ -80,7 +77,21 @@
     width: 100%;
   }
 }
-
 .chart-subtitle {
   text-align: center;
+}
+.metric-chart {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.metric-grid__table {
+  width: 90%;
+  height: 535px;
+  background-color: $white;
+  box-shadow:
+    10px 10px 20px $shadow-color,
+    -10px -10px 20px $white;
+  border-radius: 10px;
+  overflow: scroll;
 }
