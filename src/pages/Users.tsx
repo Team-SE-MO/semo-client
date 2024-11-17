@@ -52,16 +52,21 @@ const Users = () => {
 
   const [content, setContent] = useState<UserDetail[]>([]);
   const [companyList, setCompanyList] = useState<Company[]>([]);
+  const userInfoStorage = localStorage.getItem('userInfoStorage');
+  const userInfo = JSON.parse(userInfoStorage || '');
+  const { role } = userInfo.state;
 
   useEffect(() => {
-    const keyword = '';
-    getCompanies(
-      keyword,
-      ({ data }) => {
-        setCompanyList(data.data);
-      },
-      (error) => console.log('에러', error)
-    );
+    if (role === 'ROLE SUPER') {
+      const keyword = '';
+      getCompanies(
+        keyword,
+        ({ data }) => {
+          setCompanyList(data.data);
+        },
+        (error) => console.log('에러', error)
+      );
+    }
   }, []);
 
   const roles = ['ROLE_ADMIN', 'ROLE_USER'];
@@ -89,24 +94,41 @@ const Users = () => {
         })
       : [];
 
-  const userInfoStorage = localStorage.getItem('userInfoStorage');
-  const userInfo = JSON.parse(userInfoStorage || '');
-  const { role } = userInfo.state;
-
   const [companyId, setCompanyId] = useState<number | null>(
     role === 'ROLE_ADMIN' ? userInfo.state.companyId : null
   );
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
+
   useEffect(() => {
     getUserList(
       companyId,
       [...checkedRoles],
-      '',
+      keyword,
       ({ data }) => {
-        setContent(data.data);
+        setContent(data.data.content);
+        setPageCount(data.data.pageCount);
       },
       (error) => console.log('에러', error)
     );
-  }, [companyId, checkedRoles]);
+  }, [companyId, checkedRoles, pageNumber]);
+
+  useEffect(() => {
+    setPageIndex(pageNumber);
+  }, [content]);
+
+  const getPreviousPage = () => {
+    setPageNumber((prev) => prev - 1);
+  };
+
+  const getSpecificPage = (i: number) => {
+    setPageNumber(i);
+  };
+
+  const getNextPage = () => {
+    setPageNumber((prev) => prev + 1);
+  };
 
   const searchUsers = () => {
     getUserList(
@@ -114,7 +136,9 @@ const Users = () => {
       [...checkedRoles],
       keyword,
       ({ data }) => {
-        setContent(data.data);
+        setPageNumber(1);
+        setContent(data.data.content);
+        setPageCount(data.data.pageCount);
         Swal.fire({
           title: '알림',
           text: '사용자 목록 조회가 완료되었습니다.',
@@ -245,6 +269,7 @@ const Users = () => {
             tableContent[role as keyof typeof tableContent].headerMeta
           }
           content={content as UserDetail[]}
+          pageIndex={pageIndex}
           RowComponent={
             tableContent[role as keyof typeof tableContent].RowComponent
           }
@@ -252,9 +277,15 @@ const Users = () => {
         />
       </div>
       {/* TODO: 페이지 이동 기능 추가 */}
-      {/* <div className="company-req__page-btn">
-        <PageButton pageNumber={pageNumber} totalPages={totalPages} />
-      </div> */}
+      <div className="company-req__page-btn">
+        <PageButton
+          pageNumber={pageNumber}
+          pageCount={pageCount}
+          getPreviousPage={getPreviousPage}
+          getSpecificPage={getSpecificPage}
+          getNextPage={getNextPage}
+        />
+      </div>
     </div>
   );
 };
