@@ -5,6 +5,7 @@ import Table from 'components/organisms/table/Table';
 import UserReqRow from 'components/molecules/table/UserReqRow';
 import { getUserFormList } from 'services/user';
 import Company from 'types/Company';
+import RequestPageButtons from 'components/molecules/button/RequestPageButtons';
 
 interface Form {
   formId: number;
@@ -28,19 +29,37 @@ const UserRequests = () => {
   const colWidth = ['10%', '15%', '10%', '20%', '13%', '16%', '16%'];
   const [content, setContent] = useState<Form[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
   useEffect(() => {
     getUserFormList(
+      pageNumber,
       ({ data }) => {
+        console.log(data.data);
         setContent(data.data.content);
-        setPageNumber(data.data.pageable.pageNumber + 1);
-        setTotalPages(data.data.totalPages);
+        setPageCount(data.data.pageCount);
       },
       (error) => {
         console.log('에러', error);
       }
     );
-  }, []);
+  }, [pageNumber]);
+
+  useEffect(() => {
+    setPageIndex(pageNumber);
+  }, [content]);
+
+  const getPreviousPage = () => {
+    setPageNumber((prev) => prev - 1);
+  };
+
+  const getSpecificPage = (i: number) => {
+    setPageNumber(i);
+  };
+
+  const getNextPage = () => {
+    setPageNumber((prev) => prev + 1);
+  };
 
   const changeDateFormat = (date: string) => {
     return date.replace(' ', '\n').replace('.000', '');
@@ -58,17 +77,24 @@ const UserRequests = () => {
         <Text content="Service Registration Request List" type="title" />
         <Text content="서비스 등록 요청 정보" type="subtitle" />
       </div>
+      <RequestPageButtons />
       <div className="company-req__table">
         <Table
           colWidth={colWidth}
           headerMeta={headerMeta}
           content={content}
+          pageIndex={pageIndex}
           RowComponent={UserReqRow}
         />
       </div>
-      {/* TODO: 페이지 이동 기능 추가 */}
       <div className="company-req__page-btn">
-        <PageButton pageNumber={pageNumber} totalPages={totalPages} />
+        <PageButton
+          pageNumber={pageNumber}
+          pageCount={pageCount}
+          getPreviousPage={getPreviousPage}
+          getSpecificPage={getSpecificPage}
+          getNextPage={getNextPage}
+        />
       </div>
     </div>
   );

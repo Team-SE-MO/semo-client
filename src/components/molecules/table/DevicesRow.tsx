@@ -60,20 +60,20 @@ const DevicesRow = ({ i, content }: DevicesRowProps) => {
   };
 
   return (
-    <tr>
-      <td className="table__row">{i + 1}</td>
+    <tr className="table__row">
+      <td className="table__data">{i + 1}</td>
       {rowData.companyName && (
-        <td className="table__row">
+        <td className="table__data">
           {rowData.companyName}
           <br />({rowData.taxId})
         </td>
       )}
-      <td className="table__row">{rowData.deviceAlias}</td>
-      <td className="table__row">{rowData.type}</td>
-      <td className="table__row">{rowData.ip}</td>
-      <td className="table__row">{rowData.port}</td>
-      <td className="table__row">{rowData.sid}</td>
-      <td className="table__row">
+      <td className="table__data">{rowData.deviceAlias}</td>
+      <td className="table__data">{rowData.type}</td>
+      <td className="table__data">{rowData.ip}</td>
+      <td className="table__data">{rowData.port}</td>
+      <td className="table__data">{rowData.sid}</td>
+      <td className="table__data">
         {rowData.status ? (
           <SvgIcon
             className="devices__info--success"
@@ -88,9 +88,9 @@ const DevicesRow = ({ i, content }: DevicesRowProps) => {
           />
         )}
       </td>
-      <td className="table__row">{rowData.createdAt}</td>
-      <td className="table__row">{rowData.updatedAt}</td>
-      <td className="table__row">
+      <td className="table__data">{rowData.createdAt}</td>
+      <td className="table__data">{rowData.updatedAt}</td>
+      <td className="table__data">
         <div className="table__btn">
           {/* TODO: api 연결 필요 */}
           <Button

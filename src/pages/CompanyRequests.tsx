@@ -3,8 +3,9 @@ import Text from 'components/atoms/text/Text';
 import Table from 'components/organisms/table/Table';
 import CompanyReqRow from 'components/molecules/table/CompanyReqRow';
 import PageButton from 'components/molecules/button/PageButton';
-import './CompanyRequests.scss';
 import { getCompanyFormList } from 'services/company';
+import RequestPageButtons from 'components/molecules/button/RequestPageButtons';
+import './CompanyRequests.scss';
 
 interface Form {
   formId: number;
@@ -33,19 +34,37 @@ const CompanyRequests = () => {
 
   const [formContent, setFormContent] = useState<Form[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
+
   useEffect(() => {
     getCompanyFormList(
+      pageNumber,
       ({ data }) => {
         setFormContent(data.data.content);
-        setPageNumber(data.data.pageable.pageNumber + 1);
-        setTotalPages(data.data.totalPages);
+        setPageCount(data.data.pageCount);
       },
       (error) => {
         console.log('에러', error);
       }
     );
-  }, []);
+  }, [pageNumber]);
+
+  useEffect(() => {
+    setPageIndex(pageNumber);
+  }, [formContent]);
+
+  const getPreviousPage = () => {
+    setPageNumber((prev) => prev - 1);
+  };
+
+  const getSpecificPage = (i: number) => {
+    setPageNumber(i);
+  };
+
+  const getNextPage = () => {
+    setPageNumber((prev) => prev + 1);
+  };
 
   const changeDateFormat = (date: string) => {
     return date.replace(' ', '\n').replace('.000', '');
@@ -64,17 +83,24 @@ const CompanyRequests = () => {
         <Text content="Service Registration Request List" type="title" />
         <Text content="서비스 등록 요청 정보" type="subtitle" />
       </div>
+      <RequestPageButtons />
       <div className="company-req__table">
         <Table
           colWidth={colWidth}
           headerMeta={headerMeta}
           content={formContent}
+          pageIndex={pageIndex}
           RowComponent={CompanyReqRow}
         />
       </div>
-      {/* TODO: 페이지 이동 기능 추가 */}
       <div className="company-req__page-btn">
-        <PageButton pageNumber={pageNumber} totalPages={totalPages} />
+        <PageButton
+          pageNumber={pageNumber}
+          pageCount={pageCount}
+          getPreviousPage={getPreviousPage}
+          getSpecificPage={getSpecificPage}
+          getNextPage={getNextPage}
+        />
       </div>
     </div>
   );

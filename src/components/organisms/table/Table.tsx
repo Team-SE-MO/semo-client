@@ -1,4 +1,5 @@
 import React from 'react';
+import './Table.scss';
 
 interface TableProps<T> {
   colWidth: string[];
@@ -8,6 +9,8 @@ interface TableProps<T> {
     { i: number; content: T } & { onDelete?: (loginId: string) => void }
   >;
   onDelete?: (loginId: string) => void;
+  className?: string;
+  pageIndex?: number;
 }
 
 const Table = <T,>({
@@ -16,10 +19,12 @@ const Table = <T,>({
   content,
   RowComponent,
   onDelete,
+  className = '',
+  pageIndex,
   ...props
 }: TableProps<T>) => {
   return (
-    <table className="table">
+    <table className={`table ${className}`}>
       <colgroup>
         {colWidth.map((i) => (
           <col width={i} />
@@ -37,7 +42,8 @@ const Table = <T,>({
           <RowComponent
             i={index}
             content={form}
-            {...(onDelete ? { onDelete } : {})}
+            {...(onDelete && { onDelete })}
+            {...(pageIndex && { pageIndex })}
           />
         ))}
       </tbody>

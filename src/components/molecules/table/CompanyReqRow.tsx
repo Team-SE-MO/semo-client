@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 
 interface CompanyReqRowProps {
   i: number;
+  pageIndex?: number;
   content: {
     formId: number;
     companyName: string;
@@ -18,7 +19,7 @@ interface CompanyReqRowProps {
   };
 }
 // TODO: 승인, 거절 누르면 rowData 상태 변경
-const CompanyReqRow = ({ i, content }: CompanyReqRowProps) => {
+const CompanyReqRow = ({ i, pageIndex, content }: CompanyReqRowProps) => {
   const [rowData, setRowData] = useState(content);
   const approveForm = () => {
     updateCompanyFormStatus(
@@ -85,16 +86,22 @@ const CompanyReqRow = ({ i, content }: CompanyReqRowProps) => {
     );
   };
   return (
-    <tr>
-      <td className="table__row">{i + 1}</td>
-      <td className="table__row">{rowData.companyName}</td>
-      <td className="table__row">{rowData.taxId}</td>
-      <td className="table__row">{rowData.ownerName}</td>
-      <td className="table__row">{rowData.email}</td>
-      <td className="table__row">{rowData.formStatus}</td>
-      <td className="table__row">{rowData.requestDate}</td>
+    <tr className="table__row">
+      <td className="table__data">
+        {pageIndex && (pageIndex - 1) * 10 + i + 1}
+      </td>
+      <td className="table__data">{rowData.companyName}</td>
+      <td className="table__data">{rowData.taxId}</td>
+      <td className="table__data">{rowData.ownerName}</td>
+      <td className="table__data">{rowData.email}</td>
+      <td
+        className={`table__data table__data--${rowData.formStatus.toLowerCase()}`}
+      >
+        {rowData.formStatus}
+      </td>
+      <td className="table__data">{rowData.requestDate}</td>
       {rowData.formStatus === 'PENDING' ? (
-        <td className="table__row">
+        <td className="table__data">
           <div className="table__btn">
             <Button
               size="small"
@@ -115,7 +122,7 @@ const CompanyReqRow = ({ i, content }: CompanyReqRowProps) => {
           </div>
         </td>
       ) : (
-        <td className="table__row">{rowData.approvedAt}</td>
+        <td className="table__data">{rowData.approvedAt}</td>
       )}
     </tr>
   );
