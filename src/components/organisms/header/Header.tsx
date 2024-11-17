@@ -20,7 +20,7 @@ const Header = () => {
   const items = [
     {
       label: '유저 관리',
-      route: role === 'ROLE_SUPER' ? '/users' : `/users/${companyId}`,
+      route: '/users',
     },
     {
       label: 'DB 관리',
