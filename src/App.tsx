@@ -11,7 +11,6 @@ import CompanyRequests from 'pages/CompanyRequests';
 import ChangePassword from 'pages/ChangePassword';
 import Devices from 'pages/Devices';
 import Users from 'pages/Users';
-import CompanyUsers from 'pages/CompanyUsers';
 import Summary from 'pages/Summary';
 import Dashboard from 'pages/Dashboard';
 
@@ -27,7 +26,6 @@ const App = () => {
             <Route path="/change-password" element={<ChangePassword />} />
             <Route path="/devices" element={<Devices />} />
             <Route path="/users" element={<Users />} />
-            <Route path="/users/:companyid" element={<CompanyUsers />} />
             <Route path="/dashboard/:companyId" element={<Summary />} />
             <Route
               path="/dashboard/:companyId/:deviceAlias"
