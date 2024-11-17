@@ -1,66 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Plugin, ChartOptions } from 'chart.js';
-import { getSessionExecutionData } from 'services/batchMonitoring';
+import {
+  getSessionExecutionData,
+  getJobExecutionData,
+} from 'services/batchMonitoring';
 import Text from 'components/atoms/text/Text';
 
 import './BatchDashboard.scss';
 
-interface SubMockDataType {
-  code: number;
-  message: string;
-  data: {
-    executionDate: {
-      [key: string]: {
-        storeJobDuration: number;
-        retentionJobDuration: number;
-      };
-    };
-  };
-}
-
-const subMockData: SubMockDataType = {
-  code: 200,
-  message: '성공적으로 일별 Job의 실행시간을 조회했습니다.',
-  data: {
-    executionDate: {
-      '2024-11-15': {
-        storeJobDuration: 6.2,
-        retentionJobDuration: 0.0,
-      },
-      '2024-11-14': {
-        storeJobDuration: 24.8,
-        retentionJobDuration: 0.0,
-      },
-      '2024-11-13': {
-        storeJobDuration: 42.4,
-        retentionJobDuration: 0.8,
-      },
-      '2024-11-12': {
-        storeJobDuration: 27.4,
-        retentionJobDuration: 0.3,
-      },
-      '2024-11-11': {
-        storeJobDuration: 0.0,
-        retentionJobDuration: 0.0,
-      },
-      '2024-11-10': {
-        storeJobDuration: 0.0,
-        retentionJobDuration: 0.0,
-      },
-    },
-  },
-};
-
-interface SessionJobDataType {
+interface SessionDataType {
   executionTimes: {
     [executionTime: string]: number;
   };
 }
 
+interface DailyJobDataType {
+  executionDate: {
+    [executionDate: string]: {
+      storeJobDuration: number;
+      retentionJobDuration: number;
+    };
+  };
+}
+
 const BatchDashboard = () => {
   const [sessionExecutionData, setSessionExecutionData] =
-    useState<SessionJobDataType>();
+    useState<SessionDataType>();
+  const [dailyJobData, setDailyJobData] = useState<DailyJobDataType>();
 
   useEffect(() => {
     getSessionExecutionData(
@@ -71,17 +38,22 @@ const BatchDashboard = () => {
         console.log('세션 Job 실행시간 조회 실패:', error);
       }
     );
+
+    getJobExecutionData(
+      ({ data }) => {
+        setDailyJobData(data.data);
+      },
+      (error) => {
+        console.log('일별 Job 실행시간 조회 실패:', error);
+      }
+    );
   }, []);
 
   // 메인 차트용 데이터 변환 함수
-  const transformMainData = (data: any) => {
-    if (!data) return { labels: [], executionData: [], average: 0 }; // 데이터가 없을 때 기본값 반환
+  const transformSessionData = (data: any) => {
+    if (!data) return { labels: [], executionData: [] }; // 데이터가 없을 때 기본값 반환
     const times = Object.keys(data.executionTimes).reverse();
     const executionData = times.map((time) => data.executionTimes[time]);
-
-    // 평균 계산
-    const average =
-      executionData.reduce((acc, val) => acc + val, 0) / executionData.length;
 
     const formattedTimes = times.map((time) => {
       const date = new Date(time);
@@ -96,12 +68,11 @@ const BatchDashboard = () => {
     return {
       labels: formattedTimes,
       executionData,
-      average,
     };
   };
 
   // 서브 차트용 데이터 변환 함수
-  const transformSubData = (data: any) => {
+  const transformJobData = (data: any) => {
     const dates = Object.keys(data.executionDate).reverse();
     const storeJobData = dates.map(
       (date) => data.executionDate[date].storeJobDuration
@@ -117,40 +88,32 @@ const BatchDashboard = () => {
     };
   };
 
-  const mainChartData = sessionExecutionData
+  const sessionChartData = sessionExecutionData
     ? {
-        labels: transformMainData(sessionExecutionData).labels,
+        labels: transformSessionData(sessionExecutionData).labels,
         datasets: [
           {
             label: 'Session Job Duration',
-            data: transformMainData(sessionExecutionData).executionData,
+            data: transformSessionData(sessionExecutionData).executionData,
             borderColor: '#00BCD4',
             backgroundColor: 'rgba(0, 188, 212, 0.1)',
             fill: true,
             tension: 0.4,
           },
-          {
-            label: '',
-            data: Array(
-              transformMainData(sessionExecutionData).labels.length
-            ).fill(transformMainData(sessionExecutionData).average),
-            borderColor: '#FF4081',
-            borderDash: [5, 5], // 점선으로 표시
-            fill: false,
-            tension: 0,
-          },
         ],
       }
-    : { labels: [], datasets: [] }; // 데이터가 없을 때 빈 차트 데이터 반환
+    : { labels: [], datasets: [] };
 
-  const subChartData = transformSubData(subMockData.data);
+  const dailyJobChartData = dailyJobData
+    ? transformJobData(dailyJobData)
+    : { labels: [], storeJobData: [], retentionJobData: [] };
 
   const storeJobChartData = {
-    labels: subChartData.labels,
+    labels: dailyJobChartData.labels,
     datasets: [
       {
         label: 'Store Job Duration',
-        data: subChartData.storeJobData,
+        data: dailyJobChartData.storeJobData,
         borderColor: '#2E5BFF',
         backgroundColor: 'rgba(46, 91, 255, 0.2)',
         fill: true,
@@ -160,11 +123,11 @@ const BatchDashboard = () => {
   };
 
   const retentionJobChartData = {
-    labels: subChartData.labels,
+    labels: dailyJobChartData.labels,
     datasets: [
       {
         label: 'Retention Job Duration',
-        data: subChartData.retentionJobData,
+        data: dailyJobChartData.retentionJobData,
         borderColor: '#FFA500',
         backgroundColor: 'rgba(255, 165, 0, 0.2)',
         fill: true,
@@ -173,23 +136,28 @@ const BatchDashboard = () => {
     ],
   };
 
-  const mainChartOptions: ChartOptions<'line'> = {
+  const sessionChartOptions: ChartOptions<'line'> = {
     responsive: true,
     scales: {
       x: {
         grid: { display: false },
         ticks: {
           autoSkip: true,
-          maxTicksLimit: Math.ceil(mainChartData.labels.length / 2),
+          maxTicksLimit: Math.ceil(sessionChartData.labels.length / 2),
         },
       },
       y: {
         grid: {
           display: true,
-          color: 'rgba(0, 0, 0, 0.1)',
+          color: (context) => {
+            // y축 값이 5의 배수일 때 진한 색상 사용
+            return context.tick.value === 5 ? '#FF0000' : 'rgba(0, 0, 0, 0.1)';
+          },
+          drawTicks: true,
         },
         beginAtZero: true,
         min: 0,
+        suggestedMin: 5,
         suggestedMax: 10,
         ticks: {
           callback: (value: string | number) => `${value as number}s`,
@@ -221,7 +189,7 @@ const BatchDashboard = () => {
     maintainAspectRatio: true,
   };
 
-  const subChartOptions: ChartOptions<'line'> = {
+  const dailyJobChartOptions: ChartOptions<'line'> = {
     responsive: true,
     scales: {
       x: {
@@ -280,7 +248,7 @@ const BatchDashboard = () => {
           <div className="batch-dashboard__chart-wrapper">
             <div className="batch-dashboard__chart__card batch-dashboard__chart-large">
               <div className="base-chart chart-large">
-                <Line data={mainChartData} options={mainChartOptions} />
+                <Line data={sessionChartData} options={sessionChartOptions} />
               </div>
             </div>
             <div className="chart-subtitle">
@@ -294,11 +262,10 @@ const BatchDashboard = () => {
 
         {/* 서브 차트 영역 */}
         <div className="batch-dashboard__chart-sub">
-          {/* 서브 차트 카드 1 */}
           <div className="batch-dashboard__chart-wrapper">
             <div className="batch-dashboard__chart__card batch-dashboard__chart-small">
               <div className="base-chart chart-small">
-                <Line data={storeJobChartData} options={subChartOptions} />
+                <Line data={storeJobChartData} options={dailyJobChartOptions} />
               </div>
             </div>
             <div className="chart-subtitle">
@@ -308,11 +275,13 @@ const BatchDashboard = () => {
               />
             </div>
           </div>
-          {/* 서브 차트 카드 2 */}
           <div className="batch-dashboard__chart-wrapper">
             <div className="batch-dashboard__chart__card batch-dashboard__chart-small">
               <div className="base-chart chart-small">
-                <Line data={retentionJobChartData} options={subChartOptions} />
+                <Line
+                  data={retentionJobChartData}
+                  options={dailyJobChartOptions}
+                />
               </div>
             </div>
             <div className="chart-subtitle">

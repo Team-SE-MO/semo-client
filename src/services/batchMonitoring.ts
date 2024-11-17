@@ -19,4 +19,20 @@ const getSessionExecutionData = async (
     .catch(fail);
 };
 
-export { getSessionExecutionData };
+const getJobExecutionData = async (
+  success: (response: AxiosResponse) => void,
+  fail: (error: AxiosError) => void
+): Promise<void> => {
+  const token = localStorage.getItem('accessToken');
+  await api({
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: 'get',
+    url: '/monitoring/batch-chart/daily',
+  })
+    .then(success)
+    .catch(fail);
+};
+
+export { getSessionExecutionData, getJobExecutionData };
