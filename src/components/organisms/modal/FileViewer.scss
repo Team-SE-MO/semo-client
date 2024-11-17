@@ -1,0 +1,67 @@
+@import '../../../styles/variables';
+.file-viewer {
+  &__background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+
+  &__container {
+    position: relative;
+    display: flex;
+    width: 50%;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: $main-theme-color;
+    border-radius: 50px;
+    padding: 30px 0;
+    gap: 30px;
+    z-index: 2;
+  }
+
+  &__title {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  &__content {
+    display: flex;
+    width: 100%;
+    height: 10%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  &__table {
+    width: 95%;
+  }
+
+  &__date-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    .MuiInput-root {
+      width: 130px;
+
+      input {
+        text-align: center;
+      }
+
+      &:before {
+        border-bottom-width: 2px;
+        border-bottom-color: $main-text-color;
+      }
+    }
+  }
+}
