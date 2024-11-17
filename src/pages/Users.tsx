@@ -49,6 +49,9 @@ const Users = () => {
       RowComponent: CompanyUserRow,
     },
   };
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
 
   const [content, setContent] = useState<UserDetail[]>([]);
   const [companyList, setCompanyList] = useState<Company[]>([]);
@@ -79,6 +82,7 @@ const Users = () => {
       newCheckedItems.delete(value);
     }
     setCheckedRoles(newCheckedItems);
+    setPageNumber(1);
   };
 
   const [keyword, setKeyword] = useState('');
@@ -97,16 +101,15 @@ const Users = () => {
   const [companyId, setCompanyId] = useState<number | null>(
     role === 'ROLE_ADMIN' ? userInfo.state.companyId : null
   );
-  const [pageNumber, setPageNumber] = useState<number>(1);
-  const [pageIndex, setPageIndex] = useState(1);
-  const [pageCount, setPageCount] = useState(1);
 
   useEffect(() => {
     getUserList(
+      pageNumber,
       companyId,
       [...checkedRoles],
       keyword,
       ({ data }) => {
+        console.log(data.data);
         setContent(data.data.content);
         setPageCount(data.data.pageCount);
       },
@@ -132,6 +135,7 @@ const Users = () => {
 
   const searchUsers = () => {
     getUserList(
+      1,
       companyId,
       [...checkedRoles],
       keyword,
@@ -212,8 +216,10 @@ const Users = () => {
               onChange={(event, newValue) => {
                 if (newValue) {
                   setCompanyId(newValue.id);
+                  setPageNumber(1);
                 } else {
                   setCompanyId(null);
+                  setPageNumber(1);
                 }
               }}
               renderInput={(params) => <TextField {...params} label="회사명" />}
