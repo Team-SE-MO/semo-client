@@ -2,7 +2,7 @@ import React from 'react';
 import Text from 'components/atoms/text/Text';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
-import OvervieCardItem from 'components/molecules/monitoring/OvervieCardItem';
+import OverviewCardItem from 'components/molecules/monitoring/OverviewCardItem';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -69,18 +69,18 @@ const CompanyDeviceOverview = ({
           <Doughnut data={doughnutData} options={doughnutOpt} />
         </div>
       </div>
-      <OvervieCardItem
+      <OverviewCardItem
         title="topUsedDevices"
         hasLine
         content={topUsedDevices}
       />
-      <OvervieCardItem
+      <OverviewCardItem
         title="warnDevice"
         hasIcon
         hasLine
         content={warnDevice}
       />
-      <OvervieCardItem title="unusedDevice" hasIcon content={unusedDevice} />
+      <OverviewCardItem title="unusedDevice" hasIcon content={unusedDevice} />
     </div>
   );
 };

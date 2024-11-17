@@ -1,21 +1,21 @@
 import React from 'react';
-import { colors, SvgIcon } from '@mui/material';
+import { SvgIcon } from '@mui/material';
 import Text from 'components/atoms/text/Text';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
-interface OvervieCardItemProps {
+interface OverviewCardItemProps {
   title: 'topUsedDevices' | 'warnDevice' | 'unusedDevice';
   hasIcon?: boolean;
   hasLine?: boolean;
   content: { [key: string]: number };
 }
 
-const OvervieCardItem = ({
+const OverviewCardItem = ({
   title,
   hasIcon = false,
   hasLine = false,
   content,
-}: OvervieCardItemProps) => {
+}: OverviewCardItemProps) => {
   const cardTitle = {
     topUsedDevices: '현재 가장 많이 사용되고 있는 DB',
     warnDevice: '주의 요망 DB',
@@ -58,4 +58,4 @@ const OvervieCardItem = ({
   );
 };
 
-export default OvervieCardItem;
+export default OverviewCardItem;
