@@ -60,13 +60,8 @@ const BatchDashboard = () => {
     const executionData = times.map((time) => data.executionTimes[time]);
 
     const formattedTimes = times.map((time) => {
-      const date = new Date(time);
-      return date.toLocaleTimeString('ko-KR', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
-      });
+      const date = time.split('T')[1];
+      return date;
     });
 
     return {
