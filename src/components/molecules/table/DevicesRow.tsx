@@ -8,6 +8,7 @@ import DatabaseDelete from 'components/organisms/modal/DatabaseDelete';
 
 interface DevicesRowProps {
   i: number;
+  pageIndex?: number;
   content: {
     deviceId: number;
     companyName?: string;
@@ -23,7 +24,7 @@ interface DevicesRowProps {
   };
 }
 
-const DevicesRow = ({ i, content }: DevicesRowProps) => {
+const DevicesRow = ({ i, pageIndex, content }: DevicesRowProps) => {
   const [rowData, setRowData] = useState(content);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -61,7 +62,9 @@ const DevicesRow = ({ i, content }: DevicesRowProps) => {
 
   return (
     <tr className="table__row">
-      <td className="table__data">{i + 1}</td>
+      <td className="table__data">
+        {pageIndex && (pageIndex - 1) * 10 + i + 1}
+      </td>
       {rowData.companyName && (
         <td className="table__data">
           {rowData.companyName}
@@ -88,8 +91,12 @@ const DevicesRow = ({ i, content }: DevicesRowProps) => {
           />
         )}
       </td>
-      <td className="table__data">{rowData.createdAt}</td>
-      <td className="table__data">{rowData.updatedAt}</td>
+      <td className="table__data">
+        {rowData.createdAt.replace('T', '\n').split('.')[0]}
+      </td>
+      <td className="table__data">
+        {rowData.updatedAt.replace('T', '\n').split('.')[0]}
+      </td>
       <td className="table__data">
         <div className="table__btn">
           {/* TODO: api 연결 필요 */}
