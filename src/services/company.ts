@@ -42,6 +42,7 @@ const createCompanyRequest = async (
 };
 
 const getCompanyFormList = async (
+  page: number,
   success: (response: AxiosResponse) => void,
   fail: (error: AxiosError) => void
 ): Promise<void> => {
@@ -50,6 +51,9 @@ const getCompanyFormList = async (
     headers: { Authorization: `Bearer ${token}` },
     method: 'get',
     url: '/company/form',
+    params: {
+      page,
+    },
   })
     .then(success)
     .catch(fail);

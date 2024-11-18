@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, SvgIcon, TextField } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { createUserRequest, getEmailStatus } from 'services/user';
 import { getCompanies } from 'services/company';
 import CompanyRegister from 'components/organisms/modal/CompanyRegister';
@@ -108,6 +109,14 @@ const SignUp = () => {
 
   return (
     <div className="signup__container">
+      <div
+        className="signup__go-home"
+        onClick={() => navigate('/')}
+        role="presentation"
+      >
+        <SvgIcon className="login__go-home__icon" component={ArrowBackIcon} />
+        <Text content="HOME" type="subtitle" />
+      </div>
       <div className="signup__image" />
       <div className="signup__content">
         <div className="signup__text-group">

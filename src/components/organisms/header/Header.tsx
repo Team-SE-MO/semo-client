@@ -20,16 +20,20 @@ const Header = () => {
   const items = [
     {
       label: '유저 관리',
-      route: role === 'ROLE_SUPER' ? '/users' : `/users/${companyId}`,
+      route: '/users',
     },
     {
-      label: 'DB관리',
+      label: 'DB 관리',
       route: '/devices',
     },
     ...(role === 'ROLE_SUPER'
       ? [
           {
             label: '요청 관리',
+            route: 'user-req',
+          },
+          {
+            label: '대시보드',
             route: 'user-req',
           },
         ]

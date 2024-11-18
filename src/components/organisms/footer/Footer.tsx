@@ -3,7 +3,7 @@ import './Footer.scss';
 import Text from 'components/atoms/text/Text';
 import logo from 'assets/images/semo_logo_footer.svg';
 
-export const Footer = () => {
+const Footer = () => {
   const content =
     '운영시간 : 10:00 ~ 18:00 (점심 시간 13:00 ~ 14:00) \n 주일, 공유일 휴무';
   const copyright = 'Copyright ⓒ 2024. All rights reserved.';
@@ -19,3 +19,5 @@ export const Footer = () => {
     </div>
   );
 };
+
+export default Footer;
