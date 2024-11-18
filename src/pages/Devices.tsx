@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Text from 'components/atoms/text/Text';
 import Table from 'components/organisms/table/Table';
+import Company from 'types/Company';
+import { getCompanies } from 'services/company';
 import DevicesRow from 'components/molecules/table/DevicesRow';
 import PageButton from 'components/molecules/button/PageButton';
 import DatabaseForm from 'components/organisms/modal/DatabaseForm';
@@ -8,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Button from 'components/atoms/button/Button';
 import './Devices.scss';
+import { getDeviceList } from 'services/device';
 
 interface DeviceBase {
   deviceId: number;
@@ -25,148 +28,133 @@ interface DeviceWithCompany extends DeviceBase {
   taxId: string;
 }
 const Devices = () => {
+  const headerMetaSuper = [
+    'No.',
+    '회사명',
+    'DataBase',
+    'TYPE',
+    'IP',
+    'PORT',
+    'SID',
+    '연결 상태',
+    '등록 일자',
+    '수정 일자',
+    '수정\u00a0\u00a0\u00a0|\u00a0\u00a0\u00a0삭제',
+  ];
+  const colWidthSuper = [
+    '7%',
+    '15%',
+    '7%',
+    '7%',
+    '7%',
+    '7%',
+    '7%',
+    '5%',
+    '10%',
+    '10%',
+    '13%',
+  ];
+  const headerMetaAdmin = [
+    'No.',
+    'DataBase',
+    'TYPE',
+    'IP',
+    'PORT',
+    'SID',
+    '연결 상태',
+    '등록 일자',
+    '수정 일자',
+    '수정\u00a0\u00a0\u00a0|\u00a0\u00a0\u00a0삭제',
+  ];
+  const colWidthAdmin = [
+    '7%',
+    '7%',
+    '7%',
+    '7%',
+    '7%',
+    '7%',
+    '5%',
+    '10%',
+    '10%',
+    '13%',
+  ];
+
+  // RowComponent 필요
+  const tableContent = {
+    ROLE_SUPER: {
+      headerMeta: headerMetaSuper,
+      colWidth: colWidthSuper,
+    },
+    ROLE_ADMIN: {
+      headerMeta: headerMetaAdmin,
+      colWidth: colWidthAdmin,
+    },
+  };
+  const [content, setContent] = useState<(DeviceBase | DeviceWithCompany)[]>(
+    []
+  );
+  const [companyList, setCompanyList] = useState<Company[]>([]);
   const userInfoStorage = localStorage.getItem('userInfoStorage');
   const userInfo = JSON.parse(userInfoStorage || '');
   const { role } = userInfo.state;
-
-  const headerMeta =
-    role === 'ROLE_SUPER'
-      ? [
-          'No.',
-          '회사명',
-          'DataBase',
-          'TYPE',
-          'IP',
-          'PORT',
-          'SID',
-          '연결 상태',
-          '등록 일자',
-          '수정 일자',
-          '수정\u00a0\u00a0\u00a0|\u00a0\u00a0\u00a0삭제',
-        ]
-      : [
-          'No.',
-          'DataBase',
-          'TYPE',
-          'IP',
-          'PORT',
-          'SID',
-          '연결 상태',
-          '등록 일자',
-          '수정 일자',
-          '수정\u00a0\u00a0\u00a0|\u00a0\u00a0\u00a0삭제',
-        ];
-
-  const colWidth =
-    role === 'ROLE_SUPER'
-      ? ['7%', '15%', '7%', '7%', '7%', '7%', '7%', '5%', '10%', '10%', '13%']
-      : ['7%', '7%', '7%', '7%', '7%', '7%', '5%', '10%', '10%', '13%'];
-
-  const formContent: (DeviceBase | DeviceWithCompany)[] = [
-    {
-      deviceId: 1,
-      // companyName: 'SEMO',
-      // taxId: '000-00-00007',
-      deviceAlias: 'LOCALHOST',
-      type: 'ORACLE',
-      ip: '127.0.0.1',
-      port: 1521,
-      sid: 'XE',
-      status: true,
-      createdAt: '2024-10-23 22:06:36.000',
-      updatedAt: '2024-10-23 22:06:36.000',
-    },
-    {
-      deviceId: 2,
-      // companyName: '(주)네모바지',
-      // taxId: '000-00-00002',
-      deviceAlias: 'LOCALHOST',
-      type: 'ORACLE',
-      ip: '127.0.0.1',
-      port: 1521,
-      sid: 'XE',
-      status: true,
-      createdAt: '2024-10-23 22:06:36.000',
-      updatedAt: '2024-10-23 22:06:36.000',
-    },
-    {
-      deviceId: 3,
-      // companyName: '(주)네모바지',
-      // taxId: '000-00-00002',
-      deviceAlias: 'LOCALHOST1',
-      type: 'ORACLE',
-      ip: '127.0.0.1',
-      port: 1521,
-      sid: 'XE',
-      status: false,
-      createdAt: '2024-10-23 22:06:36.000',
-      updatedAt: '2024-10-23 22:06:36.000',
-    },
-  ];
-
-  const companyList = [
-    {
-      id: 1,
-      companyName: 'SEMO',
-      taxId: '000-00-00007',
-    },
-    {
-      id: 52,
-      companyName: '(주)네모바지',
-      taxId: '000-00-00002',
-    },
-  ];
-
-  const companies =
-    companyList && companyList.length > 0
-      ? companyList.map((item) => {
-          const temp = {
-            label: `${item.companyName} (${item.taxId})`,
-            ...item,
-          };
-          return temp;
-        })
-      : [];
-
-  const pageNumber = 1;
-  const pageSize = 10;
-  const totalPages = 1;
-  const totalElement = formContent.length;
-
-  const changeDateFormat = (date: string) => {
-    return date.replace(' ', '\n').replace('.000', '');
-  };
-  formContent.forEach((form) => {
-    const newForm = form;
-    newForm.createdAt = changeDateFormat(form.createdAt);
-    newForm.updatedAt = changeDateFormat(form.updatedAt);
-  });
-
-  const [companyName, setCompanyName] = useState('');
-  const [filteredContent, setFilteredContent] = useState(formContent);
+  const [companyId, setCompanyId] = useState<number | null>(
+    role === 'ROLE_ADMIN' ? userInfo.state.companyId : null
+  );
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
 
   useEffect(() => {
     if (role === 'ROLE_SUPER') {
-      const filtered = (formContent as DeviceWithCompany[]).filter((item) => {
-        const normalizedCompanyName = item.companyName
-          .replace(/[^\w\s]/g, '')
-          .toLowerCase();
-        const normalizedTaxId = item.taxId.replace(/[^0-9]/g, '');
-        const normalizedInput = companyName
-          .replace(/[^\w\s]/g, '')
-          .toLowerCase();
-        const normalizedInputTaxId = companyName.replace(/[^0-9]/g, '');
-
-        return (
-          normalizedCompanyName.includes(normalizedInput) ||
-          normalizedTaxId.includes(normalizedInputTaxId)
-        );
-      });
-      setFilteredContent(filtered);
-    } else {
-      setFilteredContent(formContent);
+      const keyword = '';
+      getCompanies(
+        keyword,
+        ({ data }) => {
+          console.log('API 데이터:', data.data); // 데이터 확인
+          setCompanyList(data.data);
+        },
+        (error) => console.log('에러', error)
+      );
     }
-  }, [companyName]);
+  }, []);
+
+  useEffect(() => {
+    getDeviceList(
+      pageNumber,
+      companyId,
+      ({ data }) => {
+        setPageCount(data.data.pageCount);
+        setContent(data.data.content);
+      },
+      (error) => {
+        console.log('에러', error);
+      }
+    );
+  }, [pageNumber, companyId]);
+
+  const companies =
+    companyList && companyList.length > 0
+      ? companyList.map((item) => ({
+          label: `${item.companyName} (${item.taxId})`,
+          ...item,
+        }))
+      : [];
+
+  useEffect(() => {
+    setPageIndex(pageNumber);
+  }, [content]);
+
+  const getPreviousPage = () => {
+    setPageNumber((prev) => prev - 1);
+  };
+
+  const getSpecificPage = (i: number) => {
+    setPageNumber(i);
+  };
+
+  const getNextPage = () => {
+    setPageNumber((prev) => prev + 1);
+  };
 
   const [isDeviceModalOpen, setIsDeviceModalOpen] = useState(false);
 
@@ -229,17 +217,12 @@ const Devices = () => {
                     }
                     return options;
                   }}
-                  onInputChange={(event, newInputValue) => {
-                    setCompanyName(newInputValue);
+                  onChange={(event, newValue) => {
+                    setCompanyId(newValue ? newValue.id : null);
+                    setPageNumber(1);
                   }}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="회사명"
-                      onChange={(e) => {
-                        setCompanyName(e.target.value);
-                      }}
-                    />
+                    <TextField {...params} label="회사명" />
                   )}
                 />
               )}
@@ -251,15 +234,24 @@ const Devices = () => {
       </div>
       <div className="devices__table">
         <Table
-          colWidth={colWidth}
-          headerMeta={headerMeta}
-          content={filteredContent}
+          colWidth={tableContent[role as keyof typeof tableContent].colWidth}
+          headerMeta={
+            tableContent[role as keyof typeof tableContent].headerMeta
+          }
+          content={content}
+          pageIndex={pageIndex}
           RowComponent={DevicesRow}
         />
       </div>
-      {/* <div className="devices__page-btn">
-        <PageButton pageNumber={pageNumber} totalPages={totalPages} />
-      </div> */}
+      <div className="devices__page-btn">
+        <PageButton
+          pageNumber={pageNumber}
+          pageCount={pageCount}
+          getPreviousPage={getPreviousPage}
+          getSpecificPage={getSpecificPage}
+          getNextPage={getNextPage}
+        />
+      </div>
     </div>
   );
 };

@@ -5,6 +5,7 @@ const api = apiInstance();
 
 const getDeviceList = async (
   page: number | null,
+  companyId: number | null,
   success: (response: AxiosResponse) => void,
   fail: (error: AxiosError) => void
 ): Promise<void> => {
@@ -15,6 +16,7 @@ const getDeviceList = async (
     url: '/device',
     params: {
       page,
+      companyId,
     },
   })
     .then(success)
