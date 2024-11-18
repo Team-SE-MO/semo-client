@@ -60,10 +60,9 @@ const Users = () => {
   const { role } = userInfo.state;
 
   useEffect(() => {
-    if (role === 'ROLE SUPER') {
-      const keyword = '';
+    if (role === 'ROLE_SUPER') {
       getCompanies(
-        keyword,
+        '',
         ({ data }) => {
           setCompanyList(data.data);
         },
