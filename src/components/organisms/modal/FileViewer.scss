@@ -17,9 +17,9 @@
     position: relative;
     display: flex;
     width: 50%;
+    height: 40%;
     align-items: center;
     flex-direction: column;
-    justify-content: space-between;
     background-color: $main-theme-color;
     border-radius: 50px;
     padding: 30px 0;
@@ -48,9 +48,11 @@
   }
 
   &__date-selector {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+
     .MuiInput-root {
       width: 130px;
 
@@ -63,5 +65,17 @@
         border-bottom-color: $main-text-color;
       }
     }
+  }
+
+  &__message {
+    text-align: center;
+    padding: 2rem;
+    color: $placeholder-color;
+  }
+}
+
+.MuiPopper-root {
+  & .MuiPaper-root {
+    transform: translateX(-150px) !important;
   }
 }

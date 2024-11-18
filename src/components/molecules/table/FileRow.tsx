@@ -1,6 +1,7 @@
 import Button from 'components/atoms/button/Button';
 import React from 'react';
 import { downloadFile } from 'services/file';
+import DownloadIcon from '@mui/icons-material/Download';
 
 interface FileRowProps {
   i: number;
@@ -16,7 +17,7 @@ interface FileRowProps {
 
 const FileRow = ({ i, content, deviceAlias }: FileRowProps) => {
   const formatFileSize = (bytes: number) => {
-    return `${(bytes / 1024).toFixed(2)} KB`;
+    return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
   };
 
   const formatDate = (dateString: string) => {
@@ -53,10 +54,11 @@ const FileRow = ({ i, content, deviceAlias }: FileRowProps) => {
       <td className="table__data">
         <div className="table__btn">
           <Button
+            icon={DownloadIcon}
             size="small"
-            label="다운로드"
-            color="primary"
-            radius="oval"
+            // label="다운로드"
+            color="other"
+            radius="pill"
             type="button"
             onClick={handleDownload}
           />
