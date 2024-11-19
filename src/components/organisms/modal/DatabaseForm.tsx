@@ -7,6 +7,7 @@ import Button from 'components/atoms/button/Button';
 import Input from 'components/atoms/input/Input';
 import Toast from 'components/atoms/toast/Toast';
 import Swal from 'sweetalert2';
+import { postDevice, testConnection, patchDevice } from 'services/device';
 
 interface DatabaseFormProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ interface DatabaseFormProps {
     username?: string;
     password?: string;
   };
+  reload?: () => void;
 }
 
 const DatabaseForm = ({
@@ -28,6 +30,7 @@ const DatabaseForm = ({
   onClose,
   mode,
   editData,
+  reload,
 }: DatabaseFormProps) => {
   const [databaseAlias, setDatabaseAlias] = useState(
     mode === 'edit' && editData ? editData.databaseAlias : ''
@@ -53,6 +56,7 @@ const DatabaseForm = ({
     'failure'
   );
   const [message, setMessage] = useState('');
+  const [isConnectionTested, setIsConnectionTested] = useState(false); // Test Connection 성공 여부
 
   const title =
     mode === 'register' ? 'Registering Database' : 'Modifying the Database';
@@ -78,7 +82,15 @@ const DatabaseForm = ({
   ];
 
   const validateInputs = () => {
-    if (!databaseAlias || !type || !ip || !port || !sid || !username) {
+    if (
+      !databaseAlias ||
+      !type ||
+      !ip ||
+      !port ||
+      !sid ||
+      !username ||
+      !password
+    ) {
       Swal.fire({
         title: '알림',
         text: '필수 필드를 모두 입력해주세요.',
@@ -90,14 +102,112 @@ const DatabaseForm = ({
     return true;
   };
 
-  const handleTestConnection = () => {
+  const handleTestConnection = async () => {
     if (!validateInputs()) return;
+    await testConnection(
+      type,
+      ip,
+      port || 0,
+      sid,
+      username,
+      password,
+      ({ data }) => {
+        console.log(data.data);
+        if (data.data) {
+          setToastStatus('success');
+          setMessage('Connection successful!');
+          setIsConnectionTested(true);
+        } else {
+          setToastStatus('failure');
+          setMessage('Connection failed, Please check your inputs.');
+          setIsConnectionTested(false);
+        }
+        setToastVisible(true);
+      },
+      (error) => {
+        console.error('Error Response:', error.response?.data || error.message);
+        setToastStatus('failure');
+        setMessage('Connection failed due to server error.');
+        setIsConnectionTested(false);
+        setToastVisible(true);
+      }
+    );
+  };
 
-    // TODO: api 연결
-    // 응답코드에 따라 Toast 상태 변경 및 응답에 대한 'message를 전달해야함
-    setToastStatus(true ? 'success' : 'failure');
-    // setMessage('info 메세지가 담/길 예정'); // 응답 메세지 입력
-    setToastVisible(true);
+  useEffect(() => {
+    setIsConnectionTested(false);
+  }, [databaseAlias, type, ip, port, sid, username, password]);
+
+  const handleSubmit = async () => {
+    if (!isConnectionTested) {
+      Swal.fire({
+        title: '알림',
+        text: 'Database 연결 테스트가 통과되지 않았습니다.',
+        icon: 'warning',
+        confirmButtonText: '확인',
+      });
+    }
+
+    if (mode === 'register') {
+      await postDevice(
+        databaseAlias,
+        {
+          type,
+          ip,
+          port: port || 0,
+          sid,
+          username,
+          password,
+        },
+        () => {
+          Swal.fire({
+            title: '등록 완료',
+            text: '디바이스가 성공적으로 등록되었습니다.',
+            icon: 'success',
+            confirmButtonText: '확인',
+          });
+          onClose();
+          reload?.();
+        },
+        (error) => {
+          console.error('등록 실패:', error.response?.data || error.message);
+          setToastStatus('failure');
+          setMessage('Connection failed');
+          setToastVisible(true);
+        }
+      );
+    }
+
+    if (mode === 'edit' && editData && isConnectionTested) {
+      await patchDevice(
+        editData.databaseAlias,
+        databaseAlias,
+        {
+          type,
+          ip,
+          port: port || 0,
+          sid,
+          username,
+          password,
+        },
+        () => {
+          Swal.fire({
+            title: '수정 완료',
+            text: '디바이스 정보가 성공적으로 수정되었습니다.',
+            icon: 'success',
+            confirmButtonText: '확인',
+          });
+          onClose();
+          reload?.();
+        },
+        (error) => {
+          console.error('수정 실패:', error.response?.data || error.message);
+          setToastStatus('failure');
+          setMessage('Connection failed');
+          setToastVisible(true);
+        }
+      );
+    }
   };
 
   // 모든 입력값 초기화하는 함수
@@ -111,6 +221,7 @@ const DatabaseForm = ({
     setPassword('');
     setToastVisible(false);
     setMessage('');
+    setIsConnectionTested(false);
   };
 
   useEffect(() => {
@@ -129,6 +240,11 @@ const DatabaseForm = ({
     }
   }, [isOpen, mode, editData]);
 
+  useEffect(() => {
+    // 입력값 변경 시 연결 테스트 상태 초기화
+    setIsConnectionTested(false);
+  }, [databaseAlias, type, ip, port, sid, username, password]);
+
   const handleClose = () => {
     if (mode === 'register') {
       resetForm();
@@ -137,24 +253,6 @@ const DatabaseForm = ({
   };
 
   if (!isOpen) return null;
-
-  const handleSubmit = async () => {
-    if (!validateInputs()) return;
-
-    const submitData = {
-      databaseAlias,
-      type,
-      ip,
-      port,
-      sid,
-      username,
-      password,
-    };
-
-    // TODO: axios 인터페이스 설정 시 해당 요청 api 연결
-    console.log('제출할 데이터:', submitData);
-    onClose();
-  };
 
   return (
     <div className="database-form__background">

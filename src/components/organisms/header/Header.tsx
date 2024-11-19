@@ -10,7 +10,16 @@ import logo from 'assets/images/semo_logo_header.svg';
 
 const Header = () => {
   const userInfoStorage = localStorage.getItem('userInfoStorage');
-  const userInfo = JSON.parse(userInfoStorage || '');
+  const userInfo = userInfoStorage
+    ? JSON.parse(userInfoStorage)
+    : {
+        state: {
+          isLoggedIn: null,
+          role: null,
+          companyId: null,
+          ownerName: null,
+        },
+      };
   const [isProfileDetailOpen, setIsProfileDetailOpen] = useState(false);
   const { isLoggedIn } = userInfo.state;
   const { role } = userInfo.state;

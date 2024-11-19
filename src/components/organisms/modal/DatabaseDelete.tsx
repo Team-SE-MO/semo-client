@@ -2,15 +2,53 @@ import React from 'react';
 import './DatabaseDelete.scss';
 import Text from 'components/atoms/text/Text';
 import Button from 'components/atoms/button/Button';
+import Swal from 'sweetalert2';
+import { deleteDevice } from 'services/device';
 
 interface DatabaseDeleteProps {
+  deviceAlias: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const DatabaseDelete = ({ isOpen, onClose }: DatabaseDeleteProps) => {
+const DatabaseDelete = ({
+  deviceAlias,
+  isOpen,
+  onClose,
+}: DatabaseDeleteProps) => {
   const handleSubmit = async () => {
-    // TODO : axios 인터페이스 설정 시 해당 요청 api 연결
+    if (!deviceAlias) {
+      console.error('삭제할 데이터베이스 별칭이 없습니다.');
+      Swal.fire({
+        title: '알림',
+        text: '장치 정보를 가져오지 못했습니다.\n잠시 후 다시 시도 해주세요.',
+        icon: 'error',
+        confirmButtonText: '확인',
+      });
+      return;
+    }
+
+    await deleteDevice(
+      deviceAlias,
+      ({ data }) => {
+        console.log(data.data);
+        Swal.fire({
+          title: '삭제 완료',
+          text: '장치가 성공적으로 삭제되었습니다.',
+          icon: 'success',
+          confirmButtonText: '확인',
+        });
+      },
+      (error) => {
+        console.error('삭제 실패:', error);
+        Swal.fire({
+          title: '알림',
+          text: '장치 정보를 가져오지 못했습니다.\n잠시 후 다시 시도 해주세요.',
+          icon: 'error',
+          confirmButtonText: '확인',
+        });
+      }
+    );
     onClose();
   };
 
