@@ -22,42 +22,32 @@ interface DevicesRowProps {
     createdAt: string;
     updatedAt: string;
   };
+  userRole?: string;
 }
 
-const DevicesRow = ({ i, pageIndex, content }: DevicesRowProps) => {
-  const [rowData, setRowData] = useState(content);
+const DevicesRow = ({ i, pageIndex, content, userRole }: DevicesRowProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const handleDeviceEdit = () => {
-    setIsEditModalOpen(true);
-  };
+  const handleDeviceEdit = () => setIsEditModalOpen(true); // 수정 모달 열기
+  const closeEditModal = () => setIsEditModalOpen(false); // 수정 모달 닫기
+  const handleDeviceDelete = () => setIsDeleteModalOpen(true); // 삭제 모달 열기
+  const closeDeleteModal = () => setIsDeleteModalOpen(false); // 삭제 모달 닫기
 
-  const closeEditModal = () => {
-    setIsEditModalOpen(false);
-  };
-
-  const handleDeviceDelete = () => {
-    setIsDeleteModalOpen(true);
-  };
-
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-  };
+  const [rowData, setRowData] = useState(content);
 
   useEffect(() => {
     setRowData(content);
   }, [content]);
 
-  // TODO: 차후 api 연결시, 응답 데이터로 변경 필요
   const editData = {
-    databaseAlias: 'LOCALHOST',
-    type: 'ORACLE',
-    ip: '127.0.0.1',
-    port: 1521,
-    sid: 'XE',
-    username: 'semoDB',
-    password: 'semodb123',
+    databaseAlias: rowData.deviceAlias,
+    type: rowData.type,
+    ip: rowData.ip,
+    port: rowData.port,
+    sid: rowData.sid,
+    username: '',
+    password: '',
   };
 
   return (
@@ -97,37 +87,39 @@ const DevicesRow = ({ i, pageIndex, content }: DevicesRowProps) => {
       <td className="table__data">
         {rowData.updatedAt.replace('T', '\n').split('.')[0]}
       </td>
-      <td className="table__data">
-        <div className="table__btn">
-          {/* TODO: api 연결 필요 */}
-          <Button
-            size="small"
-            label="수정"
-            color="other"
-            radius="oval"
-            type="button"
-            onClick={handleDeviceEdit}
-          />
-          <DatabaseForm
-            isOpen={isEditModalOpen}
-            onClose={closeEditModal}
-            mode="edit"
-            editData={editData}
-          />
-          <Button
-            size="small"
-            label="삭제"
-            color="danger"
-            radius="oval"
-            type="button"
-            onClick={handleDeviceDelete}
-          />
-          <DatabaseDelete
-            isOpen={isDeleteModalOpen}
-            onClose={closeDeleteModal}
-          />
-        </div>
-      </td>
+      {userRole === 'ROLE_ADMIN' && (
+        <td className="table__data">
+          <div className="table__btn">
+            <Button
+              size="small"
+              label="수정"
+              color="other"
+              radius="oval"
+              type="button"
+              onClick={handleDeviceEdit}
+            />
+            <DatabaseForm
+              isOpen={isEditModalOpen}
+              onClose={closeEditModal}
+              mode="edit"
+              editData={editData}
+            />
+            <Button
+              size="small"
+              label="삭제"
+              color="danger"
+              radius="oval"
+              type="button"
+              onClick={handleDeviceDelete}
+            />
+            <DatabaseDelete
+              deviceAlias={rowData.deviceAlias}
+              isOpen={isDeleteModalOpen}
+              onClose={closeDeleteModal}
+            />
+          </div>
+        </td>
+      )}
     </tr>
   );
 };

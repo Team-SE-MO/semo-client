@@ -9,6 +9,7 @@ import DatabaseForm from 'components/organisms/modal/DatabaseForm';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Button from 'components/atoms/button/Button';
+import Swal from 'sweetalert2';
 import './Devices.scss';
 import { getDeviceList } from 'services/device';
 
@@ -28,6 +29,7 @@ interface DeviceWithCompany extends DeviceBase {
   taxId: string;
 }
 const Devices = () => {
+  // 테이블 헤더 및 열 너비 (권한별 정의)
   const headerMetaSuper = [
     'No.',
     '회사명',
@@ -39,20 +41,18 @@ const Devices = () => {
     '연결 상태',
     '등록 일자',
     '수정 일자',
-    '수정\u00a0\u00a0\u00a0|\u00a0\u00a0\u00a0삭제',
   ];
   const colWidthSuper = [
-    '7%',
-    '15%',
-    '7%',
-    '7%',
-    '7%',
-    '7%',
-    '7%',
     '5%',
+    '15%',
+    '15%',
     '10%',
     '10%',
-    '13%',
+    '7%',
+    '8%',
+    '10%',
+    '10%',
+    '10%',
   ];
   const headerMetaAdmin = [
     'No.',
@@ -78,8 +78,6 @@ const Devices = () => {
     '10%',
     '13%',
   ];
-
-  // RowComponent 필요
   const tableContent = {
     ROLE_SUPER: {
       headerMeta: headerMetaSuper,
@@ -90,34 +88,59 @@ const Devices = () => {
       colWidth: colWidthAdmin,
     },
   };
+
+  // 디바이스 데이터 (테이블에 표시할 내용)
   const [content, setContent] = useState<(DeviceBase | DeviceWithCompany)[]>(
     []
   );
+
+  // 회사 목록 (ROLE_SUPER 사용 가능)
   const [companyList, setCompanyList] = useState<Company[]>([]);
+
+  // 페이지네이션 관련 상태
+  const [pageNumber, setPageNumber] = useState<number>(1); // 현재 페이지 번호
+  const [pageIndex, setPageIndex] = useState(1); // 표시될 페이지 인덱스
+  const [pageCount, setPageCount] = useState(1); // 총 페이지 수
+
+  // 사용자 정보 및 권한
   const userInfoStorage = localStorage.getItem('userInfoStorage');
   const userInfo = JSON.parse(userInfoStorage || '');
   const { role } = userInfo.state;
   const [companyId, setCompanyId] = useState<number | null>(
     role === 'ROLE_ADMIN' ? userInfo.state.companyId : null
   );
-  const [pageNumber, setPageNumber] = useState<number>(1);
-  const [pageIndex, setPageIndex] = useState(1);
-  const [pageCount, setPageCount] = useState(1);
 
+  // 모달 상태 관리
+  const [isDeviceModalOpen, setIsDeviceModalOpen] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
+
+  const reload = () => {
+    setIsUpdated(true);
+  };
+
+  // 회사 목록 가져오기
   useEffect(() => {
     if (role === 'ROLE_SUPER') {
       const keyword = '';
       getCompanies(
         keyword,
         ({ data }) => {
-          console.log('API 데이터:', data.data); // 데이터 확인
           setCompanyList(data.data);
         },
-        (error) => console.log('에러', error)
+        (error) => {
+          Swal.fire({
+            title: '알림',
+            text: '회사 정보를 가져오지 못했습니다. 잠시 후 다시 시도 해주세요.',
+            icon: 'error',
+            confirmButtonText: '확인',
+          });
+          console.log('에러', error);
+        }
       );
     }
   }, []);
 
+  // 디바이스 목록 가져오기
   useEffect(() => {
     getDeviceList(
       pageNumber,
@@ -125,12 +148,19 @@ const Devices = () => {
       ({ data }) => {
         setPageCount(data.data.pageCount);
         setContent(data.data.content);
+        setIsUpdated(false);
       },
       (error) => {
+        Swal.fire({
+          title: '알림',
+          text: '장치 정보를 가져오지 못했습니다.\n잠시 후 다시 시도 해주세요.',
+          icon: 'error',
+          confirmButtonText: '확인',
+        });
         console.log('에러', error);
       }
     );
-  }, [pageNumber, companyId]);
+  }, [pageNumber, companyId, isUpdated]);
 
   const companies =
     companyList && companyList.length > 0
@@ -144,26 +174,30 @@ const Devices = () => {
     setPageIndex(pageNumber);
   }, [content]);
 
-  const getPreviousPage = () => {
-    setPageNumber((prev) => prev - 1);
-  };
+  // 목록 갱신 함수
+  // const refreshDeviceList = () => {
+  //   getDeviceList(
+  //     pageNumber,
+  //     companyId,
+  //     ({ data }) => {
+  //       setContent(data.data.content);
+  //       setPageCount(data.data.pageCount);
+  //     },
+  //     (error) => {
+  //       console.error('디바이스 목록 갱신 실패:', error);
+  //     }
+  //   );
+  // };
 
-  const getSpecificPage = (i: number) => {
-    setPageNumber(i);
-  };
+  // 페이지네이션 함수
+  const getPreviousPage = () => setPageNumber((prev) => prev - 1);
+  const getSpecificPage = (i: number) => setPageNumber(i);
+  const getNextPage = () => setPageNumber((prev) => prev + 1);
 
-  const getNextPage = () => {
-    setPageNumber((prev) => prev + 1);
-  };
+  // 모달 닫기
+  const handleDeviceModalClose = () => setIsDeviceModalOpen(false);
 
-  const [isDeviceModalOpen, setIsDeviceModalOpen] = useState(false);
-
-  const handleDeviceRegistration = () => {
-    setIsDeviceModalOpen(true);
-  };
-  const handleDeviceCloseModal = () => {
-    setIsDeviceModalOpen(false);
-  };
+  const handleDeviceRegistration = () => setIsDeviceModalOpen(true);
 
   return (
     <div className="devices__container">
@@ -184,8 +218,9 @@ const Devices = () => {
             />
             <DatabaseForm
               isOpen={isDeviceModalOpen}
-              onClose={handleDeviceCloseModal}
+              onClose={handleDeviceModalClose}
               mode="register"
+              reload={reload}
             />
           </>
         )}
@@ -240,6 +275,7 @@ const Devices = () => {
           }
           content={content}
           pageIndex={pageIndex}
+          userRole={role}
           RowComponent={DevicesRow}
         />
       </div>
