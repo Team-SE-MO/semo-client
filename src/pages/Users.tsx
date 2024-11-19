@@ -120,17 +120,9 @@ const Users = () => {
     setPageIndex(pageNumber);
   }, [content]);
 
-  const getPreviousPage = () => {
-    setPageNumber((prev) => prev - 1);
-  };
-
-  const getSpecificPage = (i: number) => {
-    setPageNumber(i);
-  };
-
-  const getNextPage = () => {
-    setPageNumber((prev) => prev + 1);
-  };
+  const getPreviousPage = () => setPageNumber((prev) => prev - 1);
+  const getSpecificPage = (i: number) => setPageNumber(i);
+  const getNextPage = () => setPageNumber((prev) => prev + 1);
 
   const searchUsers = () => {
     getUserList(
@@ -213,13 +205,8 @@ const Users = () => {
                 return options;
               }}
               onChange={(event, newValue) => {
-                if (newValue) {
-                  setCompanyId(newValue.id);
-                  setPageNumber(1);
-                } else {
-                  setCompanyId(null);
-                  setPageNumber(1);
-                }
+                setCompanyId(newValue ? newValue.id : null);
+                setPageNumber(1);
               }}
               renderInput={(params) => <TextField {...params} label="회사명" />}
             />
