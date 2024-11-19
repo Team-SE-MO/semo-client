@@ -13,6 +13,7 @@ import Devices from 'pages/Devices';
 import Users from 'pages/Users';
 import Summary from 'pages/Summary';
 import Dashboard from 'pages/Dashboard';
+import BatchDashboard from 'pages/BatchDashboard';
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
               path="/dashboard/:companyId/:deviceAlias"
               element={<Dashboard />}
             />
+            <Route path="/dashboard" element={<BatchDashboard />} />
           </Route>
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
