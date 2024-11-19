@@ -51,6 +51,69 @@
   &__input-button-group {
     position: relative;
     margin-bottom: 10px;
+    width: 510px;
+
+    .MuiAutocomplete-root {
+      width: 100%;
+
+      .MuiFormControl-root {
+        width: 100%;
+
+        .MuiInputLabel-root {
+          display: none;
+        }
+
+        .MuiOutlinedInput-root {
+          padding: 0;
+          border: none;
+          background: transparent;
+          font-family: 'Pretendard';
+          color: $main-text-color;
+
+          fieldset {
+            display: none;
+          }
+
+          input {
+            height: 40px;
+            padding: 0 5px;
+            font-size: 15px;
+            border: none;
+            border-bottom: 2px solid $main-text-color;
+            border-radius: 0;
+            background: transparent;
+
+            &::placeholder {
+              font-family: 'Pretendard';
+              color: $placeholder-color;
+              opacity: 1;
+            }
+
+            &.MuiInputBase-input::placeholder {
+              font-family: 'Pretendard';
+              color: $placeholder-color;
+              opacity: 1;
+            }
+
+            &.MuiOutlinedInput-input::placeholder {
+              font-family: 'Pretendard';
+              color: $placeholder-color;
+              opacity: 1;
+            }
+
+            &:focus {
+              border-bottom: 2px solid $main-text-color;
+              outline: none;
+            }
+          }
+
+          .MuiAutocomplete-endAdornment {
+            right: 35px;
+          }
+        }
+      }
+    }
+
     button {
       position: absolute;
       right: 5px;

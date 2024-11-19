@@ -1,0 +1,88 @@
+@import '../../../styles/variables';
+.file-viewer {
+  &__background {
+    display: flex;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+
+  &__container {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    height: 25%;
+    background-color: $main-theme-color;
+    border-radius: 50px;
+    padding: 30px 0;
+    gap: 20px;
+    z-index: 2;
+  }
+
+  &__title {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 90%;
+    gap: 0.7rem;
+  }
+  &__subtitle {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    height: 10%;
+    gap: 0.5rem;
+  }
+  &__content {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%;
+  }
+
+  &__date-selector {
+    display: flex;
+    position: relative;
+    align-items: end;
+    gap: 0.5rem;
+
+    .MuiInput-root {
+      width: 130px;
+
+      input {
+        text-align: center;
+      }
+
+      &:before {
+        border-bottom-width: 2px;
+        border-bottom-color: $main-text-color;
+      }
+    }
+  }
+
+  &__message {
+    text-align: center;
+    padding: 1rem 0;
+    color: $placeholder-color;
+  }
+  &__table {
+    width: 91%;
+    height: 32%;
+    border-radius: 8px;
+    box-shadow:
+      6px 6px 12px #c5c5c5,
+      -6px -6px 12px #ffffff;
+  }
+}
+
+.MuiPopper-root {
+  & .MuiPaper-root {
+    transform: translateX(-170px) !important;
+  }
+}
