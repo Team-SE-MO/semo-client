@@ -1,80 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import Text from 'components/atoms/text/Text';
+import React, { useEffect, useState } from 'react';
 import Table from 'components/organisms/table/Table';
 // import { getMonitoringDataForGrid } from 'services/deviceMonitoring';
 import SessionDataRow from 'components/molecules/table/SessionDataRow';
+import { SessionData } from 'types/ChartData';
 
-interface SessionData {
-  collectedAt: string;
-  sid: number;
-  serial: number;
-  username: string;
-  command: number;
-  commandName: string;
-  status: string;
-  schemaName: string;
-  osUser: string;
-  process: string;
-  machine: string;
-  port: number;
-  terminal: string;
-  program: string;
-  type: string;
-  sqlId: string;
-  sqlExecStart: string | null;
-  sqlExecId: number;
-  sqlText: string;
-  module: string;
-  action: string;
-  logonTime: string;
-  lastCallEt: number;
-  failedOver: string;
-  blockingSessionStatus: string;
-  event: string;
-  waitClass: string;
-  state: string;
-  waitTimeMicro: number;
-  timeRemainingMicro: number;
-  serviceName: string;
-}
+type MetricGridProps = { gridData: SessionData[] };
 
-const MetricGrid = () => {
-  const content = [
-    {
-      collectedAt: '2024-11-17T17:45:40',
-      sid: 167,
-      serial: 19,
-      username: '-',
-      command: 0,
-      commandName: '-',
-      status: 'ACTIVE',
-      schemaName: 'SYS',
-      osUser: 'SYSTEM',
-      process: '8208',
-      machine: 'DESKTOP-C5EEQRQ',
-      port: 0,
-      terminal: 'DESKTOP-C5EEQRQ',
-      program: 'ORACLE.EXE (SMCO)',
-      type: 'BACKGROUND',
-      sqlId: '-',
-      sqlExecStart: null,
-      sqlExecId: 0,
-      sqlText: '-',
-      module: 'KTSJ',
-      action: 'KTSJ Coordinator',
-      logonTime: '2024-10-25T09:11:39',
-      lastCallEt: 2018043,
-      failedOver: 'NO',
-      blockingSessionStatus: 'NO HOLDER',
-      event: 'rdbms ipc message',
-      waitClass: 'Idle',
-      state: 'WAITING',
-      waitTimeMicro: 38120,
-      timeRemainingMicro: 2961880,
-      serviceName: 'SYS$BACKGROUND',
-    },
-  ];
-  const [sessionData, setSessionData] = useState<SessionData[]>(content);
+const MetricGrid = ({ gridData }: MetricGridProps) => {
+  const [sessionData, setSessionData] = useState<SessionData[]>(gridData);
+  useEffect(() => {
+    setSessionData(gridData);
+  }, [gridData]);
   const headerMeta = [
     'Generate time',
     'SID',

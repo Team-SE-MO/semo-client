@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import MetricGrid from 'components/organisms/monitoring/MetricGrid';
 import Text from 'components/atoms/text/Text';
 import { Autocomplete, TextField } from '@mui/material';
 import Device from 'types/Device';
-import customDate from 'utils/customDate';
-import MetricChart from '../components/organisms/monitoring/MetricChart';
+import {
+  getChartTime,
+  getCurrentDate,
+  getCurrentDateTime,
+  getOneMinuteBefore,
+} from 'utils/customDate';
+import { getChartData, getGridData } from 'services/deviceMonitoring';
 import './Dashboard.scss';
+import { DeviceMetricData, SessionData } from 'types/ChartData';
+import { convertSessionCountByKey } from 'utils/convertSessionCountByKey';
+import MetricChart from '../components/organisms/monitoring/MetricChart';
 
 interface DeviceItem extends Device {
   label: string;
@@ -15,11 +23,13 @@ interface DeviceItem extends Device {
 const Dashboard = () => {
   const location = useLocation();
   const deviceList: DeviceItem[] = location.state?.deviceList || [];
+  const nowDateTime = getCurrentDateTime();
+  const chartTime = getChartTime(nowDateTime);
+  const oneMinuteBefore = getOneMinuteBefore(chartTime);
 
   const userInfoStorage = localStorage.getItem('userInfoStorage');
   const userInfo = JSON.parse(userInfoStorage || '');
   const { companyId } = userInfo.state;
-
   const navigate = useNavigate();
   const pathMatch = matchPath(
     '/dashboard/:companyId/:deviceAlias',
@@ -27,6 +37,235 @@ const Dashboard = () => {
   );
   const initialDeviceAlias = pathMatch?.params.deviceAlias || '';
   const [deviceAlias, setDeviceAlias] = useState(initialDeviceAlias);
+  const token = localStorage.getItem('accessToken');
+
+  const socketRef = useRef<Map<string, WebSocket>>(new Map());
+  const [chartData, setChartData] = useState<DeviceMetricData>({
+    labels: [],
+    totalSessions: [],
+    activeSessions: [],
+    blockingSessions: [],
+    waitSessions: [],
+    sessionCountGroupByUser: {},
+    sessionCountGroupByType: {},
+    sessionCountGroupByCommand: {},
+    sessionCountGroupByMachine: {},
+  });
+
+  const [gridData, setGridData] = useState<SessionData[]>([]);
+
+  useEffect(() => {
+    getChartData(
+      deviceAlias || '',
+      '5s',
+      oneMinuteBefore,
+      chartTime,
+      (response) => {
+        const { data } = response.data;
+        const fullLabels = Object.keys(data.totalSessions);
+        const labels = fullLabels.map((label) => label.split('T')[1]);
+        const convertedUserData = convertSessionCountByKey(
+          data,
+          'sessionCountGroupByUser'
+        );
+        const convertedTypeData = convertSessionCountByKey(
+          data,
+          'sessionCountGroupByType'
+        );
+        const convertedCommandData = convertSessionCountByKey(
+          data,
+          'sessionCountGroupByCommand'
+        );
+        const convertedMachineData = convertSessionCountByKey(
+          data,
+          'sessionCountGroupByMachine'
+        );
+
+        setChartData({
+          labels,
+          totalSessions: Object.values(data.totalSessions),
+          activeSessions: Object.values(data.activeSessions),
+          blockingSessions: Object.values(data.blockingSessions),
+          waitSessions: Object.values(data.waitSessions),
+          sessionCountGroupByUser: convertedUserData,
+          sessionCountGroupByType: convertedTypeData,
+          sessionCountGroupByCommand: convertedCommandData,
+          sessionCountGroupByMachine: convertedMachineData,
+        });
+      },
+      (error) => {
+        console.error('데이터 로드 실패:', error);
+      }
+    );
+    getGridData(
+      deviceAlias,
+      nowDateTime,
+      ({ data }) => {
+        setGridData(data.data.content);
+      },
+      (error) => {
+        console.log('에러', error);
+      }
+    );
+  }, []);
+
+  const mergeCounts = (
+    prevGroup: Record<string, number[]>,
+    newGroup: Record<string, number[]>
+  ) => {
+    const mergedGroup = { ...prevGroup };
+
+    Object.entries(newGroup).forEach(([key, newValues]) => {
+      if (!mergedGroup[key]) {
+        mergedGroup[key] = [...newValues];
+      } else {
+        mergedGroup[key] = [...mergedGroup[key], ...newValues];
+      }
+    });
+
+    return mergedGroup;
+  };
+
+  useEffect(() => {
+    const openNewSocket = () => {
+      const ws = new WebSocket(
+        `ws://localhost:8080/ws/monitoring/${companyId}/${deviceAlias}?token=${token}`
+      );
+      socketRef.current.set(deviceAlias, ws);
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          const fullLabels = Object.keys(data.totalSessions);
+          const newTimestamp = fullLabels[0].split('T')[1];
+          const convertedUserData = convertSessionCountByKey(
+            data,
+            'sessionCountGroupByUser'
+          );
+          const convertedTypeData = convertSessionCountByKey(
+            data,
+            'sessionCountGroupByType'
+          );
+          const convertedCommandData = convertSessionCountByKey(
+            data,
+            'sessionCountGroupByCommand'
+          );
+          const convertedMachineData = convertSessionCountByKey(
+            data,
+            'sessionCountGroupByMachine'
+          );
+          setChartData((prevData) => {
+            const updatedLabels = [...prevData.labels, newTimestamp];
+            const updatedTotalSessions = [
+              ...prevData.totalSessions,
+              data.totalSessions[fullLabels[0]],
+            ];
+
+            const updatedActiveSessions = [
+              ...prevData.activeSessions,
+              data.activeSessions[fullLabels[0]],
+            ];
+
+            const updatedBlockingSessions = [
+              ...prevData.blockingSessions,
+              data.blockingSessions[fullLabels[0]],
+            ];
+
+            const updatedWaitSessions = [
+              ...prevData.waitSessions,
+              data.waitSessions[fullLabels[0]],
+            ];
+            const updatedSessionCountGroupByUser = mergeCounts(
+              prevData.sessionCountGroupByUser,
+              convertedUserData
+            );
+            const updatedSessionCountGroupByType = mergeCounts(
+              prevData.sessionCountGroupByType,
+              convertedTypeData
+            );
+            const updatedSessionCountGroupByCommand = mergeCounts(
+              prevData.sessionCountGroupByCommand,
+              convertedCommandData
+            );
+            const updatedSessionCountGroupByMachine = mergeCounts(
+              prevData.sessionCountGroupByMachine,
+              convertedMachineData
+            );
+
+            const maxDataPoints = 13;
+            if (updatedLabels.length > maxDataPoints) {
+              updatedLabels.shift();
+              updatedTotalSessions.shift();
+              updatedActiveSessions.shift();
+              updatedBlockingSessions.shift();
+              updatedWaitSessions.shift();
+
+              Object.keys(updatedSessionCountGroupByUser).forEach((key) => {
+                if (updatedSessionCountGroupByUser[key].length > maxDataPoints)
+                  updatedSessionCountGroupByUser[key].shift();
+              });
+
+              Object.keys(updatedSessionCountGroupByType).forEach((key) => {
+                if (updatedSessionCountGroupByType[key].length > maxDataPoints)
+                  updatedSessionCountGroupByType[key].shift();
+              });
+
+              Object.keys(updatedSessionCountGroupByCommand).forEach((key) => {
+                if (
+                  updatedSessionCountGroupByCommand[key].length > maxDataPoints
+                )
+                  updatedSessionCountGroupByCommand[key].shift();
+              });
+
+              Object.keys(updatedSessionCountGroupByMachine).forEach((key) => {
+                if (
+                  updatedSessionCountGroupByMachine[key].length > maxDataPoints
+                )
+                  updatedSessionCountGroupByMachine[key].shift();
+              });
+            }
+
+            return {
+              labels: updatedLabels,
+              totalSessions: updatedTotalSessions,
+              activeSessions: updatedActiveSessions,
+              blockingSessions: updatedBlockingSessions,
+              waitSessions: updatedWaitSessions,
+              sessionCountGroupByUser: updatedSessionCountGroupByUser,
+              sessionCountGroupByType: updatedSessionCountGroupByType,
+              sessionCountGroupByCommand: updatedSessionCountGroupByCommand,
+              sessionCountGroupByMachine: updatedSessionCountGroupByMachine,
+            };
+          });
+          console.log(data.sessionDataInfos.length);
+          setGridData((prev) => [...data.sessionDataInfos, ...prev]);
+        } catch (error) {
+          console.error('WebSocket 데이터 처리 오류:', error);
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket 오류:', error);
+      };
+
+      ws.onclose = () => {
+        console.log(`WebSocket 연결 종료: ${deviceAlias}`);
+        socketRef.current.delete(deviceAlias);
+      };
+    };
+
+    openNewSocket();
+
+    return () => {
+      // 컴포넌트가 언마운트되거나 deviceAlias가 변경되면 기존 연결 종료
+      const socket = socketRef.current.get(deviceAlias);
+      console.log(socket, deviceAlias);
+      if (socket) {
+        socket.close();
+      }
+    };
+  }, [deviceAlias]);
+  console.log(gridData.length);
   return (
     <div className="dashboard__container">
       <div className="dashboard__title">
@@ -65,11 +304,11 @@ const Dashboard = () => {
         </div>
         <div className="dashboard__title__sub">
           <Text content="모니터링 서비스" type="subtitle" />
-          <Text content={`기준 기간: ${customDate()}`} type="info" bold />
+          <Text content={`기준 기간: ${getCurrentDate()}`} type="info" bold />
         </div>
       </div>
-      <MetricChart />
-      <MetricGrid />
+      <MetricChart chartData={chartData} />
+      <MetricGrid gridData={gridData} />
     </div>
   );
 };

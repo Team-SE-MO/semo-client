@@ -13,5 +13,38 @@ export interface DeviceMetricData {
 
 export interface ChartWrapper {
   chartData: DeviceMetricData;
-  commonDate: string;
+}
+
+export interface SessionData {
+  collectedAt: string;
+  sid: number;
+  serial: number;
+  username: string;
+  command: number;
+  commandName: string;
+  status: string;
+  schemaName: string;
+  osUser: string;
+  process: string;
+  machine: string;
+  port: number;
+  terminal: string;
+  program: string;
+  type: string;
+  sqlId: string;
+  sqlExecStart: string | null;
+  sqlExecId: number;
+  sqlText: string;
+  module: string;
+  action: string;
+  logonTime: string;
+  lastCallEt: number;
+  failedOver: string;
+  blockingSessionStatus: string;
+  event: string;
+  waitClass: string;
+  state: string;
+  waitTimeMicro: number;
+  timeRemainingMicro: number;
+  serviceName: string;
 }
