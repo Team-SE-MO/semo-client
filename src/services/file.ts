@@ -21,7 +21,7 @@ const getCompanyFileList = async (
     .catch(fail);
 };
 
-const downloadFile = async (
+const getDownloadFile = async (
   fileKey: string,
   success: (response: AxiosResponse<Blob>) => void,
   fail: (error: AxiosError) => void,
@@ -64,4 +64,4 @@ const downloadFile = async (
     .catch(fail);
 };
 
-export { getCompanyFileList, downloadFile };
+export { getCompanyFileList, getDownloadFile };

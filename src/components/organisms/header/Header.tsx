@@ -12,13 +12,20 @@ const Header = () => {
   const userInfoStorage = localStorage.getItem('userInfoStorage');
   const userInfo = userInfoStorage
     ? JSON.parse(userInfoStorage)
-    : { state: {} };
+    : {
+        state: {
+          isLoggedIn: null,
+          role: null,
+          companyId: null,
+          ownerName: null,
+        },
+      };
   const [isProfileDetailOpen, setIsProfileDetailOpen] = useState(false);
-  const isLoggedIn = userInfo?.state?.isLoggedIn || false;
-  const role = userInfo?.state?.role || '';
-  const ownerName = userInfo?.state?.ownerName || '';
-  const companyId = userInfo?.state?.companyId || '';
-  const loginId = userInfo?.state?.loginId || '';
+  const { isLoggedIn } = userInfo.state;
+  const { role } = userInfo.state;
+  const { ownerName } = userInfo.state;
+  const { companyId } = userInfo.state;
+  const { loginId } = userInfo.state;
   const items = [
     {
       label: '유저 관리',

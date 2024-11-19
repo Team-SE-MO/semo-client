@@ -1,7 +1,7 @@
 import Button from 'components/atoms/button/Button';
 import DownloadIcon from '@mui/icons-material/Download';
 import React, { useState } from 'react';
-import { downloadFile } from 'services/file';
+import { getDownloadFile } from 'services/file';
 import './FileRow.scss';
 import Swal from 'sweetalert2';
 import Text from 'components/atoms/text/Text';
@@ -33,7 +33,7 @@ const FileRow = ({ i, content, deviceAlias }: FileRowProps) => {
   const handleDownload = () => {
     setIsDownloading(true);
     setDownloadProgress(0);
-    downloadFile(
+    getDownloadFile(
       content.key,
       (response) => {
         const blob = new Blob([response.data]);
