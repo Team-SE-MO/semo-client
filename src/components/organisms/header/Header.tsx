@@ -10,13 +10,15 @@ import logo from 'assets/images/semo_logo_header.svg';
 
 const Header = () => {
   const userInfoStorage = localStorage.getItem('userInfoStorage');
-  const userInfo = JSON.parse(userInfoStorage || '');
+  const userInfo = userInfoStorage
+    ? JSON.parse(userInfoStorage)
+    : { state: {} };
   const [isProfileDetailOpen, setIsProfileDetailOpen] = useState(false);
-  const { isLoggedIn } = userInfo.state;
-  const { role } = userInfo.state;
-  const { ownerName } = userInfo.state;
-  const { companyId } = userInfo.state;
-  const { loginId } = userInfo.state;
+  const isLoggedIn = userInfo?.state?.isLoggedIn || false;
+  const role = userInfo?.state?.role || '';
+  const ownerName = userInfo?.state?.ownerName || '';
+  const companyId = userInfo?.state?.companyId || '';
+  const loginId = userInfo?.state?.loginId || '';
   const items = [
     {
       label: '유저 관리',

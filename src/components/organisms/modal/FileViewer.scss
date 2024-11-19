@@ -1,12 +1,11 @@
 @import '../../../styles/variables';
 .file-viewer {
   &__background {
+    display: flex;
     position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
-    display: flex;
+    inset: 0;
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.5);
@@ -14,43 +13,43 @@
   }
 
   &__container {
-    position: relative;
     display: flex;
-    width: 50%;
-    height: 40%;
-    align-items: center;
+    position: relative;
     flex-direction: column;
+    align-items: center;
+    width: 50%;
+    height: 25%;
     background-color: $main-theme-color;
     border-radius: 50px;
     padding: 30px 0;
-    gap: 30px;
+    gap: 20px;
     z-index: 2;
   }
 
   &__title {
     display: flex;
     flex-direction: column;
+    align-items: start;
     width: 90%;
-    align-items: flex-start;
+    gap: 0.7rem;
+  }
+  &__subtitle {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    height: 10%;
     gap: 0.5rem;
   }
   &__content {
     display: flex;
+    flex-direction: row-reverse;
     width: 100%;
-    height: 10%;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-
-  &__table {
-    width: 95%;
   }
 
   &__date-selector {
-    position: relative;
     display: flex;
-    align-items: center;
+    position: relative;
+    align-items: end;
     gap: 0.5rem;
 
     .MuiInput-root {
@@ -69,13 +68,21 @@
 
   &__message {
     text-align: center;
-    padding: 2rem;
+    padding: 1rem 0;
     color: $placeholder-color;
+  }
+  &__table {
+    width: 91%;
+    height: 32%;
+    border-radius: 8px;
+    box-shadow:
+      6px 6px 12px #c5c5c5,
+      -6px -6px 12px #ffffff;
   }
 }
 
 .MuiPopper-root {
   & .MuiPaper-root {
-    transform: translateX(-150px) !important;
+    transform: translateX(-170px) !important;
   }
 }

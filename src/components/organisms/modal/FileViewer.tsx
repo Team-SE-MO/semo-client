@@ -81,10 +81,11 @@ const FileViewer = ({ isOpen, onClose }: FileViewerProps) => {
         role="presentation"
       >
         <div className="file-viewer__title">
-          <Text content="File List" type="title" />
-          <Text content="파일 목록" type="subtitle" />
-          <div className="file-viewer__content">
+          <Text content="파일 목록" type="title" />
+          <div className="file-viewer__subtitle">
             <Text content="원하시는 일자를 선택해주세요." type="info" />
+          </div>
+          <div className="file-viewer__content">
             <div className="file-viewer__date-selector">
               <Text content="기준 일자" type="info" />
               <LocalizationProvider
@@ -94,6 +95,7 @@ const FileViewer = ({ isOpen, onClose }: FileViewerProps) => {
                 <DatePicker
                   value={selectedDate}
                   onChange={(newValue) => setSelectedDate(newValue)}
+                  maxDate={subDays(new Date(), 1)}
                   format="yyyy-MM-dd"
                   slotProps={{
                     textField: {

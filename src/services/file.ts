@@ -23,24 +23,44 @@ const getCompanyFileList = async (
 
 const downloadFile = async (
   fileKey: string,
-  success: (response: AxiosResponse) => void,
+  success: (response: AxiosResponse<Blob>) => void,
   fail: (error: AxiosError) => void,
-  deviceAlias?: string
+  onProgress: (progress: number) => void,
+  deviceAlias?: string,
+  totalFileSize?: number
 ): Promise<void> => {
   const token = localStorage.getItem('accessToken');
   await api({
     headers: {
       Authorization: `Bearer ${token}`,
-      responseType: 'blob',
     },
+    responseType: 'blob',
     method: 'get',
     url: '/file/download',
     params: {
       key: fileKey,
       ...(deviceAlias && { deviceAlias }),
     },
+    onDownloadProgress: (progressEvent) => {
+      if (totalFileSize) {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / totalFileSize
+        );
+        onProgress(Math.min(percentCompleted, 99));
+      } else if (progressEvent.total) {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+        );
+        onProgress(Math.min(percentCompleted, 99));
+      } else {
+        onProgress(0);
+      }
+    },
   })
-    .then(success)
+    .then((response) => {
+      onProgress(100);
+      success(response);
+    })
     .catch(fail);
 };
 
