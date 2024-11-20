@@ -7,7 +7,7 @@
     align-items: center;
     height: 100vh;
     background-color: $main-theme-color;
-    gap: 100px;
+    gap: 200px;
     position: relative;
   }
   &__go-home {
@@ -15,6 +15,7 @@
     top: 5%;
     left: 3%;
     display: flex;
+    align-items: center;
     gap: 5px;
     cursor: pointer;
     &__icon {
@@ -25,12 +26,9 @@
     }
   }
   &__img {
-    background-image: none;
-    width: 40%;
-    height: 70%;
-    border: 1px solid $main-text-color;
+    width: 750px;
   }
-  &__organism {
+  &__content {
     width: 27%;
     height: 55%;
     display: flex;

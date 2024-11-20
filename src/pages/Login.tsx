@@ -11,6 +11,10 @@ import './Login.scss';
 import Swal from 'sweetalert2';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { SvgIcon } from '@mui/material';
+import bgImg1 from 'assets/images/bg_img1.png';
+import bgImg2 from 'assets/images/bg_img2.png';
+import bgImg3 from 'assets/images/bg_img3.png';
+import bgImg4 from 'assets/images/bg_img4.png';
 
 interface CustomJwtPayload extends JwtPayload {
   role: Role;
@@ -28,6 +32,9 @@ const Login = () => {
   const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
+
+  const images = [bgImg1, bgImg2, bgImg3, bgImg4];
+  const randomImage = images[Math.floor(Math.random() * images.length)];
 
   const handleLogin = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -110,8 +117,10 @@ const Login = () => {
         <SvgIcon className="login__go-home__icon" component={ArrowBackIcon} />
         <Text content="HOME" type="subtitle" />
       </div>
-      <div className="login__img" />
-      <div className="login__organism">
+      <div className="login__img">
+        <img src={randomImage} alt="backgroundImage" />
+      </div>
+      <div className="login__content">
         <div className="login__explain">
           <Text content={title} type="title" />
           <Text content={content} type="subtitle" />

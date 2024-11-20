@@ -8,6 +8,7 @@
     align-items: center;
     height: 100vh;
     background-color: $main-theme-color;
+    gap: 200px;
     position: relative;
   }
   &__go-home {
@@ -15,6 +16,7 @@
     top: 5%;
     left: 3%;
     display: flex;
+    align-items: center;
     gap: 5px;
     cursor: pointer;
     &__icon {
@@ -25,32 +27,29 @@
     }
   }
   &__image {
-    background-image: none;
-    width: 45%;
-    height: 55%;
+    width: 750px;
   }
   &__content {
+    width: 27%;
+    height: 55%;
     display: flex;
     flex-direction: column;
-    width: 31%;
     text-align: left;
-    justify-content: flex-start;
+    justify-content: space-between;
     border-radius: 50px;
     box-shadow:
       10px 10px 20px $shadow-color,
       -10px -10px 20px $white;
-  }
-  &__text-group {
-    padding: 50px;
+    padding: 100px 55px;
   }
   &__item-group {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
   }
   &__input-button-group {
     position: relative;
-    margin-bottom: 10px;
     width: 510px;
 
     .MuiAutocomplete-root {
@@ -121,6 +120,7 @@
     }
   }
   &__submit-button {
-    padding: 60px 0;
+    display: flex;
+    justify-content: center;
   }
 }
