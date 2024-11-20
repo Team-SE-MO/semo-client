@@ -66,10 +66,8 @@ const Login = () => {
         setCompanyId(decode.companyId);
         setOwnerName(decode.ownerName);
 
-        const userInfoStorage = localStorage.getItem('userInfoStorage');
-        const userInfo = JSON.parse(userInfoStorage || '');
-        const { role } = userInfo.state;
-        const { companyId } = userInfo.state;
+        const role = useAuthStore((state) => state.role);
+        const companyId = useAuthStore((state) => state.companyId);
 
         const homePage = {
           ROLE_SUPER: '/devices',

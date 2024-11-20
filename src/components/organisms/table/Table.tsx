@@ -9,13 +9,11 @@ interface TableProps<T> {
     { i: number; content: T } & {
       onDelete?: (loginId: string) => void;
       pageIndex?: number;
-      userRole?: string;
     }
   >;
   onDelete?: (loginId: string) => void;
   className?: string;
   pageIndex?: number;
-  userRole?: string;
 }
 
 const Table = <T,>({
@@ -26,7 +24,6 @@ const Table = <T,>({
   onDelete,
   className = '',
   pageIndex,
-  userRole,
   ...props
 }: TableProps<T>) => {
   return (
@@ -50,7 +47,6 @@ const Table = <T,>({
             content={form}
             {...(onDelete && { onDelete })}
             {...(pageIndex && { pageIndex })}
-            {...(userRole && { userRole })}
           />
         ))}
       </tbody>

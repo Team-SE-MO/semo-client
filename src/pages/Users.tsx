@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import UserRegister from 'components/organisms/modal/UserRegister';
 import CompanyUserRow from 'components/molecules/table/CompanyUserRow';
 import './Users.scss';
+import useAuthStore from 'store/useAuthStore';
 
 interface UserDetail {
   loginId: string;
@@ -55,9 +56,8 @@ const Users = () => {
 
   const [content, setContent] = useState<UserDetail[]>([]);
   const [companyList, setCompanyList] = useState<Company[]>([]);
-  const userInfoStorage = localStorage.getItem('userInfoStorage');
-  const userInfo = JSON.parse(userInfoStorage || '');
-  const { role } = userInfo.state;
+
+  const role = useAuthStore((state) => state.role);
 
   useEffect(() => {
     if (role === 'ROLE_SUPER') {
@@ -98,7 +98,7 @@ const Users = () => {
       : [];
 
   const [companyId, setCompanyId] = useState<number | null>(
-    role === 'ROLE_ADMIN' ? userInfo.state.companyId : null
+    role === 'ROLE_ADMIN' ? useAuthStore((state) => state.companyId) : null
   );
 
   useEffect(() => {

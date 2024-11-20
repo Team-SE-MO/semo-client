@@ -6,6 +6,7 @@ import Input from 'components/atoms/input/Input';
 import { getEmailStatus, registerUser } from 'services/user';
 import { sendEmail } from 'services/email';
 import Swal from 'sweetalert2';
+import useAuthStore from 'store/useAuthStore';
 
 interface UserRegisterProps {
   isOpen: boolean;
@@ -70,9 +71,7 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
     }
   }, [formData.email]);
 
-  const userInfoStorage = localStorage.getItem('userInfoStorage');
-  const userInfo = JSON.parse(userInfoStorage || '');
-  const { companyId } = userInfo.state;
+  const companyId = useAuthStore((state) => state.companyId);
 
   const handleSubmit = () => {
     if (!formData.email || !formData.ownerName) {
@@ -93,27 +92,29 @@ const UserRegister = ({ isOpen, onClose }: UserRegisterProps) => {
       });
       return;
     }
-    registerUser(
-      companyId,
-      formData.email,
-      formData.ownerName,
-      ({ data }) => {
-        sendEmail(
-          'REGISTER_MEMBER',
-          data.data,
-          () => {
-            Swal.fire({
-              title: '알림',
-              text: '사용자 가입이 완료되었습니다.',
-              icon: 'success',
-              confirmButtonText: '확인',
-            });
-          },
-          (sendEmailError) => console.log('이메일 에러:', sendEmailError)
-        );
-      },
-      (registerError) => console.log('Register Error:', registerError)
-    );
+    if (companyId) {
+      registerUser(
+        companyId,
+        formData.email,
+        formData.ownerName,
+        ({ data }) => {
+          sendEmail(
+            'REGISTER_MEMBER',
+            data.data,
+            () => {
+              Swal.fire({
+                title: '알림',
+                text: '사용자 가입이 완료되었습니다.',
+                icon: 'success',
+                confirmButtonText: '확인',
+              });
+            },
+            (sendEmailError) => console.log('이메일 에러:', sendEmailError)
+          );
+        },
+        (registerError) => console.log('Register Error:', registerError)
+      );
+    }
   };
 
   const title = 'User Registration';

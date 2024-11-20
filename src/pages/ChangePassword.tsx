@@ -105,9 +105,7 @@ const ChangePassword = () => {
 
   const navigate = useNavigate();
 
-  const userInfoStorage = localStorage.getItem('userInfoStorage');
-  const userInfo = JSON.parse(userInfoStorage || '');
-  const { isLoggedIn } = userInfo.state;
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
   const goToLogin = () => {
     if (isLoggedIn) {

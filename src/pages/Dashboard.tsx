@@ -9,6 +9,7 @@ import { getGridData } from 'services/deviceMonitoring';
 import './Dashboard.scss';
 import { DeviceMetricData, SessionData } from 'types/ChartData';
 import { convertSessionCountByKey } from 'utils/convertSessionCountByKey';
+import useAuthStore from 'store/useAuthStore';
 import MetricChart from '../components/organisms/monitoring/MetricChart';
 
 interface DeviceItem extends Device {
@@ -19,9 +20,8 @@ const Dashboard = () => {
   const location = useLocation();
   const deviceList: DeviceItem[] = location.state?.deviceList || [];
 
-  const userInfoStorage = localStorage.getItem('userInfoStorage');
-  const userInfo = JSON.parse(userInfoStorage || '');
-  const { companyId } = userInfo.state;
+  const companyId = useAuthStore((state) => state.companyId);
+
   const navigate = useNavigate();
   const pathMatch = matchPath(
     '/dashboard/:companyId/:deviceAlias',

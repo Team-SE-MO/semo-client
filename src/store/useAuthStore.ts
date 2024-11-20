@@ -1,4 +1,4 @@
-import { createStore } from 'zustand';
+import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import Role from 'types/Role';
 
@@ -17,7 +17,7 @@ interface AuthStore {
   setOwnerName: (ownerName: string) => void;
 }
 
-const useAuthStore = createStore(
+const useAuthStore = create(
   persist<AuthStore>(
     (set) => ({
       isLoggedIn: false,
