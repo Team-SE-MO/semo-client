@@ -31,21 +31,31 @@ const Summary = () => {
   const [filteredDevice, setFilteredDevice] = useState<DeviceItem[]>([]);
 
   useEffect(() => {
-    getSummaryData(
-      ({ data }) => {
-        setSummaryData(data.data);
-        setDeviceList(
-          data.data.allDevices.map((item: Device) => ({
-            label: item.deviceAlias,
-            ...item,
-          }))
-        );
-        setFilteredDevice(data.data.allDevices);
-      },
-      (error) => {
-        console.log('에러', error);
-      }
-    );
+    const fetchData = () => {
+      getSummaryData(
+        ({ data }) => {
+          setSummaryData(data.data);
+          setDeviceList(
+            data.data.allDevices.map((item: Device) => ({
+              label: item.deviceAlias,
+              ...item,
+            }))
+          );
+          setFilteredDevice(data.data.allDevices);
+        },
+        (error) => {
+          console.log('에러', error);
+        }
+      );
+    };
+
+    fetchData();
+
+    const intervalId = setInterval(fetchData, 5000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
   const companyName = summaryData?.companyName;
