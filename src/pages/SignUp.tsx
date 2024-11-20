@@ -25,7 +25,9 @@ const SignUp = () => {
     '\n\u00a0\u00a0• 요청 정보를 작성하여 메세지를 보내시면 빠른 시일 내에 검토하여\n \u00a0\u00a0\u00a0\u00a0 작성하신 연락처(이메일)로 승인여부를 알려 드립니다.\n\n \u00a0 • 서비스를 이용하실 아이디는 작성해주신 이메일을 등록해 드릴 예정입니다.\n\n \u00a0\u00a0• 이미 SEMO 서비스를 이용하고 계신 이메일로 서비스 등록 요청을 주실 경우,\n \u00a0\u00a0\u00a0\u00a0 등록 가능의 사유가 될 수 있습니다.';
 
   const images = [bgImg1, bgImg2, bgImg3, bgImg4];
-  const randomImage = images[Math.floor(Math.random() * images.length)];
+  const [randomImage] = useState(
+    images[Math.floor(Math.random() * images.length)]
+  );
 
   const handleCompanyRegistration = () => {
     setIsModalOpen(true);

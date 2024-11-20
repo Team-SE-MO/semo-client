@@ -34,7 +34,9 @@ const Login = () => {
   const navigate = useNavigate();
 
   const images = [bgImg1, bgImg2, bgImg3, bgImg4];
-  const randomImage = images[Math.floor(Math.random() * images.length)];
+  const [randomImage] = useState(
+    images[Math.floor(Math.random() * images.length)]
+  );
 
   const handleLogin = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();

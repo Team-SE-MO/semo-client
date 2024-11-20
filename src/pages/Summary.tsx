@@ -33,7 +33,6 @@ const Summary = () => {
   useEffect(() => {
     getSummaryData(
       ({ data }) => {
-        console.log(data.data);
         setSummaryData(data.data);
         setDeviceList(
           data.data.allDevices.map((item: Device) => ({
