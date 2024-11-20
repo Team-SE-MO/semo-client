@@ -1,16 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import MetricGrid from 'components/organisms/monitoring/MetricGrid';
 import Text from 'components/atoms/text/Text';
 import { Autocomplete, TextField } from '@mui/material';
 import Device from 'types/Device';
-import {
-  getChartTime,
-  getCurrentDate,
-  getCurrentDateTime,
-  getOneMinuteBefore,
-} from 'utils/customDate';
-import { getChartData, getGridData } from 'services/deviceMonitoring';
+import { getCurrentDate } from 'utils/customDate';
+import { getGridData } from 'services/deviceMonitoring';
 import './Dashboard.scss';
 import { DeviceMetricData, SessionData } from 'types/ChartData';
 import { convertSessionCountByKey } from 'utils/convertSessionCountByKey';
@@ -23,9 +18,6 @@ interface DeviceItem extends Device {
 const Dashboard = () => {
   const location = useLocation();
   const deviceList: DeviceItem[] = location.state?.deviceList || [];
-  const nowDateTime = getCurrentDateTime();
-  const chartTime = getChartTime(nowDateTime);
-  const oneMinuteBefore = getOneMinuteBefore(chartTime);
 
   const userInfoStorage = localStorage.getItem('userInfoStorage');
   const userInfo = JSON.parse(userInfoStorage || '');
@@ -71,6 +63,7 @@ const Dashboard = () => {
     return mergedGroup;
   };
 
+  const [nextCursor, setNextCursor] = useState('');
   const isInitialDataLoadedRef = useRef(false);
   useEffect(() => {
     const openNewSocket = () => {
@@ -115,6 +108,7 @@ const Dashboard = () => {
             });
 
             setGridData((prev) => [...data.sessionDataInfos, ...prev]);
+            setNextCursor(data.sessionDataInfos[0].collectedAt);
 
             isInitialDataLoadedRef.current = true;
           } else {
@@ -239,7 +233,6 @@ const Dashboard = () => {
       };
 
       ws.onclose = () => {
-        console.log(`WebSocket 연결 종료: ${deviceAlias}`);
         socketRef.current.delete(deviceAlias);
       };
     };
@@ -254,6 +247,26 @@ const Dashboard = () => {
       }
     };
   }, [deviceAlias]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const loadMoreData = useCallback(() => {
+    if (!isLoading && nextCursor) {
+      setIsLoading(true);
+      getGridData(
+        deviceAlias,
+        nextCursor,
+        ({ data }) => {
+          setGridData((prev) => [...prev, ...data.data.content]);
+          setNextCursor(data.data.nextCursor);
+        },
+        (error) => {
+          console.error('Error loading data:', error);
+        }
+      ).finally(() => {
+        setIsLoading(false);
+      });
+    }
+  }, [nextCursor]);
 
   return (
     <div className="dashboard__container">
@@ -297,7 +310,13 @@ const Dashboard = () => {
         </div>
       </div>
       <MetricChart chartData={chartData} />
-      <MetricGrid gridData={gridData} />
+      <div className="metric-grid__table">
+        <MetricGrid
+          gridData={gridData}
+          loadMoreData={loadMoreData}
+          isLoading={isLoading}
+        />
+      </div>
     </div>
   );
 };

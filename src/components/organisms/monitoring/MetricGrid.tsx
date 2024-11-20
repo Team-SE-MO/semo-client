@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Table from 'components/organisms/table/Table';
 import SessionDataRow from 'components/molecules/table/SessionDataRow';
 import { SessionData } from 'types/ChartData';
 
-type MetricGridProps = { gridData: SessionData[] };
-
-const MetricGrid = ({ gridData }: MetricGridProps) => {
-  const [sessionData, setSessionData] = useState<SessionData[]>(gridData);
-  useEffect(() => {
-    setSessionData(gridData);
-  }, [gridData]);
+interface MetricGridProps {
+  gridData: SessionData[];
+  loadMoreData: () => void;
+  isLoading: boolean;
+}
+const MetricGrid = ({ gridData, loadMoreData, isLoading }: MetricGridProps) => {
   const headerMeta = [
     'Generate time',
     'SID',
@@ -77,15 +76,53 @@ const MetricGrid = ({ gridData }: MetricGridProps) => {
     '200px',
   ];
 
+  const [sessionData, setSessionData] = useState<SessionData[]>(gridData);
+  const scrollTargetRef = useRef<HTMLDivElement | null>(null);
+
+  const loadMoreDataRef = useRef(loadMoreData);
+  const isLoadingRef = useRef(isLoading);
+
+  useEffect(() => {
+    setSessionData(gridData);
+  }, [gridData]);
+
+  useEffect(() => {
+    loadMoreDataRef.current = loadMoreData;
+    isLoadingRef.current = isLoading;
+  }, [loadMoreData, isLoading]);
+
+  useEffect(() => {
+    if (!scrollTargetRef.current) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLoading) {
+          loadMoreData();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(scrollTargetRef.current);
+
+    return () => {
+      if (scrollTargetRef.current) {
+        observer.unobserve(scrollTargetRef.current);
+      }
+    };
+  }, [loadMoreData]);
+
   return (
-    <div className="metric-grid__table">
+    <>
       <Table
         colWidth={colWidth}
         headerMeta={headerMeta}
         content={sessionData}
         RowComponent={SessionDataRow}
       />
-    </div>
+      <div ref={scrollTargetRef} style={{ height: '10px' }} />
+      {isLoading && <p>Loading...</p>}
+    </>
   );
 };
 
