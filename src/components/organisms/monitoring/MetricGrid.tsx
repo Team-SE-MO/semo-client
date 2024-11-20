@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Table from 'components/organisms/table/Table';
-// import { getMonitoringDataForGrid } from 'services/deviceMonitoring';
 import SessionDataRow from 'components/molecules/table/SessionDataRow';
 import { SessionData } from 'types/ChartData';
 

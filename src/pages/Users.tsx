@@ -108,7 +108,6 @@ const Users = () => {
       [...checkedRoles],
       keyword,
       ({ data }) => {
-        console.log(data.data);
         setContent(data.data.content);
         setPageCount(data.data.pageCount);
       },
