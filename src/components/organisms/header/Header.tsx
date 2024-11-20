@@ -48,7 +48,7 @@ const Header = () => {
     setIsProfileDetailOpen(false);
   };
   const homePath = {
-    ROLE_SUPER: '/devices',
+    ROLE_SUPER: '/dashboard',
     ROLE_ADMIN: `/dashboard/${companyId}`,
     ROLE_USER: `/dashboard/${companyId}`,
   };

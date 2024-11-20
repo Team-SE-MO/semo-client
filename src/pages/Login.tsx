@@ -60,14 +60,13 @@ const Login = () => {
         const token = headers.authorization;
         localStorage.setItem('accessToken', token);
         const decode: CustomJwtPayload = jwtDecode(token);
-        login();
         setRole(decode.role);
         setLoginId(decode.loginId);
         setCompanyId(decode.companyId);
         setOwnerName(decode.ownerName);
 
-        const role = useAuthStore((state) => state.role);
-        const companyId = useAuthStore((state) => state.companyId);
+        const { role } = decode;
+        const { companyId } = decode;
 
         const homePage = {
           ROLE_SUPER: '/devices',
@@ -80,20 +79,21 @@ const Login = () => {
           text: '로그인에 성공하였습니다.',
           icon: 'success',
           confirmButtonText: '확인',
+        }).then(() => {
+          if (data.flag === false && password === '0000') {
+            Swal.fire({
+              title: '알림',
+              text: '초기 비밀번호입니다. 비밀번호를 재설정해 주십시오.',
+              icon: 'warning',
+              confirmButtonText: '확인',
+            }).then(() => {
+              navigate('/change-password');
+              login();
+            });
+          } else {
+            navigate(homePage[role as keyof typeof homePage]);
+          }
         });
-
-        if (data.flag === false && password === '0000') {
-          Swal.fire({
-            title: '알림',
-            text: '초기 비밀번호입니다. 비밀번호를 재설정해 주십시오.',
-            icon: 'warning',
-            confirmButtonText: '확인',
-          }).then(() => {
-            navigate('/change-password');
-          });
-        } else {
-          navigate(homePage[role as keyof typeof homePage]);
-        }
       },
       (error) => {
         Swal.fire({

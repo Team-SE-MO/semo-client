@@ -50,14 +50,15 @@ const ProfileDropdown = ({
       () => {
         localStorage.removeItem('accessToken');
         const { logout } = useAuthStore.getState();
-        logout();
         Swal.fire({
           title: '알림',
           text: '로그아웃이 완료되었습니다.',
           icon: 'success',
           confirmButtonText: '확인',
+        }).then(() => {
+          logout();
+          navigate('/login');
         });
-        navigate('/login');
       },
       (error) => console.log('에러', error)
     );
