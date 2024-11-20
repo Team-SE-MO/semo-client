@@ -54,61 +54,6 @@ const Dashboard = () => {
 
   const [gridData, setGridData] = useState<SessionData[]>([]);
 
-  useEffect(() => {
-    getChartData(
-      deviceAlias || '',
-      '5s',
-      oneMinuteBefore,
-      chartTime,
-      (response) => {
-        const { data } = response.data;
-        const fullLabels = Object.keys(data.totalSessions);
-        const labels = fullLabels.map((label) => label.split('T')[1]);
-        const convertedUserData = convertSessionCountByKey(
-          data,
-          'sessionCountGroupByUser'
-        );
-        const convertedTypeData = convertSessionCountByKey(
-          data,
-          'sessionCountGroupByType'
-        );
-        const convertedCommandData = convertSessionCountByKey(
-          data,
-          'sessionCountGroupByCommand'
-        );
-        const convertedMachineData = convertSessionCountByKey(
-          data,
-          'sessionCountGroupByMachine'
-        );
-
-        setChartData({
-          labels,
-          totalSessions: Object.values(data.totalSessions),
-          activeSessions: Object.values(data.activeSessions),
-          blockingSessions: Object.values(data.blockingSessions),
-          waitSessions: Object.values(data.waitSessions),
-          sessionCountGroupByUser: convertedUserData,
-          sessionCountGroupByType: convertedTypeData,
-          sessionCountGroupByCommand: convertedCommandData,
-          sessionCountGroupByMachine: convertedMachineData,
-        });
-      },
-      (error) => {
-        console.error('데이터 로드 실패:', error);
-      }
-    );
-    getGridData(
-      deviceAlias,
-      nowDateTime,
-      ({ data }) => {
-        setGridData(data.data.content);
-      },
-      (error) => {
-        console.log('에러', error);
-      }
-    );
-  }, []);
-
   const mergeCounts = (
     prevGroup: Record<string, number[]>,
     newGroup: Record<string, number[]>
@@ -126,6 +71,7 @@ const Dashboard = () => {
     return mergedGroup;
   };
 
+  const isInitialDataLoadedRef = useRef(false);
   useEffect(() => {
     const openNewSocket = () => {
       const ws = new WebSocket(
@@ -136,109 +82,153 @@ const Dashboard = () => {
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          const fullLabels = Object.keys(data.totalSessions);
-          const newTimestamp = fullLabels[0].split('T')[1];
-          const convertedUserData = convertSessionCountByKey(
-            data,
-            'sessionCountGroupByUser'
-          );
-          const convertedTypeData = convertSessionCountByKey(
-            data,
-            'sessionCountGroupByType'
-          );
-          const convertedCommandData = convertSessionCountByKey(
-            data,
-            'sessionCountGroupByCommand'
-          );
-          const convertedMachineData = convertSessionCountByKey(
-            data,
-            'sessionCountGroupByMachine'
-          );
-          setChartData((prevData) => {
-            const updatedLabels = [...prevData.labels, newTimestamp];
-            const updatedTotalSessions = [
-              ...prevData.totalSessions,
-              data.totalSessions[fullLabels[0]],
-            ];
-
-            const updatedActiveSessions = [
-              ...prevData.activeSessions,
-              data.activeSessions[fullLabels[0]],
-            ];
-
-            const updatedBlockingSessions = [
-              ...prevData.blockingSessions,
-              data.blockingSessions[fullLabels[0]],
-            ];
-
-            const updatedWaitSessions = [
-              ...prevData.waitSessions,
-              data.waitSessions[fullLabels[0]],
-            ];
-            const updatedSessionCountGroupByUser = mergeCounts(
-              prevData.sessionCountGroupByUser,
-              convertedUserData
+          if (!isInitialDataLoadedRef.current) {
+            const fullLabels = Object.keys(data.totalSessions);
+            const labels = fullLabels.map((label) => label.split('T')[1]);
+            const convertedUserData = convertSessionCountByKey(
+              data,
+              'sessionCountGroupByUser'
             );
-            const updatedSessionCountGroupByType = mergeCounts(
-              prevData.sessionCountGroupByType,
-              convertedTypeData
+            const convertedTypeData = convertSessionCountByKey(
+              data,
+              'sessionCountGroupByType'
             );
-            const updatedSessionCountGroupByCommand = mergeCounts(
-              prevData.sessionCountGroupByCommand,
-              convertedCommandData
+            const convertedCommandData = convertSessionCountByKey(
+              data,
+              'sessionCountGroupByCommand'
             );
-            const updatedSessionCountGroupByMachine = mergeCounts(
-              prevData.sessionCountGroupByMachine,
-              convertedMachineData
+            const convertedMachineData = convertSessionCountByKey(
+              data,
+              'sessionCountGroupByMachine'
             );
 
-            const maxDataPoints = 13;
-            if (updatedLabels.length > maxDataPoints) {
-              updatedLabels.shift();
-              updatedTotalSessions.shift();
-              updatedActiveSessions.shift();
-              updatedBlockingSessions.shift();
-              updatedWaitSessions.shift();
+            setChartData({
+              labels,
+              totalSessions: Object.values(data.totalSessions),
+              activeSessions: Object.values(data.activeSessions),
+              blockingSessions: Object.values(data.blockingSessions),
+              waitSessions: Object.values(data.waitSessions),
+              sessionCountGroupByUser: convertedUserData,
+              sessionCountGroupByType: convertedTypeData,
+              sessionCountGroupByCommand: convertedCommandData,
+              sessionCountGroupByMachine: convertedMachineData,
+            });
 
-              Object.keys(updatedSessionCountGroupByUser).forEach((key) => {
-                if (updatedSessionCountGroupByUser[key].length > maxDataPoints)
-                  updatedSessionCountGroupByUser[key].shift();
-              });
+            setGridData((prev) => [...data.sessionDataInfos, ...prev]);
 
-              Object.keys(updatedSessionCountGroupByType).forEach((key) => {
-                if (updatedSessionCountGroupByType[key].length > maxDataPoints)
-                  updatedSessionCountGroupByType[key].shift();
-              });
+            isInitialDataLoadedRef.current = true;
+          } else {
+            const fullLabels = Object.keys(data.totalSessions);
+            const newTimestamp = fullLabels[0].split('T')[1];
+            const convertedUserData = convertSessionCountByKey(
+              data,
+              'sessionCountGroupByUser'
+            );
+            const convertedTypeData = convertSessionCountByKey(
+              data,
+              'sessionCountGroupByType'
+            );
+            const convertedCommandData = convertSessionCountByKey(
+              data,
+              'sessionCountGroupByCommand'
+            );
+            const convertedMachineData = convertSessionCountByKey(
+              data,
+              'sessionCountGroupByMachine'
+            );
+            setChartData((prevData) => {
+              const updatedLabels = [...prevData.labels, newTimestamp];
+              const updatedTotalSessions = [
+                ...prevData.totalSessions,
+                data.totalSessions[fullLabels[0]],
+              ];
 
-              Object.keys(updatedSessionCountGroupByCommand).forEach((key) => {
-                if (
-                  updatedSessionCountGroupByCommand[key].length > maxDataPoints
-                )
-                  updatedSessionCountGroupByCommand[key].shift();
-              });
+              const updatedActiveSessions = [
+                ...prevData.activeSessions,
+                data.activeSessions[fullLabels[0]],
+              ];
 
-              Object.keys(updatedSessionCountGroupByMachine).forEach((key) => {
-                if (
-                  updatedSessionCountGroupByMachine[key].length > maxDataPoints
-                )
-                  updatedSessionCountGroupByMachine[key].shift();
-              });
-            }
+              const updatedBlockingSessions = [
+                ...prevData.blockingSessions,
+                data.blockingSessions[fullLabels[0]],
+              ];
 
-            return {
-              labels: updatedLabels,
-              totalSessions: updatedTotalSessions,
-              activeSessions: updatedActiveSessions,
-              blockingSessions: updatedBlockingSessions,
-              waitSessions: updatedWaitSessions,
-              sessionCountGroupByUser: updatedSessionCountGroupByUser,
-              sessionCountGroupByType: updatedSessionCountGroupByType,
-              sessionCountGroupByCommand: updatedSessionCountGroupByCommand,
-              sessionCountGroupByMachine: updatedSessionCountGroupByMachine,
-            };
-          });
-          console.log(data.sessionDataInfos.length);
-          setGridData((prev) => [...data.sessionDataInfos, ...prev]);
+              const updatedWaitSessions = [
+                ...prevData.waitSessions,
+                data.waitSessions[fullLabels[0]],
+              ];
+              const updatedSessionCountGroupByUser = mergeCounts(
+                prevData.sessionCountGroupByUser,
+                convertedUserData
+              );
+              const updatedSessionCountGroupByType = mergeCounts(
+                prevData.sessionCountGroupByType,
+                convertedTypeData
+              );
+              const updatedSessionCountGroupByCommand = mergeCounts(
+                prevData.sessionCountGroupByCommand,
+                convertedCommandData
+              );
+              const updatedSessionCountGroupByMachine = mergeCounts(
+                prevData.sessionCountGroupByMachine,
+                convertedMachineData
+              );
+
+              const maxDataPoints = 13;
+              if (updatedLabels.length > maxDataPoints) {
+                updatedLabels.shift();
+                updatedTotalSessions.shift();
+                updatedActiveSessions.shift();
+                updatedBlockingSessions.shift();
+                updatedWaitSessions.shift();
+
+                Object.keys(updatedSessionCountGroupByUser).forEach((key) => {
+                  if (
+                    updatedSessionCountGroupByUser[key].length > maxDataPoints
+                  )
+                    updatedSessionCountGroupByUser[key].shift();
+                });
+
+                Object.keys(updatedSessionCountGroupByType).forEach((key) => {
+                  if (
+                    updatedSessionCountGroupByType[key].length > maxDataPoints
+                  )
+                    updatedSessionCountGroupByType[key].shift();
+                });
+
+                Object.keys(updatedSessionCountGroupByCommand).forEach(
+                  (key) => {
+                    if (
+                      updatedSessionCountGroupByCommand[key].length >
+                      maxDataPoints
+                    )
+                      updatedSessionCountGroupByCommand[key].shift();
+                  }
+                );
+
+                Object.keys(updatedSessionCountGroupByMachine).forEach(
+                  (key) => {
+                    if (
+                      updatedSessionCountGroupByMachine[key].length >
+                      maxDataPoints
+                    )
+                      updatedSessionCountGroupByMachine[key].shift();
+                  }
+                );
+              }
+              return {
+                labels: updatedLabels,
+                totalSessions: updatedTotalSessions,
+                activeSessions: updatedActiveSessions,
+                blockingSessions: updatedBlockingSessions,
+                waitSessions: updatedWaitSessions,
+                sessionCountGroupByUser: updatedSessionCountGroupByUser,
+                sessionCountGroupByType: updatedSessionCountGroupByType,
+                sessionCountGroupByCommand: updatedSessionCountGroupByCommand,
+                sessionCountGroupByMachine: updatedSessionCountGroupByMachine,
+              };
+            });
+          }
         } catch (error) {
           console.error('WebSocket 데이터 처리 오류:', error);
         }
@@ -259,13 +249,12 @@ const Dashboard = () => {
     return () => {
       // 컴포넌트가 언마운트되거나 deviceAlias가 변경되면 기존 연결 종료
       const socket = socketRef.current.get(deviceAlias);
-      console.log(socket, deviceAlias);
       if (socket) {
         socket.close();
       }
     };
   }, [deviceAlias]);
-  console.log(gridData.length);
+
   return (
     <div className="dashboard__container">
       <div className="dashboard__title">
