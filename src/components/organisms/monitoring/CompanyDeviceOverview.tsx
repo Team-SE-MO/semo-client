@@ -64,7 +64,9 @@ const CompanyDeviceOverview = ({
             type="title"
           />
         </div>
-        <Text content="Total DB" type="info" bold />
+        <div className="summary__overview__chart__title">
+          <Text content="Total DB" type="info" bold />
+        </div>
         <div className="summary__overview__dougnut-chart">
           <Doughnut data={doughnutData} options={doughnutOpt} />
         </div>
