@@ -16,6 +16,11 @@
     align-items: start;
     width: 90%;
     gap: 10px;
+    &__company-content {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+    }
     &__company-name {
       display: flex;
       align-items: end;
