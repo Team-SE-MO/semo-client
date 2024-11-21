@@ -12,6 +12,8 @@ import Button from 'components/atoms/button/Button';
 import Swal from 'sweetalert2';
 import './Devices.scss';
 import { getDeviceList } from 'services/device';
+import useAuthStore from 'store/useAuthStore';
+import DevicesAdminRow from 'components/molecules/table/DevicesAdminRow';
 
 interface DeviceBase {
   deviceId: number;
@@ -103,11 +105,9 @@ const Devices = () => {
   const [pageCount, setPageCount] = useState(1); // 총 페이지 수
 
   // 사용자 정보 및 권한
-  const userInfoStorage = localStorage.getItem('userInfoStorage');
-  const userInfo = JSON.parse(userInfoStorage || '');
-  const { role } = userInfo.state;
+  const role = useAuthStore((state) => state.role);
   const [companyId, setCompanyId] = useState<number | null>(
-    role === 'ROLE_ADMIN' ? userInfo.state.companyId : null
+    role === 'ROLE_ADMIN' ? useAuthStore((state) => state.companyId) : null
   );
 
   // 모달 상태 관리
@@ -275,8 +275,7 @@ const Devices = () => {
           }
           content={content}
           pageIndex={pageIndex}
-          userRole={role}
-          RowComponent={DevicesRow}
+          RowComponent={role === 'ROLE_ADMIN' ? DevicesAdminRow : DevicesRow}
         />
       </div>
       <div className="devices__page-btn">

@@ -1,9 +1,10 @@
+import React from 'react';
 import { ChartWrapper } from 'types/ChartData';
-import ActiveTotalSessionChart from './ActiveTotalSessionChart';
-import BlockingWaitSessionChart from './BlockingWaitSessionChart';
-import SessionCountGroupChart from './SessionCountGroupChart';
+import ActiveTotalSessionChart from 'components/molecules/chart/ActiveTotalSessionChart';
+import BlockingWaitSessionChart from 'components/molecules/chart/BlockingWaitSessionChart';
+import SessionCountGroupChart from 'components/molecules/chart/SessionCountGroupChart';
 
-const ChartCollection = ({ chartData }: ChartWrapper) => {
+const MetricChart = ({ chartData }: ChartWrapper) => {
   return (
     <div className="dashboard__charts">
       <div className="dashboard__main-chart">
@@ -33,4 +34,4 @@ const ChartCollection = ({ chartData }: ChartWrapper) => {
   );
 };
 
-export default ChartCollection;
+export default MetricChart;

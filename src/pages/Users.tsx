@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import UserRegister from 'components/organisms/modal/UserRegister';
 import CompanyUserRow from 'components/molecules/table/CompanyUserRow';
 import './Users.scss';
+import useAuthStore from 'store/useAuthStore';
 
 interface UserDetail {
   loginId: string;
@@ -49,18 +50,19 @@ const Users = () => {
       RowComponent: CompanyUserRow,
     },
   };
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
 
   const [content, setContent] = useState<UserDetail[]>([]);
   const [companyList, setCompanyList] = useState<Company[]>([]);
-  const userInfoStorage = localStorage.getItem('userInfoStorage');
-  const userInfo = JSON.parse(userInfoStorage || '');
-  const { role } = userInfo.state;
+
+  const role = useAuthStore((state) => state.role);
 
   useEffect(() => {
-    if (role === 'ROLE SUPER') {
-      const keyword = '';
+    if (role === 'ROLE_SUPER') {
       getCompanies(
-        keyword,
+        '',
         ({ data }) => {
           setCompanyList(data.data);
         },
@@ -79,6 +81,7 @@ const Users = () => {
       newCheckedItems.delete(value);
     }
     setCheckedRoles(newCheckedItems);
+    setPageNumber(1);
   };
 
   const [keyword, setKeyword] = useState('');
@@ -95,14 +98,12 @@ const Users = () => {
       : [];
 
   const [companyId, setCompanyId] = useState<number | null>(
-    role === 'ROLE_ADMIN' ? userInfo.state.companyId : null
+    role === 'ROLE_ADMIN' ? useAuthStore((state) => state.companyId) : null
   );
-  const [pageNumber, setPageNumber] = useState<number>(1);
-  const [pageIndex, setPageIndex] = useState(1);
-  const [pageCount, setPageCount] = useState(1);
 
   useEffect(() => {
     getUserList(
+      pageNumber,
       companyId,
       [...checkedRoles],
       keyword,
@@ -118,20 +119,13 @@ const Users = () => {
     setPageIndex(pageNumber);
   }, [content]);
 
-  const getPreviousPage = () => {
-    setPageNumber((prev) => prev - 1);
-  };
-
-  const getSpecificPage = (i: number) => {
-    setPageNumber(i);
-  };
-
-  const getNextPage = () => {
-    setPageNumber((prev) => prev + 1);
-  };
+  const getPreviousPage = () => setPageNumber((prev) => prev - 1);
+  const getSpecificPage = (i: number) => setPageNumber(i);
+  const getNextPage = () => setPageNumber((prev) => prev + 1);
 
   const searchUsers = () => {
     getUserList(
+      1,
       companyId,
       [...checkedRoles],
       keyword,
@@ -210,11 +204,8 @@ const Users = () => {
                 return options;
               }}
               onChange={(event, newValue) => {
-                if (newValue) {
-                  setCompanyId(newValue.id);
-                } else {
-                  setCompanyId(null);
-                }
+                setCompanyId(newValue ? newValue.id : null);
+                setPageNumber(1);
               }}
               renderInput={(params) => <TextField {...params} label="회사명" />}
             />

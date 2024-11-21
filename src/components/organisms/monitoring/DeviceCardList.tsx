@@ -11,6 +11,7 @@ import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutli
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import OracleIcon from 'assets/images/oracle_icon.svg';
+import useAuthStore from 'store/useAuthStore';
 
 interface DeviceItem extends Device {
   label: string;
@@ -37,9 +38,7 @@ const DeviceCardList = ({
   };
 
   const navigate = useNavigate();
-  const userInfoStorage = localStorage.getItem('userInfoStorage');
-  const userInfo = JSON.parse(userInfoStorage || '');
-  const { companyId } = userInfo.state;
+  const companyId = useAuthStore((state) => state.companyId);
   const getDetails = (deviceAlias: string) => {
     navigate(`/dashboard/${companyId}/${deviceAlias}`, {
       state: { deviceList },

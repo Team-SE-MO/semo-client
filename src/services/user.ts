@@ -169,6 +169,7 @@ const deleteUser = async (
 };
 
 const getUserList = async (
+  page: number,
   companyId: number | null,
   roleList: string[] | [],
   keyword: string | null,
@@ -184,6 +185,9 @@ const getUserList = async (
       companyId,
       roleList,
       keyword,
+    },
+    params: {
+      page,
     },
   })
     .then(success)

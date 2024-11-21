@@ -7,25 +7,15 @@ import ProfileDetail from 'components/molecules/profiledetail/ProfileDropdown';
 import Text from 'components/atoms/text/Text';
 import Button from 'components/atoms/button/Button';
 import logo from 'assets/images/semo_logo_header.svg';
+import useAuthStore from 'store/useAuthStore';
 
 const Header = () => {
-  const userInfoStorage = localStorage.getItem('userInfoStorage');
-  const userInfo = userInfoStorage
-    ? JSON.parse(userInfoStorage)
-    : {
-        state: {
-          isLoggedIn: null,
-          role: null,
-          companyId: null,
-          ownerName: null,
-        },
-      };
   const [isProfileDetailOpen, setIsProfileDetailOpen] = useState(false);
-  const { isLoggedIn } = userInfo.state;
-  const { role } = userInfo.state;
-  const { ownerName } = userInfo.state;
-  const { companyId } = userInfo.state;
-  const { loginId } = userInfo.state;
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const role = useAuthStore((state) => state.role);
+  const ownerName = useAuthStore((state) => state.ownerName);
+  const companyId = useAuthStore((state) => state.companyId);
+  const loginId = useAuthStore((state) => state.loginId);
   const items = [
     {
       label: '유저 관리',
@@ -58,7 +48,7 @@ const Header = () => {
     setIsProfileDetailOpen(false);
   };
   const homePath = {
-    ROLE_SUPER: '/devices',
+    ROLE_SUPER: '/dashboard',
     ROLE_ADMIN: `/dashboard/${companyId}`,
     ROLE_USER: `/dashboard/${companyId}`,
   };
@@ -91,14 +81,14 @@ const Header = () => {
             </div>
             <div className="header__profile">
               <Profile
-                userName={ownerName}
+                userName={ownerName || ''}
                 arrangement="horizontal"
                 onClick={handleProfileClick}
               />
               {isProfileDetailOpen && (
                 <ProfileDetail
-                  userName={ownerName}
-                  userId={loginId}
+                  userName={ownerName || ''}
+                  userId={loginId || ''}
                   onClose={handleClosePopup}
                 />
               )}
