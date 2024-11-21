@@ -1,12 +1,54 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Line } from 'react-chartjs-2';
-import { ChartOptions } from 'chart.js';
 import {
-  getSessionExecutionData,
-  getJobExecutionData,
-} from 'services/batchMonitoring';
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+  ChartOptions,
+  Plugin,
+} from 'chart.js';
+import { getJobExecutionData } from 'services/batchMonitoring';
 import Text from 'components/atoms/text/Text';
 import './BatchDashboard.scss';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const averageLinePlugin: Plugin<'line'> = {
+  id: 'averageLinePlugin',
+  beforeDraw(chart) {
+    const { ctx, chartArea, scales } = chart;
+    if (!scales || !chartArea) return;
+
+    chart.data.datasets.forEach((dataset) => {
+      const data = dataset.data as number[];
+      if (data && data.length > 0) {
+        const average = data.reduce((a, b) => a + b, 0) / data.length;
+        ctx.save();
+        ctx.strokeStyle = 'rgba(66, 82, 110, 1)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(chartArea.left, scales.y.getPixelForValue(average));
+        ctx.lineTo(chartArea.right, scales.y.getPixelForValue(average));
+        ctx.stroke();
+        ctx.restore();
+      }
+    });
+  },
+};
 
 interface SessionDataType {
   executionTimes: {
@@ -27,6 +69,8 @@ const BatchDashboard = () => {
   const [sessionExecutionData, setSessionExecutionData] =
     useState<SessionDataType>();
   const [dailyJobData, setDailyJobData] = useState<DailyJobDataType>();
+  const token = localStorage.getItem('accessToken');
+  const socketRef = useRef<WebSocket | null>(null);
 
   const period = sessionExecutionData
     ? new Date(Object.keys(sessionExecutionData.executionTimes)[0])
@@ -34,16 +78,72 @@ const BatchDashboard = () => {
         .split('T')[0]
     : '';
 
+  const isInitialDataLoadedRef = useRef(false);
   useEffect(() => {
-    getSessionExecutionData(
-      ({ data }) => {
-        setSessionExecutionData(data.data);
-      },
-      (error) => {
-        console.log('세션 Job 실행시간 조회 실패:', error);
-      }
-    );
+    const openNewSocket = () => {
+      const ws = new WebSocket(
+        `ws://localhost:8080/ws/monitoring/batch?token=${token}`
+      );
+      socketRef.current = ws;
 
+      ws.onopen = () => {
+        console.log('WebSocket 연결 성공');
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data) as SessionDataType;
+
+          setSessionExecutionData((prevData = { executionTimes: {} }) => {
+            const updatedExecutionTimes = {
+              ...prevData.executionTimes,
+              ...data.executionTimes,
+            };
+
+            const now = Date.now();
+            const filteredExecutionTimes = Object.keys(updatedExecutionTimes)
+              .filter(
+                (timestamp) =>
+                  now - new Date(timestamp).getTime() <= 3 * 60 * 1000
+              )
+              .sort((a, b) => new Date(a).getTime() - new Date(b).getTime()) // 시간순 정렬
+              .reduce(
+                (acc, timestamp) => {
+                  acc[timestamp] = updatedExecutionTimes[timestamp];
+                  return acc;
+                },
+                {} as { [key: string]: number }
+              );
+
+            return { executionTimes: filteredExecutionTimes };
+          });
+
+          if (!isInitialDataLoadedRef.current) {
+            console.log('초기 데이터 로드 완료');
+            isInitialDataLoadedRef.current = true;
+          }
+        } catch (error) {
+          console.error('WebSocket 데이터 처리 오류:', error);
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket 에러:', error);
+      };
+
+      ws.onclose = () => {
+        console.log('WebSocket 연결 종료');
+      };
+    };
+
+    openNewSocket();
+
+    return () => {
+      socketRef.current?.close();
+    };
+  }, [token]);
+
+  useEffect(() => {
     getJobExecutionData(
       ({ data }) => {
         setDailyJobData(data.data);
@@ -54,19 +154,28 @@ const BatchDashboard = () => {
     );
   }, []);
 
-  const transformSessionData = (data: any) => {
-    if (!data) return { labels: [], executionData: [] };
-    const times = Object.keys(data.executionTimes).reverse();
+  const transformSessionData = (data: SessionDataType) => {
+    const times = Object.keys(data.executionTimes).sort(
+      (a, b) => new Date(a).getTime() - new Date(b).getTime()
+    ); // 시간 순 오름차순 정렬
     const executionData = times.map((time) => data.executionTimes[time]);
 
+    const nonZeroData = executionData.filter((value) => value !== 0);
+    const average =
+      nonZeroData.length > 0
+        ? nonZeroData.reduce((sum, value) => sum + value, 0) /
+          nonZeroData.length
+        : 0;
+
     const formattedTimes = times.map((time) => {
-      const date = time.split('T')[1];
-      return date;
+      const date = new Date(time);
+      return date.toTimeString().split(' ')[0]; // HH:mm:ss 형식
     });
 
     return {
       labels: formattedTimes,
       executionData,
+      average: parseFloat(average.toFixed(2)), // 소수점 2자리로 표시
     };
   };
 
@@ -79,14 +188,28 @@ const BatchDashboard = () => {
       (date) => data.executionDate[date].retentionJobDuration
     );
 
-    const storeJobAvg = Number(
-      (storeJobData.reduce((a, b) => a + b, 0) / storeJobData.length).toFixed(2)
+    const nonZeroStoreJobData = storeJobData.filter((value) => value !== 0);
+    const nonZeroRetentionJobData = retentionJobData.filter(
+      (value) => value !== 0
     );
-    const retentionJobAvg = Number(
-      (
-        retentionJobData.reduce((a, b) => a + b, 0) / retentionJobData.length
-      ).toFixed(2)
-    );
+
+    const storeJobAvg = nonZeroStoreJobData.length
+      ? Number(
+          (
+            nonZeroStoreJobData.reduce((a, b) => a + b, 0) /
+            nonZeroStoreJobData.length
+          ).toFixed(2)
+        )
+      : 0;
+
+    const retentionJobAvg = nonZeroRetentionJobData.length
+      ? Number(
+          (
+            nonZeroRetentionJobData.reduce((a, b) => a + b, 0) /
+            nonZeroRetentionJobData.length
+          ).toFixed(2)
+        )
+      : 0;
 
     return {
       labels: dates,
@@ -155,6 +278,7 @@ const BatchDashboard = () => {
     responsive: true,
     scales: {
       x: {
+        reverse: false,
         grid: { display: false },
         ticks: {
           autoSkip: true,
@@ -257,6 +381,26 @@ const BatchDashboard = () => {
     maintainAspectRatio: false,
   };
 
+  const collectionJobChartOptions: ChartOptions<'line'> = {
+    ...sessionChartOptions,
+    plugins: {
+      ...sessionChartOptions.plugins,
+      title: {
+        display: true,
+        text: `Session Job Average Duration: ${
+          transformSessionData(sessionExecutionData || { executionTimes: {} })
+            .average
+        }s`,
+        position: 'top',
+        font: {
+          size: 14,
+          weight: 'bold',
+        },
+        color: '#42526e',
+      },
+    },
+  };
+
   const storeJobChartOptions: ChartOptions<'line'> = {
     ...dailyJobChartOptions,
     plugins: {
@@ -297,7 +441,11 @@ const BatchDashboard = () => {
           <div className="batch-dashboard__chart__wrapper">
             <div className="batch-dashboard__chart__card batch-dashboard__chart--large">
               <div className="base-chart">
-                <Line data={sessionChartData} options={sessionChartOptions} />
+                <Line
+                  data={sessionChartData}
+                  options={collectionJobChartOptions}
+                  plugins={[averageLinePlugin]}
+                />
               </div>
             </div>
             <div className="batch-dashboard__chart__subtitle">
