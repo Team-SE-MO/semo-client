@@ -1,11 +1,12 @@
 @import '../styles/variables';
-.company-users {
+
+.user-req {
   &__container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
     min-height: 745px;
     padding: 65px 0;
     background-color: $main-theme-color;
@@ -18,26 +19,11 @@
     align-items: start;
     gap: 10px;
   }
-  &__content {
-    display: flex;
+  &__info {
     width: 90%;
-    justify-content: space-between;
-    align-items: end;
-  }
-  &__search {
-    width: 90%;
+    padding-right: 20px;
     display: flex;
-    gap: 15px;
-  }
-  &__checkbox {
-    display: flex;
-    gap: 10px;
-
-    &__item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
+    justify-content: end;
   }
   &__table {
     width: 90%;

@@ -6,6 +6,7 @@ import UserReqRow from 'components/molecules/table/UserReqRow';
 import { getUserFormList } from 'services/user';
 import Company from 'types/Company';
 import RequestPageButtons from 'components/molecules/button/RequestPageButtons';
+import './UserRequests.scss';
 
 interface Form {
   formId: number;
@@ -72,13 +73,13 @@ const UserRequests = () => {
     }
   });
   return (
-    <div className="company-req__container">
-      <div className="company-req__title">
+    <div className="user-req__container">
+      <div className="user-req__title">
         <Text content="Service Registration Request List" type="title" />
         <Text content="서비스 등록 요청 정보" type="subtitle" />
       </div>
       <RequestPageButtons />
-      <div className="company-req__table">
+      <div className="user-req__table">
         <Table
           colWidth={colWidth}
           headerMeta={headerMeta}
@@ -87,7 +88,7 @@ const UserRequests = () => {
           RowComponent={UserReqRow}
         />
       </div>
-      <div className="company-req__page-btn">
+      <div className="user-req__page-btn">
         <PageButton
           pageNumber={pageNumber}
           pageCount={pageCount}
