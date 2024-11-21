@@ -171,8 +171,8 @@ const Users = () => {
     setIsModalOpen(false);
   };
   return (
-    <div className="company-req__container">
-      <div className="company-req__title">
+    <div className="company-users__container">
+      <div className="company-users__title">
         <Text content="User Management" type="title" />
         <Text content="소속 사용자 등록 정보" type="subtitle" />
       </div>
@@ -253,7 +253,7 @@ const Users = () => {
           </>
         )}
       </div>
-      <div className="company-req__table">
+      <div className="company-users__table">
         <Table
           colWidth={tableContent[role as keyof typeof tableContent].colWidth}
           headerMeta={

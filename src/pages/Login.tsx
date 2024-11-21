@@ -23,7 +23,6 @@ interface CustomJwtPayload extends JwtPayload {
   ownerName: string;
 }
 
-// TODO: 회원가입, 홈으로 가는 버튼이나 링크 추가
 const Login = () => {
   const title = 'Login';
   const content = '로그인하기';
@@ -92,6 +91,7 @@ const Login = () => {
             });
           } else {
             navigate(homePage[role as keyof typeof homePage]);
+            login();
           }
         });
       },
