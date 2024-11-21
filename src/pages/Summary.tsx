@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Text from 'components/atoms/text/Text';
@@ -7,6 +7,9 @@ import DeviceCardList from 'components/organisms/monitoring/DeviceCardList';
 import { getSummaryData } from 'services/deviceMonitoring';
 import Device from 'types/Device';
 import './Summary.scss';
+import FileViewer from 'components/organisms/modal/FileViewer';
+import Button from 'components/atoms/button/Button';
+import PrintIcon from '@mui/icons-material/Print';
 
 interface DeviceItem extends Device {
   label: string;
@@ -29,34 +32,44 @@ const Summary = () => {
   const [summaryData, setSummaryData] = useState<SummaryData>();
   const [deviceList, setDeviceList] = useState<DeviceItem[]>([]);
   const [filteredDevice, setFilteredDevice] = useState<DeviceItem[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const pollingRef = useRef<boolean>(true);
 
   useEffect(() => {
     const fetchData = () => {
-      getSummaryData(
-        ({ data }) => {
-          setSummaryData(data.data);
-          setDeviceList(
-            data.data.allDevices.map((item: Device) => ({
-              label: item.deviceAlias,
-              ...item,
-            }))
-          );
-          setFilteredDevice(data.data.allDevices);
-        },
-        (error) => {
-          console.log('에러', error);
-        }
-      );
+      if (pollingRef.current) {
+        getSummaryData(
+          ({ data }) => {
+            setSummaryData(data.data);
+            setDeviceList(
+              data.data.allDevices.map((item: Device) => ({
+                label: item.deviceAlias,
+                ...item,
+              }))
+            );
+            setFilteredDevice(data.data.allDevices);
+          },
+          (error) => {
+            console.log('에러', error);
+          }
+        );
+      }
     };
 
     fetchData();
-
     const intervalId = setInterval(fetchData, 5000);
 
     return () => {
       clearInterval(intervalId);
     };
   }, []);
+
+  const handleFileViewer = () => {
+    setIsModalOpen((prevState) => {
+      pollingRef.current = prevState;
+      return !prevState;
+    });
+  };
 
   const companyName = summaryData?.companyName;
 
@@ -86,9 +99,20 @@ const Summary = () => {
       <div className="summary__title">
         <Text content="Database Overview" type="title" />
         <Text content="장비 목록 확인" type="subtitle" />
-        <div className="summary__title__company-name">
-          <Text content={companyName} type="title" />
-          <Text content="의 장비 목록입니다." type="subtitle" />
+        <div className="summary__title__company-content">
+          <div className="summary__title__company-name">
+            <Text content={companyName} type="title" />
+            <Text content="의 장비 목록입니다." type="subtitle" />
+          </div>
+          <Button
+            icon={PrintIcon}
+            type="button"
+            label="과거이력"
+            size="medium"
+            shadow
+            color="other"
+            onClick={handleFileViewer}
+          />
         </div>
       </div>
       <CompanyDeviceOverview
@@ -145,6 +169,7 @@ const Summary = () => {
           filteredDevice={filteredDevice}
         />
       </div>
+      <FileViewer isOpen={isModalOpen} onClose={handleFileViewer} />
     </div>
   );
 };
