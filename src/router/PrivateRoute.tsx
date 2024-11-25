@@ -14,7 +14,7 @@ const PrivateRoute = () => {
       confirmButtonText: '확인',
     });
   }
-  return isLoggedIn ? <Outlet /> : <Navigate to="login" />;
+  return isLoggedIn ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;
