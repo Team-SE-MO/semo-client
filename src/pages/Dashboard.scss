@@ -32,6 +32,10 @@
       width: 100%;
       justify-content: space-between;
       align-items: end;
+
+      .MuiFormControl-root {
+        z-index: 0;
+      }
     }
   }
 

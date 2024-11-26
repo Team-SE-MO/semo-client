@@ -10,6 +10,9 @@ import './Dashboard.scss';
 import { DeviceMetricData, SessionData } from 'types/ChartData';
 import { convertSessionCountByKey } from 'utils/convertSessionCountByKey';
 import useAuthStore from 'store/useAuthStore';
+import Button from 'components/atoms/button/Button';
+import PrintIcon from '@mui/icons-material/Print';
+import FileViewer from 'components/organisms/modal/FileViewer';
 import MetricChart from '../components/organisms/monitoring/MetricChart';
 
 interface DeviceItem extends Device {
@@ -17,6 +20,9 @@ interface DeviceItem extends Device {
 }
 
 const Dashboard = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const pollingRef = useRef<boolean>(true);
+
   const location = useLocation();
   const deviceList: DeviceItem[] = location.state?.deviceList || [];
 
@@ -73,6 +79,8 @@ const Dashboard = () => {
       socketRef.current.set(deviceAlias, ws);
 
       ws.onmessage = (event) => {
+        if (!pollingRef.current) return;
+
         try {
           const data = JSON.parse(event.data);
           if (!isInitialDataLoadedRef.current) {
@@ -248,6 +256,12 @@ const Dashboard = () => {
     };
   }, [deviceAlias]);
 
+  const handleFileViewer = () => {
+    setIsModalOpen((prevState) => {
+      pollingRef.current = prevState;
+      return !prevState;
+    });
+  };
   const [isLoading, setIsLoading] = useState(false);
   const loadMoreData = useCallback(() => {
     if (!isLoading && nextCursor) {
@@ -310,6 +324,17 @@ const Dashboard = () => {
         </div>
       </div>
       <MetricChart chartData={chartData} />
+      <div className="metric-grid__file">
+        <Button
+          icon={PrintIcon}
+          type="button"
+          label="과거이력"
+          size="medium"
+          shadow
+          color="other"
+          onClick={handleFileViewer}
+        />
+      </div>
       <div className="metric-grid__table">
         <MetricGrid
           gridData={gridData}
@@ -317,6 +342,7 @@ const Dashboard = () => {
           isLoading={isLoading}
         />
       </div>
+      <FileViewer isOpen={isModalOpen} onClose={handleFileViewer} />
     </div>
   );
 };
