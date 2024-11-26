@@ -324,7 +324,7 @@ const Dashboard = () => {
         </div>
       </div>
       <MetricChart chartData={chartData} />
-      <div className="">
+      <div className="metric-grid__file">
         <Button
           icon={PrintIcon}
           type="button"
