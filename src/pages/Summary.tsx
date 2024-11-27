@@ -30,7 +30,7 @@ interface SummaryData {
 
 const Summary = () => {
   const [summaryData, setSummaryData] = useState<SummaryData>();
-  const [deviceList, setDeviceList] = useState<DeviceItem[]>([]);
+  const deviceListRef = useRef<DeviceItem[]>([]);
   const [filteredDevice, setFilteredDevice] = useState<DeviceItem[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const pollingRef = useRef<boolean>(true);
@@ -41,13 +41,13 @@ const Summary = () => {
         getSummaryData(
           ({ data }) => {
             setSummaryData(data.data);
-            setDeviceList(
-              data.data.allDevices.map((item: Device) => ({
+            deviceListRef.current = data.data.allDevices.map(
+              (item: Device) => ({
                 label: item.deviceAlias,
                 ...item,
-              }))
+              })
             );
-            setFilteredDevice(data.data.allDevices);
+            setFilteredDevice(deviceListRef.current);
           },
           (error) => {
             console.log('에러', error);
@@ -85,12 +85,12 @@ const Summary = () => {
 
   useEffect(() => {
     if (keyword) {
-      const filtered = deviceList.filter((item) => {
+      const filtered = deviceListRef.current.filter((item) => {
         return item.deviceAlias.toLowerCase().includes(keyword.toLowerCase());
       });
       setFilteredDevice(filtered);
     } else {
-      setFilteredDevice(deviceList);
+      setFilteredDevice(deviceListRef.current);
     }
   }, [keyword]);
 
@@ -128,7 +128,7 @@ const Summary = () => {
           <Text content="전체 DB" type="subtitle" bold />
           <Autocomplete
             disablePortal
-            options={deviceList}
+            options={deviceListRef.current}
             size="small"
             sx={{
               width: 300,
@@ -165,7 +165,7 @@ const Summary = () => {
           />
         </div>
         <DeviceCardList
-          deviceList={deviceList}
+          deviceList={deviceListRef.current}
           filteredDevice={filteredDevice}
         />
       </div>

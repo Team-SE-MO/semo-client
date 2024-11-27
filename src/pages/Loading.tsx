@@ -1,10 +1,13 @@
 import React from 'react';
+import './Loading.scss';
 
 const Loading = () => {
   return (
-    <p>
-      <i>Loading...</i>
-    </p>
+    <div className="loading__container">
+      <div className="wrapper">
+        <span />
+      </div>
+    </div>
   );
 };
 

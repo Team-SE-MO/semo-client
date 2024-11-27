@@ -10,7 +10,7 @@
     background-color: $white;
     top: 0;
     justify-content: center;
-    height: 5.2vh;
+    height: 6.3vh;
     align-items: center;
     z-index: 1;
   }
@@ -35,7 +35,7 @@
       cursor: pointer;
       width: 180px;
       .text {
-        padding: 10px 0;
+        padding: 13px 0;
       }
       &:hover {
         .header__menu__dropdown {

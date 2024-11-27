@@ -29,11 +29,11 @@ const Header = () => {
       ? [
           {
             label: '요청 관리',
-            route: 'user-req',
+            route: '/user-req',
           },
           {
             label: '대시보드',
-            route: 'user-req',
+            route: '/dashboard',
           },
         ]
       : []),

@@ -1,0 +1,55 @@
+@import '../styles/variables';
+
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  width: 300px;
+  border-radius: 50%;
+  box-shadow:
+    inset -10px -10px 15px rgba(255, 255, 255, 1),
+    inset 10px 10px 10px rgba(0, 0, 0, 0.1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    box-shadow:
+      -10px -10px 15px rgba(255, 255, 255, 1),
+      10px 10px 10px rgba(0, 0, 0, 0.1);
+  }
+  span {
+    height: 270px;
+    width: 270px;
+    position: absolute;
+    animation: rotate 5s linear infinite;
+
+    &::before {
+      content: '';
+      position: absolute;
+      height: 30px;
+      border-radius: 50%;
+      width: 30px;
+      background: $main-text-color;
+      box-shadow: 0 5px 10px rgb(0 0 0 / 30%);
+    }
+  }
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading__container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f1f1f1;
+}
