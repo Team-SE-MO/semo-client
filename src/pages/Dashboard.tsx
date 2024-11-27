@@ -75,7 +75,7 @@ const Dashboard = () => {
   useEffect(() => {
     const openNewSocket = () => {
       const ws = new WebSocket(
-        `ws://localhost:8080/ws/monitoring/${companyId}/${deviceAlias}?token=${token}`
+        `ws://10.50.20.63:8080/ws/monitoring/${companyId}/${deviceAlias}?token=${token}`
       );
       socketRef.current.set(deviceAlias, ws);
 

@@ -1,6 +1,6 @@
-# 빌드 스테이지
 FROM node:18 as build
 
+# 작업 디렉토리 설정
 WORKDIR /app
 
 # package.json과 package-lock.json 복사

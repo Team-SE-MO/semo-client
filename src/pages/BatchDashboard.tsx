@@ -82,7 +82,7 @@ const BatchDashboard = () => {
   useEffect(() => {
     const openNewSocket = () => {
       const ws = new WebSocket(
-        `ws://localhost:8080/ws/monitoring/batch?token=${token}`
+        `ws://10.50.20.63:8080/ws/monitoring/batch?token=${token}`
       );
       socketRef.current = ws;
 
