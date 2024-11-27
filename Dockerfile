@@ -12,13 +12,6 @@ RUN npm install
 # 소스 코드 복사
 COPY . .
 
-# GitHub Secret에서 가져온 index.ts 파일로 교체
-# 이 부분은 GitHub Actions workflow에서 처리되어야 합니다
-ARG INDEX_TS_CONTENT
-RUN if [ ! -z "$INDEX_TS_CONTENT" ]; then \
-    echo "$INDEX_TS_CONTENT" > src/services/index.ts; \
-    fi
-
 # 프로덕션용 빌드
 RUN npm run build
 
