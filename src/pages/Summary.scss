@@ -115,6 +115,9 @@
     display: flex;
     gap: 30px;
     align-items: center;
+    .MuiFormControl-root {
+      z-index: 0;
+    }
   }
 }
 .device-list {

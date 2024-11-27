@@ -4,7 +4,7 @@ import MetricGrid from 'components/organisms/monitoring/MetricGrid';
 import Text from 'components/atoms/text/Text';
 import { Autocomplete, TextField } from '@mui/material';
 import Device from 'types/Device';
-import { getCurrentDate } from 'utils/customDate';
+import { getCurrentDate, getCurrentDateTime } from 'utils/customDate';
 import { getGridData } from 'services/deviceMonitoring';
 import './Dashboard.scss';
 import { DeviceMetricData, SessionData } from 'types/ChartData';
@@ -12,6 +12,7 @@ import { convertSessionCountByKey } from 'utils/convertSessionCountByKey';
 import useAuthStore from 'store/useAuthStore';
 import Button from 'components/atoms/button/Button';
 import PrintIcon from '@mui/icons-material/Print';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import FileViewer from 'components/organisms/modal/FileViewer';
 import MetricChart from '../components/organisms/monitoring/MetricChart';
 
@@ -282,6 +283,21 @@ const Dashboard = () => {
     }
   }, [nextCursor]);
 
+  const refreshGridData = () => {
+    const dateTime = getCurrentDateTime();
+    getGridData(
+      deviceAlias,
+      dateTime,
+      ({ data }) => {
+        setGridData(data.data.content);
+        setNextCursor(data.data.nextCursor);
+      },
+      (error) => {
+        console.log('error', error);
+      }
+    );
+  };
+
   return (
     <div className="dashboard__container">
       <div className="dashboard__title">
@@ -324,15 +340,23 @@ const Dashboard = () => {
         </div>
       </div>
       <MetricChart chartData={chartData} />
-      <div className="metric-grid__file">
+      <div className="metric-grid__btns">
         <Button
           icon={PrintIcon}
           type="button"
           label="과거이력"
           size="medium"
           shadow
-          color="other"
           onClick={handleFileViewer}
+        />
+        <Button
+          icon={RefreshIcon}
+          type="button"
+          label="새로고침"
+          size="medium"
+          shadow
+          color="other"
+          onClick={refreshGridData}
         />
       </div>
       <div className="metric-grid__table">
